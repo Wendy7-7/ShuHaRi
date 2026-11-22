@@ -4,16 +4,17 @@
 
 **给自学编程者的本地练习场**：判题即时反馈（纯本地，断网也能刷） + AI 教练引导（自备 API Key，联网调用） + 语言按需安装。
 
-不需要注册账号，
-便携版连环境都不用配，数据全部留在自己电脑（或 U 盘）里。
+不需要注册账号，便携版连环境都不用配，数据全部留在自己电脑（或 U 盘）里。
 
 [![CI](https://img.shields.io/badge/CI-passing-brightgreen)](.github/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Plugin Spec](https://img.shields.io/badge/插件规范-v1-blue)](PLUGIN_SPEC.md)
 
+**语言 / Language**：[中文](#shuhari) · [English](#english)
+
 ---
 
-## 30 秒决定要不要用
+## 这是什么
 
 如果你符合下面任意一条，值得试试：
 
@@ -31,18 +32,6 @@
 > SQL 判题内置（零依赖），不用装任何东西就能先做 6 道 SQL 题。
 > 你电脑已有 Python/JDK？工具链检测直接认，语言包都可以不装。
 > 嫌下载麻烦？Releases 里也有 1.5GB 全量包，一次到位。
-
-## English Quick Start
-
-**ShuHaRi** is a local-first coding practice ground for self-learners (judging works fully offline; the AI coach calls your own API key online):
-instant judge, a Socratic AI coach (it asks *you* questions instead of
-handing out answers), mistake-driven variant redo, and pluggable language packs.
-
-1. Download the base zip (15 MB), unzip, run learn-platform.exe
-2. Grab a langpack from Releases (langpack-python.zip, langpack-go.zip, ...)
-3. Practice -> Lang Packs -> install the zip - done
-4. UI language: Settings -> Interface Language -> English
-   (AI coach currently replies in Chinese; question statements are in Chinese)
 
 ## 核心功能
 
@@ -83,20 +72,20 @@ AI 教练反问式分析           ✨ AI 点评代码风格 + 追问理解
 
 - **变体重做**：错题重练时换一组数据——背答案没用，练的是思路
 - **关卡解锁**：知识点按学习路径依次开锁，也可以切"自由模式"
-- **AI 教练**：自带 OpenAI 兼容 Key 即可启用（应用内「帮助」有配置教程），全程本地调用
+- **AI 教练**：自带 OpenAI 兼容 Key 即可启用（应用内「帮助」有配置教程）
 
 ## 面向开发者
 
 ```bash
-git clone https://github.com/<你的账号>/learn-platform.git
-cd learn-platform
+git clone https://github.com/Wendy7-7/ShuHaRi.git
+cd ShuHaRi
 npm install
 npm run tauri dev      # 开发模式（需 Rust + Node 20+）
 ```
 
 - 技术栈：**Tauri 2 + React 19 + Rust**（判题器全 Rust，静态编译单 exe）
 - 判题沙盒：学生代码在隔离目录运行，支持超时/stdin 注入/输出规范化/产物校验（PNG dpi 都能验）
-- 工程化：Rust 单元测试、CDP 冒烟/耐力/魔鬼压力脚本、GitHub Actions CI
+- 工程化：Rust 单元测试、CDP 冒烟/耐力/压力测试脚本、GitHub Actions CI
 - **二次开发看 [CONTRIBUTING.md](CONTRIBUTING.md)，做语言插件看 [PLUGIN_SPEC.md](PLUGIN_SPEC.md)**
 
 ## 目录速览
@@ -118,7 +107,104 @@ PLUGIN_SPEC.md        语言包插件规范 v1
 [MIT](LICENSE) —— 学习、修改、分发、商用都随便，保留版权声明即可。
 内置工具链（GCC/JDK/Python/Go/Node）的许可见各语言包内文件。
 
----
-
 **给自学者的一句话**：这个软件存在的理由只有一个——你一个人学编程的时候，
 它扮演那个会反问你、会盯你重做错题、会在你写对时挑刺的教练。
+
+---
+
+# English
+
+> **Shu** (follow the starter) → **Ha** (break it with variants) → **Ri** (make it your own).
+> The three stages of mastery from Japanese swordsmanship — and the whole design philosophy of this app.
+
+**A local-first coding practice ground for self-learners**: instant judging (fully offline),
+a Socratic AI coach (uses your own API key), and pluggable language packs.
+
+No account, nothing to sign up for. The portable build even skips toolchain setup —
+all your data stays on your own computer (or USB stick).
+
+[![CI](https://img.shields.io/badge/CI-passing-brightgreen)](.github/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
+## What is this
+
+Try it if any of these is you:
+
+- You're **learning to code alone**, and judge-only sites just say "Wrong Answer" — never *why*, never *what next*
+- You want to practice **many languages** (C/C++/Python/Java/Go/JavaScript/SQL) without stuffing your machine with toolchains
+- You're prepping for **MCM/ICM**: pandas cleaning → matplotlib figures → statistical inference, one complete path
+- You're a student: lab computers ≠ your computer — USB plug-and-play, records travel with you
+
+## Quick Start
+
+1. **Download the base pack** (15 MB) from [Releases](../../releases), unzip, run `learn-platform.exe`
+2. Grab a **language pack** zip for what you want to learn (e.g. `langpack-python.zip`, 127 MB with pandas + the MCM modules)
+3. In the app: Practice → 📦 **Lang Packs** → install that zip — start solving
+
+> SQL judging is built-in (zero deps) — 6 SQL problems work with nothing installed.
+> Already have Python/JDK on PATH? The toolchain check recognizes it — packs are optional.
+
+## Core Features
+
+### 🎯 Judging: local sandbox, instant feedback
+7 languages. Code runs in an isolated directory with per-case feedback on
+stdout / timeout / compile errors — even saved-figure DPI is verified.
+
+### 🧭 AI Coach: guided, not spoon-fed
+Coach mode asks you questions first, points at methods, never dumps full solutions.
+After a passing judge, one click gets your code style reviewed — including where
+this approach would break. Bring your own OpenAI-compatible key.
+
+### 🔁 Mistake loop: practice thinking, not memorizing
+Failed problems are auto-archived and counted by topic. "Variant Redo" gives a
+mistake **new data** — so you re-learn the idea, not the answer.
+
+### 📈 MCM data-science path
+pandas cleaning → publication-grade matplotlib figures (300 dpi verified) →
+scipy inference (t-test / curve_fit / solve_ivp).
+
+### 🧩 Pluggable language packs
+One independent pack per language (toolchain + problems + tutorials), installed
+and removed on demand. Anyone can build a new language pack per
+[PLUGIN_SPEC.md](PLUGIN_SPEC.md) — zero changes to the main program.
+
+### 💾 Local-first · portable
+No account, no cloud, no tracking. 15 MB base pack, move by copying a folder.
+
+## The learning loop
+
+```
+solve (starter guided) → judge (instant feedback)
+   ↓ failed                    ↓ all passed
+mistakes ——variant redo——→ topic unlock (2+ solved opens next group)
+   ↓                              ↓
+AI coach asks & analyzes        ✨ AI reviews your code style
+```
+
+## For developers
+
+```bash
+git clone https://github.com/Wendy7-7/ShuHaRi.git
+cd ShuHaRi
+npm install
+npm run tauri dev      # dev mode (Rust + Node 20+)
+```
+
+- Stack: **Tauri 2 + React 19 + Rust** (the judge is pure Rust, single static exe)
+- Judge sandbox: isolated dir, timeout / stdin injection / output normalization / artifact checks
+- Engineering: Rust unit tests, CDP smoke/endurance/stress scripts, GitHub Actions CI
+- **See [CONTRIBUTING.md](CONTRIBUTING.md) to contribute, [PLUGIN_SPEC.md](PLUGIN_SPEC.md) for language packs**
+
+> Note: the AI coach currently converses in Chinese, and problem statements are in Chinese.
+> Translations welcome via PR.
+
+## License
+
+[MIT](LICENSE) — do anything, just keep the copyright notice.
+Bundled toolchains (GCC/JDK/Python/Go/Node) carry their own licenses, see files inside each pack.
+
+---
+
+**One line for self-learners**: this app exists for a single reason — when you're
+learning to code alone, it plays the coach who asks you questions, makes you redo
+your mistakes with new data, and finds fault even when you get it right.
