@@ -117,12 +117,12 @@
 <ol>
 <li>Windows 10 1803+ / Windows 11（WebView2 自带）</li>
 <li>两个版本各测一遍：<ul>
-<li><strong>桌面版</strong>：桌面 <code>LearnPlatform.exe</code>（数据存 <code>%APPDATA%\com.wendi.learn-platform</code>）</li>
+<li><strong>桌面版</strong>：桌面 <code>LearnPlatform.exe</code>（数据存 <code>%APPDATA%\com.learnplatform.app</code>）</li>
 <li><strong>便携版</strong>：<code>learn-platform\portable\</code> 整个文件夹（数据存 <code>portable\Data</code>）</li>
 </ul>
 </li>
 <li>AI 用例需要测试者自备任意一家 OpenAI 兼容 API Key（DeepSeek / 智谱 / Kimi 均可，设置页有预设）</li>
-<li>建议<strong>先用干净状态</strong>测：删掉 <code>Data</code> 目录 / <code>%APPDATA%\com.wendi.learn-platform</code> 下的 <code>learn.db*</code>，即可重置为全新用户</li>
+<li>建议<strong>先用干净状态</strong>测：删掉 <code>Data</code> 目录 / <code>%APPDATA%\com.learnplatform.app</code> 下的 <code>learn.db*</code>，即可重置为全新用户</li>
 </ol>
 <hr>
 <h2>三、测试用例</h2>
@@ -155,7 +155,7 @@
 <tr>
 <td>A-03</td>
 <td>便携版零残留检查</td>
-<td>启动便携版后检查 <code>%APPDATA%\com.wendi.learn-platform</code></td>
+<td>启动便携版后检查 <code>%APPDATA%\com.learnplatform.app</code></td>
 <td>不产生新数据库（数据只在 <code>portable\Data</code>）</td>
 </tr>
 <tr>
