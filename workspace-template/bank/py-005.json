@@ -1,0 +1,26 @@
+{
+  "id": "py-005",
+  "lang": "python",
+  "title": "字符串反转",
+  "difficulty": 1,
+  "tags": [
+    "字符串"
+  ],
+  "statement_md": "## 字符串反转\n\n输入一个字符串，输出它的反转。\n\n**输入**：一行字符串（不含空格）\n\n**输出**：反转后的字符串",
+  "starter_code": "# 读一个字符串，反转后输出\n",
+  "hints": [
+    "Python 的切片 s[::-1] 可以一步反转",
+    "或者用 ''.join(reversed(s))"
+  ],
+  "editorial_md": "## 题解\n\n```python\ns = input().strip()\nprint(s[::-1])\n```\n\n切片 s[start:stop:step]，step 为 -1 就是从后往前取。",
+  "test_cases": [
+    {
+      "stdin": "abc\n",
+      "expected_stdout": "cba\n"
+    },
+    {
+      "stdin": "hello\n",
+      "expected_stdout": "olleh\n"
+    }
+  ]
+}

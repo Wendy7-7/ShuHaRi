@@ -1,0 +1,47 @@
+{
+  "id": "c-010",
+  "lang": "c",
+  "title": "素数判断",
+  "difficulty": 2,
+  "tags": [
+    "数学"
+  ],
+  "statement_md": "## 素数判断\n\n输入一个整数 n（2 ≤ n ≤ 100000），判断它是不是素数。\n\n**输入**：一个整数 n\n\n**输出**：素数输出 `prime`，否则输出 `composite`",
+  "starter_code": "#include <stdio.h>\n\nint main(void) {\n    // 试除 2 到 sqrt(n)\n    return 0;\n}\n",
+  "hints": [
+    "只需要试除到 sqrt(n)——若 i*i > n 还没找到因子就是素数",
+    "1 和负数不是素数（本题 n ≥ 2 不用管）"
+  ],
+  "editorial_md": "## 题解\n\n```c\nint is_prime = 1;\nfor (int i = 2; i * i <= n; i++) {\n    if (n % i == 0) { is_prime = 0; break; }\n}\nprintf(\"%s\\n\", is_prime ? \"prime\" : \"composite\");\n```\n\n不优化直接试除到 n 也能过，但 sqrt 优化是好习惯。",
+  "test_cases": [
+    {
+      "stdin": "7\n",
+      "expected_stdout": "prime\n"
+    },
+    {
+      "stdin": "8\n",
+      "expected_stdout": "composite\n"
+    },
+    {
+      "stdin": "2\n",
+      "expected_stdout": "prime\n"
+    }
+  ],
+  "variant_cases": [
+    {
+      "stdin": "97\n",
+      "expected_stdout": "prime\n",
+      "timeout_ms": 8000
+    },
+    {
+      "stdin": "91\n",
+      "expected_stdout": "composite\n",
+      "timeout_ms": 8000
+    },
+    {
+      "stdin": "561\n",
+      "expected_stdout": "composite\n",
+      "timeout_ms": 8000
+    }
+  ]
+}

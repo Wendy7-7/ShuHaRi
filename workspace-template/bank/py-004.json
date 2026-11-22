@@ -1,0 +1,26 @@
+{
+  "id": "py-004",
+  "lang": "python",
+  "title": "单词计数",
+  "difficulty": 1,
+  "tags": [
+    "字符串"
+  ],
+  "statement_md": "## 单词计数\n\n输入一行英文，统计有多少个单词（单词之间用空格分隔）。\n\n**输入**：一行文本\n\n**输出**：单词个数",
+  "starter_code": "# 读一行文本，数单词个数\n",
+  "hints": [
+    "input().split() 会自动按任意空白切分并去掉多余空格",
+    "len() 得到列表长度"
+  ],
+  "editorial_md": "## 题解\n\n```python\nprint(len(input().split()))\n```\n\nsplit() 不带参数时按任意空白切分，比 split(' ') 更稳（能处理连续空格）。",
+  "test_cases": [
+    {
+      "stdin": "hello world foo\n",
+      "expected_stdout": "3\n"
+    },
+    {
+      "stdin": "one\n",
+      "expected_stdout": "1\n"
+    }
+  ]
+}

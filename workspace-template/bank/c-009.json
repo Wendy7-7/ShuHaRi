@@ -1,0 +1,42 @@
+{
+  "id": "c-009",
+  "lang": "c",
+  "title": "各位数字之和",
+  "difficulty": 2,
+  "tags": [
+    "循环"
+  ],
+  "statement_md": "## 各位数字之和\n\n输入一个正整数，输出它每一位数字的和。\n\n**输入**：一个正整数 n（n ≤ 10^9）\n\n**输出**：各位数字之和\n\n例如 1234 → 1+2+3+4 = 10",
+  "starter_code": "#include <stdio.h>\n\nint main(void) {\n    // 反复 %10 取末位、/10 去掉末位\n    return 0;\n}\n",
+  "hints": [
+    "n % 10 取最后一位数字",
+    "n /= 10 去掉最后一位；循环到 n == 0 为止"
+  ],
+  "editorial_md": "## 题解\n\n```c\nint s = 0;\nwhile (n > 0) { s += n % 10; n /= 10; }\nprintf(\"%d\\n\", s);\n```\n\n这是「数位处理」的模板套路，后面进制转换、回文判断都靠它。",
+  "test_cases": [
+    {
+      "stdin": "1234\n",
+      "expected_stdout": "10\n"
+    },
+    {
+      "stdin": "9\n",
+      "expected_stdout": "9\n"
+    },
+    {
+      "stdin": "1000000000\n",
+      "expected_stdout": "1\n"
+    }
+  ],
+  "variant_cases": [
+    {
+      "stdin": "987654\n",
+      "expected_stdout": "39\n",
+      "timeout_ms": 8000
+    },
+    {
+      "stdin": "111111\n",
+      "expected_stdout": "6\n",
+      "timeout_ms": 8000
+    }
+  ]
+}

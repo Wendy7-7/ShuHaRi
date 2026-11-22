@@ -1,0 +1,25 @@
+{
+  "id": "st-02",
+  "lang": "python",
+  "title": "相关系数：学习时长与分数",
+  "difficulty": 2,
+  "tags": [
+    "数学建模",
+    "统计"
+  ],
+  "statement_md": "## 相关系数\n\n**任务**：两组数据——每周学习时长 `h = [2, 4, 6, 8, 10, 12]`，对应成绩 `s = [55, 58, 64, 68, 75, 80]`。计算 Pearson 相关系数，保留 3 位小数打印。\n\n**数据已写进代码里**（美赛阶段先小数据练手，等 pandas 熟了再接真数据集）。\n",
+  "starter_code": "import numpy as np\n\nh = np.array([2, 4, 6, 8, 10, 12])\ns = np.array([55, 58, 64, 68, 75, 80])\n\n# 打印 Pearson 相关系数，保留 3 位小数\n",
+  "hints": [
+    "np.corrcoef(h, s) 返回 2x2 矩阵，取 [0, 1]",
+    "或者 scipy.stats.pearsonr(h, s)[0]"
+  ],
+  "editorial_md": "## 题解\n\n```python\nprint(f\"{np.corrcoef(h, s)[0, 1]:.3f}\")\n```\n\n结果 ≈ 0.995——高度正相关。**美赛写作**：报告相关系数时必须注明是 Pearson 还是 Spearman，样本量多少。",
+  "test_cases": [
+    {
+      "stdin": "",
+      "expected_stdout": "0.99",
+      "timeout_ms": 25000,
+      "match_mode": "contains"
+    }
+  ]
+}

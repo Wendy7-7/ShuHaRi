@@ -1,0 +1,26 @@
+{
+  "id": "py-mcm-08",
+  "lang": "python",
+  "title": "Day 8：合并两表时多出来的那一行",
+  "difficulty": 3,
+  "tags": [
+    "数学建模",
+    "pandas"
+  ],
+  "statement_md": "## Day 8：合并两表时多出来的那一行\n\n`level2_scores_raw.csv`（16 行成绩）和 `level2_teams_raw.csv`（队伍信息）要用 `team_id` 合并。\n\n**陷阱**：两表的 team_id 有大小写和空格不一致，而且 teams 表里 team_id 有重复键。\n\n**任务**：\n1. 两表 team_id 都清洗为去空格 + 大写\n2. **不做任何去重**，直接 `pd.merge(scores, teams, on='team_id')`\n3. 打印合并后的 `merged.shape`\n\n**验收**：输出包含 `(17, 7)`——比 scores 的 16 行多了 1 行！\n\n> 想想为什么会多一行？这就是 merge 的「一对多膨胀」。下一题我们解决它。",
+  "starter_code": "import pandas as pd\n\nscores = pd.read_csv(\"mcm/pandas_kit/data/level2_scores_raw.csv\")\nteams = pd.read_csv(\"mcm/pandas_kit/data/level2_teams_raw.csv\")\n\n# 1. 两表 team_id 清洗（去空格 + 大写）\n\n# 2. 直接 merge，打印 merged.shape\n",
+  "hints": [
+    "两列都 .str.strip().str.upper()",
+    "pd.merge(scores, teams, on='team_id')",
+    "打印 merged.shape 看行数——为什么会多？"
+  ],
+  "editorial_md": "## 题解\n\n```python\nscores = pd.read_csv(\"mcm/pandas_kit/data/level2_scores_raw.csv\")\nteams = pd.read_csv(\"mcm/pandas_kit/data/level2_teams_raw.csv\")\nfor d in (scores, teams):\n    d['team_id'] = d['team_id'].str.strip().str.upper()\nmerged = pd.merge(scores, teams, on='team_id')\nprint(merged.shape)\n```\n\n结果 (17, 7)：teams 里 T16 出现了两次，merge 时一条成绩配上了两条队伍信息，行数就膨胀了。",
+  "test_cases": [
+    {
+      "stdin": "",
+      "expected_stdout": "(17, 7)",
+      "timeout_ms": 20000,
+      "match_mode": "contains"
+    }
+  ]
+}

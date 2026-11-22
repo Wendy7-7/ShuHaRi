@@ -1,0 +1,26 @@
+{
+  "id": "cpp-003",
+  "lang": "cpp",
+  "title": "字符串反转（C++）",
+  "difficulty": 2,
+  "tags": [
+    "字符串"
+  ],
+  "statement_md": "## 字符串反转\n\n输入一个字符串（不含空格），输出它的反转。",
+  "starter_code": "#include <iostream>\n#include <string>\n\nint main() {\n    // 读入字符串，反转后输出\n    return 0;\n}\n",
+  "hints": [
+    "用 string s; cin >> s; 读入",
+    "reverse(s.begin(), s.end()) 需要 #include <algorithm>"
+  ],
+  "editorial_md": "## 题解\n\n```cpp\nstring s;\ncin >> s;\nreverse(s.begin(), s.end());\ncout << s << endl;\n```\n\nreverse 是 <algorithm> 里的标准算法，直接原地反转。",
+  "test_cases": [
+    {
+      "stdin": "abc\n",
+      "expected_stdout": "cba\n"
+    },
+    {
+      "stdin": "cpp\n",
+      "expected_stdout": "ppc\n"
+    }
+  ]
+}

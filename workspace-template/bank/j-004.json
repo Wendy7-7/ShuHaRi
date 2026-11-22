@@ -1,0 +1,40 @@
+{
+  "id": "j-004",
+  "lang": "java",
+  "title": "1 到 n 求和（Java）",
+  "difficulty": 1,
+  "tags": [
+    "循环"
+  ],
+  "statement_md": "## 1 到 n 求和\n\n输入 n，输出 1+2+...+n。",
+  "starter_code": "import java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        // 循环累加 1 到 n\n    }\n}\n",
+  "hints": [
+    "for (int i = 1; i <= n; i++) sum += i;",
+    "输出用 System.out.println(sum)"
+  ],
+  "editorial_md": "## 题解\n\n```java\nint n = sc.nextInt();\nint sum = 0;\nfor (int i = 1; i <= n; i++) sum += i;\nSystem.out.println(sum);\n```",
+  "test_cases": [
+    {
+      "stdin": "10\n",
+      "expected_stdout": "55\n",
+      "timeout_ms": 8000
+    },
+    {
+      "stdin": "100\n",
+      "expected_stdout": "5050\n",
+      "timeout_ms": 8000
+    }
+  ],
+  "variant_cases": [
+    {
+      "stdin": "64\n",
+      "expected_stdout": "2080\n",
+      "timeout_ms": 8000
+    },
+    {
+      "stdin": "150\n",
+      "expected_stdout": "11325\n",
+      "timeout_ms": 8000
+    }
+  ]
+}

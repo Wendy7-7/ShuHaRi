@@ -1,0 +1,25 @@
+{
+  "id": "py-mcm-02",
+  "lang": "python",
+  "title": "Day 2：列名里藏着的空格",
+  "difficulty": 1,
+  "tags": [
+    "数学建模",
+    "pandas"
+  ],
+  "statement_md": "## Day 2：列名里藏着的空格\n\n这份数据的列名 ` School ` 两端有空格——直接 `df['School']` 会报 KeyError。\n\n**任务**：读入 `mcm/pandas_kit/data/level1_contest_raw.csv`，把**所有列名首尾空格去掉**，然后打印 `list(df.columns)`。\n\n**验收**：输出包含 `'School', 'Year'`（说明 School 两边的空格没了）。\n\n> 真实赛题数据里，列名带空格、全角字符、中文括号都常见。清洗第一步永远是列名。",
+  "starter_code": "import pandas as pd\n\ndf = pd.read_csv(\"mcm/pandas_kit/data/level1_contest_raw.csv\")\n\n# 1. 去掉所有列名的首尾空格（提示：df.columns 是可以批量处理的）\n\n# 2. 打印 list(df.columns)，检查 School 两边是否干净了\n",
+  "hints": [
+    "df.columns 是一个 Index，可以 .str.strip() 批量处理",
+    "df.columns = df.columns.str.strip() 一行搞定"
+  ],
+  "editorial_md": "## 题解\n\n```python\ndf = pd.read_csv(\"mcm/pandas_kit/data/level1_contest_raw.csv\")\ndf.columns = df.columns.str.strip()\nprint(list(df.columns))\n```\n\n之后 `df['School']` 就能正常访问了。",
+  "test_cases": [
+    {
+      "stdin": "",
+      "expected_stdout": "'School', 'Year'",
+      "timeout_ms": 20000,
+      "match_mode": "contains"
+    }
+  ]
+}

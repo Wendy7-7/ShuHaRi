@@ -1,0 +1,25 @@
+{
+  "id": "sql-05",
+  "lang": "sql",
+  "title": "SQL 05：把两张表连起来",
+  "difficulty": 3,
+  "tags": [
+    "SQL",
+    "数据库"
+  ],
+  "statement_md": "## SQL 05：把两张表连起来\n\n**任务**：用 JOIN 把 `teams` 和 `scores` 按 `team_id` 连起来，输出 `team_id`、`school`、`score` 三列，**按 team_id 升序**。\n\n**验收**：8 行，每行是 队伍-学校-分数。\n\n**本题已为你准备好两张表**（判题时自动建库）：\n- `teams(team_id, school, year, members)`：8 支队伍\n- `scores(team_id, year, score)`：8 条成绩\n\n你的 SQL 会在同一个 SQLite 内存库里执行，输出结果集与标准答案比对。\n",
+  "starter_code": "-- teams 和 scores 按 team_id 连接，输出 team_id, school, score，按 team_id 升序\n",
+  "hints": [
+    "JOIN scores ON teams.team_id = scores.team_id",
+    "SELECT teams.team_id, school, score 避免列名歧义"
+  ],
+  "editorial_md": "## 题解\n\n```sql\nSELECT teams.team_id, school, score\nFROM teams JOIN scores ON teams.team_id = scores.team_id\nORDER BY teams.team_id;\n```",
+  "test_cases": [
+    {
+      "stdin": "",
+      "expected_stdout": "team_id | school | score\nT01 | XJTLU | 88\nT02 | XJTLU | 76\nT03 | NUAA | 91\nT04 | HIT | 85\nT05 | SJTU | 74\nT06 | XJTLU | 95\nT07 | HIT | 81\nT08 | NUAA | 77",
+      "timeout_ms": 5000,
+      "setup_sql": "CREATE TABLE teams(team_id TEXT, school TEXT, year INTEGER, members INTEGER);\nCREATE TABLE scores(team_id TEXT, year INTEGER, score REAL);\nINSERT INTO teams VALUES\n('T01','XJTLU',2024,3),('T02','XJTLU',2025,3),('T03','NUAA',2024,2),\n('T04','HIT',2025,3),('T05','SJTU',2026,2),('T06','XJTLU',2026,1),('T07','HIT',2026,3),('T08','NUAA',2026,2);\nINSERT INTO scores VALUES\n('T01',2024,88),('T02',2025,76),('T03',2024,91),('T04',2025,85),\n('T05',2026,74),('T06',2026,95),('T07',2026,81),('T08',2026,77);"
+    }
+  ]
+}

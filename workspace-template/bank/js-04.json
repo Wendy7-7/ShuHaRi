@@ -1,0 +1,40 @@
+{
+  "id": "js-04",
+  "lang": "javascript",
+  "title": "阶乘（JavaScript）",
+  "difficulty": 1,
+  "tags": [
+    "循环"
+  ],
+  "statement_md": "## 阶乘（JavaScript）\n\n输入 n（n ≤ 12），输出 n!。",
+  "starter_code": "const n = Number(require(\"fs\").readFileSync(0, \"utf8\").trim());\n\n// 计算 n 的阶乘\n",
+  "hints": [
+    "let r = 1; for (let i = 2; i <= n; i++) r *= i;",
+    "console.log(r)"
+  ],
+  "editorial_md": "## 题解\n\n```js\nconst n = Number(require(\"fs\").readFileSync(0, \"utf8\").trim());\nlet r = 1;\nfor (let i = 2; i <= n; i++) r *= i;\nconsole.log(r);\n```",
+  "test_cases": [
+    {
+      "stdin": "5\n",
+      "expected_stdout": "120\n",
+      "timeout_ms": 15000
+    },
+    {
+      "stdin": "12\n",
+      "expected_stdout": "479001600\n",
+      "timeout_ms": 15000
+    }
+  ],
+  "variant_cases": [
+    {
+      "stdin": "6\n",
+      "expected_stdout": "720\n",
+      "timeout_ms": 15000
+    },
+    {
+      "stdin": "10\n",
+      "expected_stdout": "3628800\n",
+      "timeout_ms": 15000
+    }
+  ]
+}

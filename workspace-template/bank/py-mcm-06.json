@@ -1,0 +1,25 @@
+{
+  "id": "py-mcm-06",
+  "lang": "python",
+  "title": "Day 6：把「缺考」变成真正的缺失",
+  "difficulty": 2,
+  "tags": [
+    "数学建模",
+    "pandas"
+  ],
+  "statement_md": "## Day 6：把「缺考」变成真正的缺失\n\n`Score` 列里混着中文「缺考」和空值，导致整列被 pandas 当成文本。\n\n**任务**：清理列名后，用 `pd.to_numeric(df['Score'], errors='coerce')` 把 Score 转成数值（无法转换的变 NaN），再打印**转换后非空值的数量**。\n\n**验收**：输出 `19`（22 行 - 2 个「缺考」 - 1 个原本就空的）。\n\n> coerce = 转不了就变缺失，比直接报错更适合脏数据。",
+  "starter_code": "import pandas as pd\n\ndf = pd.read_csv(\"mcm/pandas_kit/data/level1_contest_raw.csv\")\ndf.columns = df.columns.str.strip()\n\n# 1. Score 转数值（errors='coerce'）\n\n# 2. 打印转换后非空值的数量\n",
+  "hints": [
+    "to_numeric 的 errors 参数有三个选择：raise / coerce / ignore，想想为什么用 coerce",
+    "notna().sum() 统计非空个数"
+  ],
+  "editorial_md": "## 题解\n\n```python\ndf = pd.read_csv(\"mcm/pandas_kit/data/level1_contest_raw.csv\")\ndf.columns = df.columns.str.strip()\ndf['Score'] = pd.to_numeric(df['Score'], errors='coerce')\nprint(df['Score'].notna().sum())\n```\n\n转换后 Score 变成 float 列，「缺考」和空值都是 NaN——之后才能算平均分。",
+  "test_cases": [
+    {
+      "stdin": "",
+      "expected_stdout": "19",
+      "timeout_ms": 20000,
+      "match_mode": "contains"
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "id": "py-003",
+  "lang": "python",
+  "title": "列表最大值",
+  "difficulty": 1,
+  "tags": [
+    "数组"
+  ],
+  "statement_md": "## 列表最大值\n\n输入一行用空格分隔的整数，输出最大值。\n\n**输入**：一行整数（至少 1 个）\n\n**输出**：最大值",
+  "starter_code": "# 读一行数字，找出最大值\n",
+  "hints": [
+    "input().split() 把一行拆成字符串列表",
+    "map(int, ...) 或列表推导转成整数",
+    "也可以用内置的 max() 一行搞定"
+  ],
+  "editorial_md": "## 题解\n\n```python\nnums = list(map(int, input().split()))\nprint(max(nums))\n```",
+  "test_cases": [
+    {
+      "stdin": "3 7 2 9 4\n",
+      "expected_stdout": "9\n"
+    },
+    {
+      "stdin": "-5 -2 -8\n",
+      "expected_stdout": "-2\n"
+    }
+  ]
+}

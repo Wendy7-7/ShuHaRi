@@ -1,0 +1,25 @@
+{
+  "id": "py-mcm-05",
+  "lang": "python",
+  "title": "Day 5：同一所学校有 4 种写法",
+  "difficulty": 2,
+  "tags": [
+    "数学建模",
+    "pandas"
+  ],
+  "statement_md": "## Day 5：同一所学校有 4 种写法\n\n`School` 列里 XJTLU 有 `XJTLU`、`xjtlu `、` XJTLU`、`xjtlu` 等写法。\n\n**任务**：清理列名后，把 School 列**统一为去首尾空格 + 全大写**，然后统计统一后 XJTLU 出现的**行数**并打印。\n\n**验收**：输出 `9`（包含那条重复记录）。\n\n> 不统一写法就 groupby，同一所学校会被拆成 4 组——这是美赛数据清洗最常见的坑。",
+  "starter_code": "import pandas as pd\n\ndf = pd.read_csv(\"mcm/pandas_kit/data/level1_contest_raw.csv\")\ndf.columns = df.columns.str.strip()\n\n# 1. 统一 School 列：去空格 + 大写\n\n# 2. 统计统一后 XJTLU 的行数并打印\n",
+  "hints": [
+    "df['School'].str.strip().str.upper()",
+    "统计某个值出现次数：(df['School'] == 'XJTLU').sum()"
+  ],
+  "editorial_md": "## 题解\n\n```python\ndf = pd.read_csv(\"mcm/pandas_kit/data/level1_contest_raw.csv\")\ndf.columns = df.columns.str.strip()\ndf['School'] = df['School'].str.strip().str.upper()\nprint((df['School'] == 'XJTLU').sum())\n```\n\n统一后 XJTLU 有 9 行（含重复行）。顺手打印 `df['School'].value_counts()` 看看其他学校各几行。",
+  "test_cases": [
+    {
+      "stdin": "",
+      "expected_stdout": "9",
+      "timeout_ms": 20000,
+      "match_mode": "contains"
+    }
+  ]
+}

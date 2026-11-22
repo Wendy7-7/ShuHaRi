@@ -1,0 +1,19 @@
+{
+  "id": "j-001",
+  "lang": "java",
+  "title": "两数之和（Java）",
+  "difficulty": 1,
+  "tags": ["入门", "输入输出"],
+  "statement_md": "## 两数之和（Java）\n\n输入两个整数（空格分隔），输出它们的和。\n\n**输入**：一行，两个整数 a b\n\n**输出**：一行，a+b 的结果\n\n> Java 题的入口类统一叫 `Main`（判题时会自动以 Main.java 编译），先记住这个约定，以后遇到别的 Java 题也是它。",
+  "starter_code": "import java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        // 读入两个整数，输出它们的和\n    }\n}\n",
+  "hints": [
+    "用 sc.nextInt() 读入两个整数，第一次调用读第一个，第二次读第二个",
+    "用 System.out.println(a + b) 输出结果"
+  ],
+  "editorial_md": "## 题解\n\n```java\nint a = sc.nextInt();\nint b = sc.nextInt();\nSystem.out.println(a + b);\n```\n\n常见错误：忘了 `import java.util.Scanner;`——它不在 java.lang 里，必须手动导入。",
+  "test_cases": [
+    { "stdin": "3 4\n", "expected_stdout": "7\n", "timeout_ms": 8000 },
+    { "stdin": "-5 10\n", "expected_stdout": "5\n", "timeout_ms": 8000 },
+    { "stdin": "0 0\n", "expected_stdout": "0\n", "timeout_ms": 8000 }
+  ]
+}

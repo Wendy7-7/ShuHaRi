@@ -1,0 +1,28 @@
+{
+  "id": "js-03",
+  "lang": "javascript",
+  "title": "字符串反转（JavaScript）",
+  "difficulty": 1,
+  "tags": [
+    "字符串"
+  ],
+  "statement_md": "## 字符串反转（JavaScript）\n\n输入一个字符串（不含空格），输出它的反转。",
+  "starter_code": "const s = require(\"fs\").readFileSync(0, \"utf8\").trim();\n\n// 输出 s 的反转\n",
+  "hints": [
+    "s.split('') 转数组，reverse() 反转，join('') 拼回",
+    "也可以 [...s].reverse().join('')"
+  ],
+  "editorial_md": "## 题解\n\n```js\nconst s = require(\"fs\").readFileSync(0, \"utf8\").trim();\nconsole.log([...s].reverse().join(''));\n```",
+  "test_cases": [
+    {
+      "stdin": "abc\n",
+      "expected_stdout": "cba\n",
+      "timeout_ms": 15000
+    },
+    {
+      "stdin": "hello\n",
+      "expected_stdout": "olleh\n",
+      "timeout_ms": 15000
+    }
+  ]
+}

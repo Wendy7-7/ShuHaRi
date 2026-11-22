@@ -1,0 +1,30 @@
+{
+  "id": "mpl-01",
+  "lang": "python",
+  "title": "图 1：年度平均分折线",
+  "difficulty": 1,
+  "tags": [
+    "数学建模",
+    "matplotlib"
+  ],
+  "statement_md": "## 图 1：年度平均分折线\n\n论文里最常见的图：趋势。\n\n**任务**：读入 `mcm/matplotlib_kit/data/year_trend.csv`，画平均分（avg_score）随年份（year）变化的折线图，要求：\n- 圆点标记（marker）\n- 标题、X/Y 轴标签（Y 轴注明「分」）\n- X 轴只显示整数年份刻度（2024/2025/2026）\n- Y 轴范围 0–100\n- **以 300 dpi 保存为 `figures/year_line.png`**\n\n> 美赛论文的图片要求印刷级 dpi，300 是底线。",
+  "starter_code": "import os\nimport pandas as pd\nimport matplotlib\nmatplotlib.use(\"Agg\")  # 无界面环境也能保存图片\nimport matplotlib.pyplot as plt\n\nos.makedirs(\"figures\", exist_ok=True)\n\ndf = pd.read_csv(\"mcm/matplotlib_kit/data/year_trend.csv\")\n\n# 你的代码：折线图 + 刻度 + 保存\n",
+  "hints": [
+    "plt.plot(df['year'], df['avg_score'], marker='o')",
+    "整数刻度：plt.xticks(df['year'])",
+    "plt.ylim(0, 100)，最后 plt.savefig('figures/year_line.png', dpi=300)"
+  ],
+  "editorial_md": "## 题解\n\n```python\nplt.figure(figsize=(6, 4))\nplt.plot(df['year'], df['avg_score'], marker='o')\nplt.title('Average Score by Year')\nplt.xlabel('Year')\nplt.ylabel('Score (points)')\nplt.xticks(df['year'])\nplt.ylim(0, 100)\nplt.tight_layout()\nplt.savefig('figures/year_line.png', dpi=300)\n```\n\n**检查点**：判题会验证文件存在且 dpi=300——忘记 dpi 参数默认只有 100。",
+  "test_cases": [
+    {
+      "stdin": "",
+      "expected_stdout": "",
+      "timeout_ms": 25000,
+      "expect_file": {
+        "path": "figures/year_line.png",
+        "min_bytes": 3000,
+        "dpi": 300
+      }
+    }
+  ]
+}

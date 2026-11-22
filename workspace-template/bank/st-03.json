@@ -1,0 +1,25 @@
+{
+  "id": "st-03",
+  "lang": "python",
+  "title": "一元线性回归",
+  "difficulty": 2,
+  "tags": [
+    "数学建模",
+    "统计"
+  ],
+  "statement_md": "## 一元线性回归\n\n**任务**：用 `st-02` 的数据拟合直线 `s = a·h + b`，打印斜率 a 和截距 b，各保留 3 位小数。\n\n**数据已写进代码里**（美赛阶段先小数据练手，等 pandas 熟了再接真数据集）。\n",
+  "starter_code": "import numpy as np\n\nh = np.array([2, 4, 6, 8, 10, 12])\ns = np.array([55, 58, 64, 68, 75, 80])\n\n# 拟合 s = a*h + b，打印 a 和 b（各 3 位小数，各占一行）\n",
+  "hints": [
+    "np.polyfit(h, s, 1) 返回 [斜率, 截距]",
+    "或者 scipy.stats.linregress(h, s) 的 .slope / .intercept"
+  ],
+  "editorial_md": "## 题解\n\n```python\na, b = np.polyfit(h, s, 1)\nprint(f\"{a:.3f}\")\nprint(f\"{b:.3f}\")\n```\n\n**美赛视角**：回归结果要配图（散点+拟合线）和 R² 才有说服力——matplotlib 模块你已经会了。",
+  "test_cases": [
+    {
+      "stdin": "",
+      "expected_stdout": "2.443",
+      "timeout_ms": 25000,
+      "match_mode": "contains"
+    }
+  ]
+}

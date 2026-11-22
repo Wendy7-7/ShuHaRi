@@ -1,0 +1,35 @@
+{
+  "id": "go-02",
+  "lang": "go",
+  "title": "数组最大值（Go）",
+  "difficulty": 2,
+  "tags": [
+    "数组"
+  ],
+  "statement_md": "## 数组最大值（Go）\n\n先输入 n，再输入 n 个整数，输出最大值。",
+  "starter_code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\t// 读入 n 和 n 个整数，输出最大值\n}\n",
+  "hints": [
+    "用 make([]int, n) 创建切片",
+    "循环读入后用变量记录最大值"
+  ],
+  "editorial_md": "## 题解\n\n```go\nvar n int\nfmt.Scan(&n)\na := make([]int, n)\nfor i := 0; i < n; i++ {\n\tfmt.Scan(&a[i])\n}\nmx := a[0]\nfor _, v := range a {\n\tif v > mx {\n\t\tmx = v\n\t}\n}\nfmt.Println(mx)\n```",
+  "test_cases": [
+    {
+      "stdin": "5\n3 7 2 9 4\n",
+      "expected_stdout": "9\n",
+      "timeout_ms": 15000
+    },
+    {
+      "stdin": "3\n-5 -2 -8\n",
+      "expected_stdout": "-2\n",
+      "timeout_ms": 15000
+    }
+  ],
+  "variant_cases": [
+    {
+      "stdin": "6\n7 90 15 33 58 2\n",
+      "expected_stdout": "90\n",
+      "timeout_ms": 15000
+    }
+  ]
+}

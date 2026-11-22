@@ -1,0 +1,30 @@
+{
+  "id": "c-004",
+  "lang": "c",
+  "title": "闰年判断",
+  "difficulty": 1,
+  "tags": [
+    "分支"
+  ],
+  "statement_md": "## 闰年判断\n\n输入一个年份，判断它是不是闰年。\n\n**输入**：一个整数 year\n\n**输出**：闰年输出 `leap`，否则输出 `common`\n\n规则：能被 4 整除但不能被 100 整除，或者能被 400 整除。",
+  "starter_code": "#include <stdio.h>\n\nint main(void) {\n    // 读入年份，判断是否闰年\n    return 0;\n}\n",
+  "hints": [
+    "用 % 取余判断整除：year % 4 == 0",
+    "注意两个条件的优先级：先判断 400，再判断 4 且非 100"
+  ],
+  "editorial_md": "## 题解\n\n```c\nif (year % 400 == 0 || (year % 4 == 0 && year % 100 != 0)) printf(\"leap\\n\");\nelse printf(\"common\\n\");\n```\n\n常见错误：写成 `year % 4 == 0 && year % 100 != 0 || year % 400 == 0` 后优先级理解错——&& 比 || 优先级高，其实等价，但加括号更清晰。",
+  "test_cases": [
+    {
+      "stdin": "2000\n",
+      "expected_stdout": "leap\n"
+    },
+    {
+      "stdin": "1900\n",
+      "expected_stdout": "common\n"
+    },
+    {
+      "stdin": "2024\n",
+      "expected_stdout": "leap\n"
+    }
+  ]
+}

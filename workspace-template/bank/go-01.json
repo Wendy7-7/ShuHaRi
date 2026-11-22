@@ -1,0 +1,45 @@
+{
+  "id": "go-01",
+  "lang": "go",
+  "title": "两数之和（Go）",
+  "difficulty": 1,
+  "tags": [
+    "入门"
+  ],
+  "statement_md": "## 两数之和（Go）\n\n输入两个整数（空格分隔），输出它们的和。\n\n**输入**：一行，两个整数 a b\n\n**输出**：a+b",
+  "starter_code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\t// 读入两个整数，输出它们的和\n}\n",
+  "hints": [
+    "用 var a, b int 声明，fmt.Scan(&a, &b) 读入",
+    "fmt.Println(a + b) 输出"
+  ],
+  "editorial_md": "## 题解\n\n```go\nvar a, b int\nfmt.Scan(&a, &b)\nfmt.Println(a + b)\n```\n\nGo 的 fmt.Scan 按空白分隔读入，取地址符 & 不能少。",
+  "test_cases": [
+    {
+      "stdin": "3 4\n",
+      "expected_stdout": "7\n",
+      "timeout_ms": 15000
+    },
+    {
+      "stdin": "-5 10\n",
+      "expected_stdout": "5\n",
+      "timeout_ms": 15000
+    },
+    {
+      "stdin": "0 0\n",
+      "expected_stdout": "0\n",
+      "timeout_ms": 15000
+    }
+  ],
+  "variant_cases": [
+    {
+      "stdin": "25 17\n",
+      "expected_stdout": "42\n",
+      "timeout_ms": 15000
+    },
+    {
+      "stdin": "-3 99\n",
+      "expected_stdout": "96\n",
+      "timeout_ms": 15000
+    }
+  ]
+}

@@ -1,0 +1,120 @@
+{
+  "module_id": "matplotlib",
+  "title": "matplotlib：论文图表",
+  "version": "1.0",
+  "entry_requirement": "完成 pandas 模块",
+  "run_cwd": "matplotlib_kit",
+  "output_dir": "figures",
+  "datasets": [
+    {"id": "year_trend", "path": "data/year_trend.csv", "sealed": false},
+    {"id": "school_summary", "path": "data/school_summary.csv", "sealed": false},
+    {"id": "team_scores", "path": "data/team_scores.csv", "sealed": false},
+    {"id": "score_hours", "path": "data/score_hours.csv", "sealed": false},
+    {"id": "exam_trend", "path": "data/exam_trend.csv", "sealed": true},
+    {"id": "exam_points", "path": "data/exam_points.csv", "sealed": true}
+  ],
+  "days": [
+    {
+      "day": 1,
+      "title": "折线与柱状",
+      "tutorial_ref": "手把手/01_折线与柱状.md",
+      "tasks": [
+        {
+          "id": "m_d1_t1",
+          "instruction": "用 year_trend 画平均分折线，含圆点、标题、轴单位、年份刻度与 0–100 范围",
+          "hints": {"l1": "年份为什么出现小数刻度？", "l2": "plot + marker + set_xticks"},
+          "checks": [{"type": "image_properties", "expected": {"file": "figures/year_line.png", "dpi": 300}, "description": "图片存在且 dpi 为 300"}]
+        },
+        {
+          "id": "m_d1_t2",
+          "instruction": "用 school_summary 画降序柱状图，柱顶两位小数并标样本量",
+          "hints": {"l1": "怎样让读者同时看到均值和 n？", "l2": "bar_label + school(n=teams)"},
+          "checks": [{"type": "ai_review", "expected": "XJTLU 81.86(n=7) 居首，NUAA 71.75(n=4) 最低", "description": "排序、数值与样本量正确"}]
+        }
+      ]
+    },
+    {
+      "day": 2,
+      "title": "散点与双 Y 轴",
+      "tutorial_ref": "手把手/02_散点与双Y轴.md",
+      "tasks": [
+        {
+          "id": "m_d2_t1",
+          "instruction": "画 hours 与 score 散点，按 college 分色",
+          "hints": {"l1": "分组画图可以复用哪个 pandas 方法？", "l2": "for college, group in df.groupby('college')"},
+          "checks": [{"type": "ai_review", "description": "三学院图例完整，能说出相关不等于因果"}]
+        },
+        {
+          "id": "m_d2_t2",
+          "instruction": "画平均分折线与队伍数柱子的双轴图，合并图例",
+          "hints": {"l1": "为什么另一个系列图例消失？", "l2": "合并两个 get_legend_handles_labels()"},
+          "checks": [{"type": "image_properties", "expected": {"file": "figures/year_twinx.png", "dpi": 300}, "description": "双轴图片生成且单位与图例完整"}]
+        }
+      ]
+    },
+    {
+      "day": 3,
+      "title": "标注与论文规范",
+      "tutorial_ref": "手把手/03_标注与论文规范.md",
+      "tasks": [
+        {
+          "id": "m_d3_t1",
+          "instruction": "在 team_scores 散点图上标出最高分并加 80 分参考线",
+          "hints": {"l1": "最高点行怎么取？", "l2": "df.loc[df['score'].idxmax()] + annotate + axhline"},
+          "checks": [{"type": "ai_review", "expected": "T13，2026，95 分", "description": "标注指向正确，参考线进入图例"}]
+        },
+        {
+          "id": "m_d3_t2",
+          "instruction": "写两句英文图后分析，必须含数字与样本局限",
+          "hints": {"l1": "图展示和图解释有什么区别？", "l2": "写均值+n，并说明样本量小"},
+          "checks": [{"type": "ai_review", "description": "不是只写 results are shown；含数字和局限"}]
+        }
+      ]
+    },
+    {
+      "day": 4,
+      "title": "一键复现",
+      "tutorial_ref": "手把手/04_存图与一键复现.md",
+      "tasks": [
+        {
+          "id": "m_d4_t1",
+          "instruction": "将所有图写成函数，统一输出 PNG 和 PDF，删除 figures 后一键重建",
+          "hints": {"l1": "目录不存在怎么办？", "l2": "Path('figures').mkdir(exist_ok=True)"},
+          "checks": [{"type": "script_runs", "expected": "exit_code 0", "description": "一键重建成功，PNG dpi=300"}]
+        }
+      ]
+    },
+    {
+      "day": 5,
+      "title": "开放任务与验收",
+      "tutorial_ref": "开放任务.md",
+      "tasks": [
+        {
+          "id": "m_d5_t1",
+          "instruction": "自己选三张图回答学校表现、年份变化、学习时长关系，并说明图型理由",
+          "hints": {"l1": "先写问题，再选图，不要反过来", "l2": "检查坐标范围和样本量"},
+          "checks": [{"type": "ai_review", "description": "按图型、可读性、诚实性、分析、复现五项评审"}]
+        }
+      ]
+    }
+  ],
+  "final_assessment": {
+    "file": "exam.py",
+    "datasets": ["exam_trend", "exam_points"],
+    "time_limit_minutes": 45,
+    "closed_book": true,
+    "required_files": ["exam_line.png", "exam_bar.png", "exam_scatter.png", "exam_twinx.png"],
+    "anchor_results": {
+      "pass_rates": [72.5, 78.0, 75.5],
+      "teams": [4, 6, 5],
+      "highest_point": {"team": "E09", "hours": 14, "score": 90},
+      "required_dpi": 300
+    },
+    "oral_questions": [
+      "历年通过率为什么用折线而不是散点？",
+      "双 Y 轴为什么可能误导？",
+      "散点图为什么不能证明学习时长导致高分？",
+      "dpi=300 和 bbox_inches=tight 分别解决什么？"
+    ]
+  }
+}

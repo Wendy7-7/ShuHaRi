@@ -1,0 +1,30 @@
+{
+  "id": "mpl-02",
+  "lang": "python",
+  "title": "图 2：各学校降序柱状图",
+  "difficulty": 2,
+  "tags": [
+    "数学建模",
+    "matplotlib"
+  ],
+  "statement_md": "## 图 2：各学校降序柱状图\n\n**任务**：读入 `mcm/matplotlib_kit/data/school_summary.csv`，画**按平均分降序**的柱状图：\n- 柱顶标注平均分数值（保留 2 位小数）\n- X 轴标签同时带样本量（如 `XJTLU(n=7)`）\n- **以 300 dpi 保存为 `figures/school_bar.png`**\n\n> 读者既要看均值也要看样本量——n=2 的 81 分和 n=7 的 81 分不是一个分量。",
+  "starter_code": "import os\nimport pandas as pd\nimport matplotlib\nmatplotlib.use(\"Agg\")  # 无界面环境也能保存图片\nimport matplotlib.pyplot as plt\n\nos.makedirs(\"figures\", exist_ok=True)\n\ndf = pd.read_csv(\"mcm/matplotlib_kit/data/school_summary.csv\")\n\n# 你的代码：降序柱状 + 柱顶标注 + 保存\n",
+  "hints": [
+    "先 df.sort_values('avg_score', ascending=False)",
+    "柱顶标注：ax.bar_label(bars, fmt='%.2f')",
+    "X 轴标签：df['school'] + '(n=' + df['teams'].astype(str) + ')'"
+  ],
+  "editorial_md": "## 题解\n\n```python\ndf = df.sort_values('avg_score', ascending=False)\nlabels = df['school'] + '(n=' + df['teams'].astype(str) + ')'\nfig, ax = plt.subplots(figsize=(6, 4))\nbars = ax.bar(labels, df['avg_score'])\nax.bar_label(bars, fmt='%.2f')\nax.set_ylabel('Average Score')\nplt.tight_layout()\nplt.savefig('figures/school_bar.png', dpi=300)\n```",
+  "test_cases": [
+    {
+      "stdin": "",
+      "expected_stdout": "",
+      "timeout_ms": 25000,
+      "expect_file": {
+        "path": "figures/school_bar.png",
+        "min_bytes": 3000,
+        "dpi": 300
+      }
+    }
+  ]
+}

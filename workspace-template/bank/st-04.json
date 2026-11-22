@@ -1,0 +1,25 @@
+{
+  "id": "st-04",
+  "lang": "python",
+  "title": "t 检验与 p 值",
+  "difficulty": 3,
+  "tags": [
+    "数学建模",
+    "统计"
+  ],
+  "statement_md": "## t 检验与 p 值\n\n两组学生用不同学习方法，分数：\n- A 法：`[72, 75, 78, 80, 82]`\n- B 法：`[68, 70, 74, 76, 79, 81]`\n\n**任务**：做独立样本 t 检验，打印 p 值（保留 4 位小数）和新的一行结论：p < 0.05 则打印 `显著`，否则打印 `不显著`。\n\n**数据已写进代码里**（美赛阶段先小数据练手，等 pandas 熟了再接真数据集）。\n",
+  "starter_code": "from scipy import stats\n\na = [72, 75, 78, 80, 82]\nb = [68, 70, 74, 76, 79, 81]\n\n# 独立样本 t 检验：打印 p 值（4 位小数），再打印 显著/不显著\n",
+  "hints": [
+    "stats.ttest_ind(a, b) 返回 (t 统计量, p 值)",
+    "结论行用条件表达式：'显著' if p < 0.05 else '不显著'"
+  ],
+  "editorial_md": "## 题解\n\n```python\nt, p = stats.ttest_ind(a, b)\nprint(f\"{p:.4f}\")\nprint(\"显著\" if p < 0.05 else \"不显著\")\n```\n\np ≈ 0.25 → 不显著。**统计最小集的核心思想**：眼看着 B 法均值低一点，但统计告诉你这点差异可能纯属随机——这正是没学统计的人最容易踩的坑。",
+  "test_cases": [
+    {
+      "stdin": "",
+      "expected_stdout": "0.2",
+      "timeout_ms": 25000,
+      "match_mode": "contains"
+    }
+  ]
+}

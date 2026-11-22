@@ -1,0 +1,37 @@
+{
+  "id": "c-008",
+  "lang": "c",
+  "title": "数组逆序输出",
+  "difficulty": 2,
+  "tags": [
+    "数组"
+  ],
+  "statement_md": "## 数组逆序输出\n\n输入 n 个整数，按相反顺序输出，用空格分隔。\n\n**输入**：第一行 n（1 ≤ n ≤ 100），第二行 n 个整数\n\n**输出**：逆序后的 n 个整数（空格分隔）",
+  "starter_code": "#include <stdio.h>\n\nint main(void) {\n    // 读入数组后从后往前输出\n    return 0;\n}\n",
+  "hints": [
+    "读入后从下标 n-1 遍历到 0",
+    "空格分隔：除最后一个外，每输出一个数加一个空格（或判断 i>0 时先输出空格）"
+  ],
+  "editorial_md": "## 题解\n\n```c\nfor (int i = n - 1; i >= 0; i--) {\n    printf(\"%d\", a[i]);\n    if (i > 0) printf(\" \");\n}\nprintf(\"\\n\");\n```",
+  "test_cases": [
+    {
+      "stdin": "4\n1 2 3 4\n",
+      "expected_stdout": "4 3 2 1\n"
+    },
+    {
+      "stdin": "3\n10 20 30\n",
+      "expected_stdout": "30 20 10\n"
+    },
+    {
+      "stdin": "1\n5\n",
+      "expected_stdout": "5\n"
+    }
+  ],
+  "variant_cases": [
+    {
+      "stdin": "5\n5 12 9 30 44\n",
+      "expected_stdout": "44 30 9 12 5\n",
+      "timeout_ms": 8000
+    }
+  ]
+}

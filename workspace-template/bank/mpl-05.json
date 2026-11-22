@@ -1,0 +1,29 @@
+{
+  "id": "mpl-05",
+  "lang": "python",
+  "title": "图 5：把最高分标出来",
+  "difficulty": 3,
+  "tags": [
+    "数学建模",
+    "matplotlib"
+  ],
+  "statement_md": "## 图 5：把最高分标出来\n\n**任务**：读入 `mcm/matplotlib_kit/data/team_scores.csv`，画所有队伍的散点图（X=年份，Y=分数），并用**箭头标注**分数最高的那支队伍（标出 team_id 和分数）。\n- **以 300 dpi 保存为 `figures/annotated_scores.png`**\n\n> 标注（annotate）是让图「会说话」的关键：别只给数据，给读者指重点。",
+  "starter_code": "import os\nimport pandas as pd\nimport matplotlib\nmatplotlib.use(\"Agg\")  # 无界面环境也能保存图片\nimport matplotlib.pyplot as plt\n\nos.makedirs(\"figures\", exist_ok=True)\n\ndf = pd.read_csv(\"mcm/matplotlib_kit/data/team_scores.csv\")\n\n# 你的代码：散点 + 最高分箭头标注 + 保存\n",
+  "hints": [
+    "最高点：idx = df['score'].idxmax()，取 df.loc[idx]",
+    "plt.annotate(text, xy=(x, y), xytext=(x2, y2), arrowprops=dict(arrowstyle='->'))"
+  ],
+  "editorial_md": "## 题解\n\n```python\nplt.figure(figsize=(6, 4))\nplt.scatter(df['year'], df['score'], s=40)\nidx = df['score'].idxmax()\ntop = df.loc[idx]\nplt.annotate(f\"{top['team_id']}: {top['score']}\",\n             xy=(top['year'], top['score']),\n             xytext=(top['year'] - 0.5, top['score'] + 6),\n             arrowprops=dict(arrowstyle='->'))\nplt.xlabel('Year')\nplt.ylabel('Score')\nplt.title('Team Scores with Top Annotated')\nplt.tight_layout()\nplt.savefig('figures/annotated_scores.png', dpi=300)\n```",
+  "test_cases": [
+    {
+      "stdin": "",
+      "expected_stdout": "",
+      "timeout_ms": 25000,
+      "expect_file": {
+        "path": "figures/annotated_scores.png",
+        "min_bytes": 3000,
+        "dpi": 300
+      }
+    }
+  ]
+}

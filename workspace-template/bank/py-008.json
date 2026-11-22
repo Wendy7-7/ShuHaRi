@@ -1,0 +1,37 @@
+{
+  "id": "py-008",
+  "lang": "python",
+  "title": "1 到 n 求和（Python）",
+  "difficulty": 1,
+  "tags": [
+    "循环"
+  ],
+  "statement_md": "## 1 到 n 求和\n\n输入 n，输出 1+2+...+n。",
+  "starter_code": "# 循环累加或公式求和\n",
+  "hints": [
+    "for 循环累加，或者直接用公式 n*(n+1)//2（注意整除用 //）"
+  ],
+  "editorial_md": "## 题解\n\n```python\nn = int(input())\nprint(sum(range(1, n + 1)))\n```\n\nsum(range(...)) 是 Python 风格的写法。",
+  "test_cases": [
+    {
+      "stdin": "10\n",
+      "expected_stdout": "55\n"
+    },
+    {
+      "stdin": "100\n",
+      "expected_stdout": "5050\n"
+    }
+  ],
+  "variant_cases": [
+    {
+      "stdin": "250\n",
+      "expected_stdout": "31375\n",
+      "timeout_ms": 8000
+    },
+    {
+      "stdin": "9\n",
+      "expected_stdout": "45\n",
+      "timeout_ms": 8000
+    }
+  ]
+}

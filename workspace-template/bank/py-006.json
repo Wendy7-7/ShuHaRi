@@ -1,0 +1,38 @@
+{
+  "id": "py-006",
+  "lang": "python",
+  "title": "阶乘（Python）",
+  "difficulty": 1,
+  "tags": [
+    "循环"
+  ],
+  "statement_md": "## 阶乘\n\n输入 n（n ≤ 12），输出 n!。\n\n**输入**：一个整数\n\n**输出**：n 的阶乘",
+  "starter_code": "# 计算 n 的阶乘\n",
+  "hints": [
+    "result = 1，然后 for i in range(2, n+1): result *= i",
+    "也可以 import math 用 math.factorial"
+  ],
+  "editorial_md": "## 题解\n\n```python\nn = int(input())\nr = 1\nfor i in range(2, n + 1):\n    r *= i\nprint(r)\n```",
+  "test_cases": [
+    {
+      "stdin": "5\n",
+      "expected_stdout": "120\n"
+    },
+    {
+      "stdin": "1\n",
+      "expected_stdout": "1\n"
+    }
+  ],
+  "variant_cases": [
+    {
+      "stdin": "11\n",
+      "expected_stdout": "39916800\n",
+      "timeout_ms": 8000
+    },
+    {
+      "stdin": "8\n",
+      "expected_stdout": "40320\n",
+      "timeout_ms": 8000
+    }
+  ]
+}

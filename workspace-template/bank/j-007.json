@@ -1,0 +1,28 @@
+{
+  "id": "j-007",
+  "lang": "java",
+  "title": "字符串反转（Java）",
+  "difficulty": 2,
+  "tags": [
+    "字符串"
+  ],
+  "statement_md": "## 字符串反转\n\n输入一个字符串（不含空格），输出它的反转。",
+  "starter_code": "import java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        // 读入字符串并反转输出\n    }\n}\n",
+  "hints": [
+    "sc.next() 读一个单词",
+    "new StringBuilder(s).reverse().toString() 一步反转"
+  ],
+  "editorial_md": "## 题解\n\n```java\nString s = sc.next();\nSystem.out.println(new StringBuilder(s).reverse().toString());\n```\n\nStringBuilder 的 reverse() 是原地反转，toString() 转回字符串。",
+  "test_cases": [
+    {
+      "stdin": "abc\n",
+      "expected_stdout": "cba\n",
+      "timeout_ms": 8000
+    },
+    {
+      "stdin": "java\n",
+      "expected_stdout": "avaj\n",
+      "timeout_ms": 8000
+    }
+  ]
+}

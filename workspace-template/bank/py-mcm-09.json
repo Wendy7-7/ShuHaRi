@@ -1,0 +1,25 @@
+{
+  "id": "py-mcm-09",
+  "lang": "python",
+  "title": "Day 9：先去重再合并",
+  "difficulty": 2,
+  "tags": [
+    "数学建模",
+    "pandas"
+  ],
+  "statement_md": "## Day 9：先去重再合并\n\n**任务**：在 Day 8 基础上，合并**之前**先给 teams 按 team_id 去重（保留第一条），再 merge 并打印 shape。\n\n**验收**：输出包含 `(16, 7)`——行数回到 scores 的 16 行。\n\n> 什么时候去重？在合并的「右表」（被查字典的那张表）上。这是 merge 防膨胀的标准动作。",
+  "starter_code": "import pandas as pd\n\nscores = pd.read_csv(\"mcm/pandas_kit/data/level2_scores_raw.csv\")\nteams = pd.read_csv(\"mcm/pandas_kit/data/level2_teams_raw.csv\")\nfor d in (scores, teams):\n    d['team_id'] = d['team_id'].str.strip().str.upper()\n\n# 1. teams 按 team_id 去重\n\n# 2. 合并并打印 shape\n",
+  "hints": [
+    "teams.drop_duplicates(subset='team_id')",
+    "drop_duplicates 默认 keep='first'，保留第一次出现的行"
+  ],
+  "editorial_md": "## 题解\n\n```python\nscores = pd.read_csv(\"mcm/pandas_kit/data/level2_scores_raw.csv\")\nteams = pd.read_csv(\"mcm/pandas_kit/data/level2_teams_raw.csv\")\nfor d in (scores, teams):\n    d['team_id'] = d['team_id'].str.strip().str.upper()\nteams = teams.drop_duplicates(subset='team_id')\nmerged = pd.merge(scores, teams, on='team_id')\nprint(merged.shape)\n```\n\n去重后合并结果 (16, 7)，每行成绩恰好对应一条队伍信息。",
+  "test_cases": [
+    {
+      "stdin": "",
+      "expected_stdout": "(16, 7)",
+      "timeout_ms": 20000,
+      "match_mode": "contains"
+    }
+  ]
+}

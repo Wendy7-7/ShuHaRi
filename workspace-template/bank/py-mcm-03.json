@@ -1,0 +1,25 @@
+{
+  "id": "py-mcm-03",
+  "lang": "python",
+  "title": "Day 3：找出完全重复的行",
+  "difficulty": 1,
+  "tags": [
+    "数学建模",
+    "pandas"
+  ],
+  "statement_md": "## Day 3：找出完全重复的行\n\n这份数据里有一行被重复记录了（某个队伍出现了两次）。\n\n**任务**：读入 `mcm/pandas_kit/data/level1_contest_raw.csv`，先按 Day 2 的方法清理列名，再打印**完全重复的行数**（`df.duplicated().sum()`）。\n\n**验收**：输出 `1`。\n\n> 重复行会让后面的平均分、计数全部失真。先发现，再决定怎么处理。",
+  "starter_code": "import pandas as pd\n\ndf = pd.read_csv(\"mcm/pandas_kit/data/level1_contest_raw.csv\")\ndf.columns = df.columns.str.strip()\n\n# 打印完全重复的行数\n",
+  "hints": [
+    "duplicated() 标记每一行是否与前面的行重复",
+    "sum() 把 True 当 1 计数"
+  ],
+  "editorial_md": "## 题解\n\n```python\ndf = pd.read_csv(\"mcm/pandas_kit/data/level1_contest_raw.csv\")\ndf.columns = df.columns.str.strip()\nprint(df.duplicated().sum())\n```\n\n想看具体哪一行重复？`df[df.duplicated(keep=False)]` 会把重复的行都显示出来——原来是 T09 被记了两次。",
+  "test_cases": [
+    {
+      "stdin": "",
+      "expected_stdout": "1",
+      "timeout_ms": 20000,
+      "match_mode": "contains"
+    }
+  ]
+}

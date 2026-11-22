@@ -1,0 +1,42 @@
+{
+  "id": "cpp-001",
+  "lang": "cpp",
+  "title": "两数之和（C++）",
+  "difficulty": 1,
+  "tags": [
+    "入门"
+  ],
+  "statement_md": "## 两数之和（C++）\n\n输入两个整数，输出它们的和。\n\n**输入**：一行，两个整数 a b\n\n**输出**：a+b",
+  "starter_code": "#include <iostream>\n\nint main() {\n    // 读入两个整数，输出它们的和\n    return 0;\n}\n",
+  "hints": [
+    "用 cin >> a >> b 读入两个数",
+    "用 cout << a + b << endl 输出"
+  ],
+  "editorial_md": "## 题解\n\n```cpp\nint a, b;\ncin >> a >> b;\ncout << a + b << endl;\n```\n\nC++ 用 iostream 而不是 stdio.h，endl 会换行并刷新缓冲。",
+  "test_cases": [
+    {
+      "stdin": "3 4\n",
+      "expected_stdout": "7\n"
+    },
+    {
+      "stdin": "-5 10\n",
+      "expected_stdout": "5\n"
+    },
+    {
+      "stdin": "0 0\n",
+      "expected_stdout": "0\n"
+    }
+  ],
+  "variant_cases": [
+    {
+      "stdin": "45 55\n",
+      "expected_stdout": "100\n",
+      "timeout_ms": 8000
+    },
+    {
+      "stdin": "-12 -8\n",
+      "expected_stdout": "-20\n",
+      "timeout_ms": 8000
+    }
+  ]
+}

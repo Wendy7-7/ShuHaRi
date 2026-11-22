@@ -1,0 +1,1189 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>LearnPlatform 测试书 v1.0</title>
+<style>
+  :root { --ink: #1f2328; --muted: #57606a; --line: #d0d7de; --bg: #ffffff; --soft: #f6f8fa; --accent: #0969da; }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0 auto; max-width: 900px; padding: 48px 40px 80px;
+    font-family: "Segoe UI", "Microsoft YaHei", sans-serif;
+    color: var(--ink); background: var(--bg); line-height: 1.75; font-size: 15px;
+  }
+  h1 { font-size: 28px; border-bottom: 3px solid var(--accent); padding-bottom: 10px; }
+  h2 { font-size: 21px; margin-top: 42px; padding-left: 10px; border-left: 5px solid var(--accent); }
+  h3 { font-size: 17px; margin-top: 28px; color: #30363d; }
+  p { margin: 10px 0; }
+  blockquote { margin: 14px 0; padding: 10px 16px; background: var(--soft); border-left: 4px solid var(--accent); color: var(--muted); }
+  table { border-collapse: collapse; width: 100%; margin: 14px 0; font-size: 13.5px; }
+  th, td { border: 1px solid var(--line); padding: 7px 10px; text-align: left; vertical-align: top; }
+  th { background: var(--soft); font-weight: 600; }
+  tr:nth-child(even) td { background: #fbfcfd; }
+  code { background: #eff1f3; border-radius: 4px; padding: 1px 5px; font-size: 12.5px; font-family: Consolas, monospace; }
+  pre { background: var(--soft); border: 1px solid var(--line); border-radius: 6px; padding: 14px; overflow-x: auto; }
+  pre code { background: none; padding: 0; }
+  hr { border: none; border-top: 1px dashed var(--line); margin: 34px 0; }
+  li { margin: 4px 0; }
+  input[type="checkbox"] { margin-right: 6px; }
+  @media print {
+    body { padding: 0; font-size: 12.5px; max-width: none; }
+    h2 { page-break-after: avoid; }
+    table, pre, blockquote { page-break-inside: avoid; }
+    a { color: inherit; text-decoration: none; }
+  }
+</style>
+</head>
+<body>
+<h1>LearnPlatform 测试书 v1.0</h1>
+<blockquote>
+<p>面向对象：邀请测试者（Java 领域）、以及后续任何接手测试的人
+编写日期：2026-11-19 · 对应构建：v1.5.0+（插件规范 PLUGIN_SPEC：第三方语言零改动接入）
+原则：<strong>每条用例都可独立执行、有明确预期、结论只有「通过 / 不通过 / 观察」三种</strong></p>
+</blockquote>
+<hr>
+<h2>一、测试范围</h2>
+<p><strong>本轮测试覆盖（全部功能）</strong></p>
+<table>
+<thead>
+<tr>
+<th>模块</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>安装启动</td>
+<td>桌面版、便携版（U 盘）、首次启动</td>
+</tr>
+<tr>
+<td>教程</td>
+<td>10 步引导、CTA 联动、重看入口</td>
+</tr>
+<tr>
+<td>学习</td>
+<td>文件树、Markdown 阅读、终端、▶ 运行、Vim 开关</td>
+</tr>
+<tr>
+<td>练习</td>
+<td>题库（30 题 / 4 语言：C 10 / C++ 4 / Python 8 / Java 8）、知识点分组、今日建议、判题、提示、题解、错题闭环、题库导入</td>
+</tr>
+<tr>
+<td>考试</td>
+<td>组卷、倒计时、导航拦截、判题、交卷、中断续考</td>
+</tr>
+<tr>
+<td>错题本</td>
+<td>未攻克 / 已掌握、重做、手动标记</td>
+</tr>
+<tr>
+<td>统计</td>
+<td>数据卡片、徽章、薄弱点、通过率趋势、逐题讲评</td>
+</tr>
+<tr>
+<td>帮助</td>
+<td>安装教程、环境体检、快捷键、报错速查</td>
+</tr>
+<tr>
+<td>AI 助教</td>
+<td>Key 配置、引导模式、快捷动作、流式输出、教练人格</td>
+</tr>
+<tr>
+<td>个性化</td>
+<td>主题色、昵称、教练名字与风格</td>
+</tr>
+<tr>
+<td>文件操作</td>
+<td>新建、重命名、删除</td>
+</tr>
+<tr>
+<td>数据安全</td>
+<td>自动备份、U 盘迁移</td>
+</tr>
+<tr>
+<td>数学建模</td>
+<td>pandas 美赛模块（10 题、数据集、美赛教练提示词）</td>
+</tr>
+</tbody></table>
+<p><strong>明确不在测试范围（别浪费时间）</strong></p>
+<ul>
+<li>多窗口、插件、云同步：不存在，也不用测</li>
+<li>非 Windows 系统：不支持</li>
+<li>AI 回答内容质量：取决于测试者自备的模型和 Key，只测流程通不通，不评判回答好坏</li>
+<li>签名/杀毒误报：无代码签名证书是已知事实，SmartScreen 提示属预期行为</li>
+</ul>
+<hr>
+<h2>二、测试环境</h2>
+<ol>
+<li>Windows 10 1803+ / Windows 11（WebView2 自带）</li>
+<li>两个版本各测一遍：<ul>
+<li><strong>桌面版</strong>：桌面 <code>LearnPlatform.exe</code>（数据存 <code>%APPDATA%\com.wendi.learn-platform</code>）</li>
+<li><strong>便携版</strong>：<code>learn-platform\portable\</code> 整个文件夹（数据存 <code>portable\Data</code>）</li>
+</ul>
+</li>
+<li>AI 用例需要测试者自备任意一家 OpenAI 兼容 API Key（DeepSeek / 智谱 / Kimi 均可，设置页有预设）</li>
+<li>建议<strong>先用干净状态</strong>测：删掉 <code>Data</code> 目录 / <code>%APPDATA%\com.wendi.learn-platform</code> 下的 <code>learn.db*</code>，即可重置为全新用户</li>
+</ol>
+<hr>
+<h2>三、测试用例</h2>
+<blockquote>
+<p>约定：<strong>P</strong>=通过 <strong>F</strong>=不通过 <strong>O</strong>=观察（不影响功能但记录在案）
+每模块做完在小结表里标一行，附截图或文字证据。</p>
+</blockquote>
+<h3>模块 A：安装与启动</h3>
+<table>
+<thead>
+<tr>
+<th>编号</th>
+<th>用例</th>
+<th>步骤</th>
+<th>预期</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>A-01</td>
+<td>桌面版冷启动</td>
+<td>双击桌面 <code>LearnPlatform.exe</code></td>
+<td>3 秒内出窗口，不白屏</td>
+</tr>
+<tr>
+<td>A-02</td>
+<td>便携版冷启动</td>
+<td>进入 <code>portable</code>，双击 <code>learn-platform.exe</code></td>
+<td>同上；自动生成 <code>Data\</code> 目录</td>
+</tr>
+<tr>
+<td>A-03</td>
+<td>便携版零残留检查</td>
+<td>启动便携版后检查 <code>%APPDATA%\com.wendi.learn-platform</code></td>
+<td>不产生新数据库（数据只在 <code>portable\Data</code>）</td>
+</tr>
+<tr>
+<td>A-04</td>
+<td>首启教程</td>
+<td>全新状态下启动</td>
+<td>600ms 内自动弹出「10 步引导」，有聚光灯效果</td>
+</tr>
+<tr>
+<td>A-05</td>
+<td>环境体检</td>
+<td>进入「题库练习」</td>
+<td>右上角 4 个徽标：gcc / g++ / python / java 全绿</td>
+</tr>
+<tr>
+<td>A-06</td>
+<td>断网启动</td>
+<td>拔网线后启动</td>
+<td>正常启动（AI 除外，其余功能全部可用）</td>
+</tr>
+<tr>
+<td>A-07</td>
+<td>重启后状态延续</td>
+<td>改主题色/做一题后关闭重启</td>
+<td>主题色、已解决数、徽章均保留</td>
+</tr>
+</tbody></table>
+<h3>模块 B：教程</h3>
+<table>
+<thead>
+<tr>
+<th>编号</th>
+<th>用例</th>
+<th>步骤</th>
+<th>预期</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>B-01</td>
+<td>十步走完</td>
+<td>逐步点「下一步」共 9 次</td>
+<td>最后一步出现「🎯 开始第一道题」</td>
+</tr>
+<tr>
+<td>B-02</td>
+<td>CTA 联动</td>
+<td>点「开始第一道题」</td>
+<td>自动进入题库练习页，且编辑器已打开第一题文件</td>
+</tr>
+<tr>
+<td>B-03</td>
+<td>中途跳过</td>
+<td>任意步骤点「跳过」</td>
+<td>教程关闭，状态正常，不再自动弹</td>
+</tr>
+<tr>
+<td>B-04</td>
+<td>重看教程</td>
+<td>帮助页 →「重看新手教程」</td>
+<td>教程重新出现，可走完</td>
+</tr>
+</tbody></table>
+<h3>模块 C：学习工作区</h3>
+<table>
+<thead>
+<tr>
+<th>编号</th>
+<th>用例</th>
+<th>步骤</th>
+<th>预期</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>C-01</td>
+<td>文件树展开</td>
+<td>点 <code>bank</code> / <code>practice</code> 文件夹</td>
+<td>展开显示子文件，图标 ▸/▾ 切换</td>
+</tr>
+<tr>
+<td>C-02</td>
+<td>Markdown 阅读</td>
+<td>点 <code>README.md</code>、<code>c-basics.md</code></td>
+<td>右栏渲染为带标题/代码块的排版</td>
+</tr>
+<tr>
+<td>C-03</td>
+<td>代码打开</td>
+<td>点 <code>hello.c</code></td>
+<td>中间编辑器打开，有语法高亮</td>
+</tr>
+<tr>
+<td>C-04</td>
+<td>编辑并保存</td>
+<td>修改代码，Ctrl+S</td>
+<td>标签旁无「未保存」标记；重开内容还在</td>
+</tr>
+<tr>
+<td>C-05</td>
+<td>▶ 运行（C）</td>
+<td>打开 hello.c，点「▶ 运行」</td>
+<td>底部终端执行 gcc 编译并运行，中文不乱码</td>
+</tr>
+<tr>
+<td>C-06</td>
+<td>▶ 运行（Java）</td>
+<td>打开任一 Java 练习文件，点「▶ 运行」</td>
+<td>终端 javac + java 依次执行，无 ClassNotFound</td>
+</tr>
+<tr>
+<td>C-07</td>
+<td>终端直接交互</td>
+<td>在终端输入 <code>gcc --version</code> 回车</td>
+<td>输出编译器版本</td>
+</tr>
+<tr>
+<td>C-08</td>
+<td>终端重启</td>
+<td>点终端右上角 ⟳</td>
+<td>屏幕清空，出现新的 PowerShell 提示符</td>
+</tr>
+<tr>
+<td>C-09</td>
+<td>Vim 开关</td>
+<td>顶栏点「Vim: 关」再点回「Vim: 开」</td>
+<td>编辑器下方出现/消失 <code>-- NORMAL --</code>；关闭后可直接打字</td>
+</tr>
+<tr>
+<td>C-10</td>
+<td>视图切换不丢终端</td>
+<td>在学习/题库/错题本/统计间来回切 5 次</td>
+<td>终端内容不丢，无闪屏跳变</td>
+</tr>
+<tr>
+<td>C-11</td>
+<td>新建文件</td>
+<td>文件树 ＋ → 输入 <code>test.md</code> → 创建</td>
+<td>文件出现在树中</td>
+</tr>
+<tr>
+<td>C-12</td>
+<td>重命名</td>
+<td>悬停 <code>test.md</code> → ✎ → 改名 <code>test2.md</code></td>
+<td>树中更新；若文件正打开，编辑器标签跟随</td>
+</tr>
+<tr>
+<td>C-13</td>
+<td>删除</td>
+<td>悬停 <code>test2.md</code> → ✕ → 确认删除</td>
+<td>文件从树中消失，磁盘上也删除</td>
+</tr>
+<tr>
+<td>C-14</td>
+<td>非法文件名</td>
+<td>重命名输入 <code>a/b.md</code></td>
+<td>弹窗内报「文件名包含非法字符」，不执行</td>
+</tr>
+</tbody></table>
+<h3>模块 D：练习与判题（核心）</h3>
+<table>
+<thead>
+<tr>
+<th>编号</th>
+<th>用例</th>
+<th>步骤</th>
+<th>预期</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>D-01</td>
+<td>题库规模</td>
+<td>语言切到 C</td>
+<td>显示 10 题，分组为：入门/分支/循环/数组/数学</td>
+</tr>
+<tr>
+<td>D-02</td>
+<td>语言切换</td>
+<td>依次切 C / C++ / Python / Java</td>
+<td>题数分别为 10 / 4 / 8 / 8，均无报错</td>
+</tr>
+<tr>
+<td>D-03</td>
+<td>今日建议</td>
+<td>有未解决错题时进入练习页</td>
+<td>顶部显示「🎯 今日建议：先攻克 N 道错题」+ 跳转按钮</td>
+</tr>
+<tr>
+<td>D-04</td>
+<td>starter 判题失败</td>
+<td>打开新题（未写代码）直接判题</td>
+<td>全用例失败，展示期望输出 vs 实际输出</td>
+</tr>
+<tr>
+<td>D-05</td>
+<td>写对判过</td>
+<td>按题解写出正确代码 → 判题</td>
+<td>全部用例「通过」，列表出现 ✓，进度「已解决 +1」</td>
+</tr>
+<tr>
+<td>D-06</td>
+<td>判题结果注入 AI</td>
+<td>判题失败后点「🤖 让 AI 帮我分析」</td>
+<td>AI 面板打开，输入框自动预填问题</td>
+</tr>
+<tr>
+<td>D-07</td>
+<td>提示分层</td>
+<td>点「提示 1」再点「提示 2」</td>
+<td>逐条揭示，按钮用完变灰</td>
+</tr>
+<tr>
+<td>D-08</td>
+<td>题解折叠</td>
+<td>点「看题解」</td>
+<td>展开题解 Markdown；再点收起</td>
+</tr>
+<tr>
+<td>D-09</td>
+<td>快捷键判题</td>
+<td>编辑器内 Ctrl+Enter</td>
+<td>等同点「判题」按钮</td>
+</tr>
+<tr>
+<td>D-10</td>
+<td>Java 判题</td>
+<td>打开「两数之和（Java）」，写正确解判题</td>
+<td>3/3 通过（Java 入口类 Main 约定）</td>
+</tr>
+<tr>
+<td>D-11</td>
+<td>编译错误提示</td>
+<td>故意删掉一个分号判题</td>
+<td>显示「编译失败」+ 编译器原始报错行号</td>
+</tr>
+<tr>
+<td>D-12</td>
+<td>超时保护</td>
+<td>写死循环程序判题</td>
+<td>用例显示「超时」，不会卡死界面</td>
+</tr>
+<tr>
+<td>D-13</td>
+<td>连续点击防护</td>
+<td>快速连点「判题」3 次</td>
+<td>只有一次有效执行，不崩溃、结果正确</td>
+</tr>
+<tr>
+<td>D-14</td>
+<td>错题闭环</td>
+<td>失败 → 改对判题 → 去错题本</td>
+<td>该题自动从「未攻克」移入「已掌握」</td>
+</tr>
+<tr>
+<td>D-15</td>
+<td>下一题流转</td>
+<td>判题全过后观察结果条</td>
+<td>出现「下一题：「标题」→」绿色按钮，点击直跳下一道未解决题</td>
+</tr>
+<tr>
+<td>D-16</td>
+<td>题库导入</td>
+<td>点工具栏「⇪ 导入」→ 选一个含 .json 的文件夹</td>
+<td>toast 提示「已导入 N 道题」，题库数量增加</td>
+</tr>
+<tr>
+<td>D-17</td>
+<td>C++ 判题</td>
+<td>打开「两数之和（C++）」，写正确解判题</td>
+<td>3/3 通过（内置 g++ 8.1，标准为 C++17）</td>
+</tr>
+</tbody></table>
+<h3>模块 E：考试</h3>
+<table>
+<thead>
+<tr>
+<th>编号</th>
+<th>用例</th>
+<th>步骤</th>
+<th>预期</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>E-01</td>
+<td>组卷</td>
+<td>考试模式 → 选语言 C → 开始</td>
+<td>随机抽 3 题，倒计时 30:00，左栏只显示题目</td>
+</tr>
+<tr>
+<td>E-02</td>
+<td>考试中判题</td>
+<td>考试内提交本题</td>
+<td>出判题结果，计入「已交 X/3」</td>
+</tr>
+<tr>
+<td>E-03</td>
+<td>导航拦截</td>
+<td>考试中点「统计」</td>
+<td>弹窗「继续考试 / 放弃考试」</td>
+</tr>
+<tr>
+<td>E-04</td>
+<td>继续考试</td>
+<td>上一步选「继续考试」</td>
+<td>仍停留在考试视图，倒计时继续</td>
+</tr>
+<tr>
+<td>E-05</td>
+<td>放弃考试</td>
+<td>再次点导航选「放弃考试」</td>
+<td>考试终止，草稿清除，可重新开考</td>
+</tr>
+<tr>
+<td>E-06</td>
+<td>交卷入库</td>
+<td>答一题后交卷</td>
+<td>横幅显示「交卷完成：x/3」，统计页「完成考试 +1」</td>
+</tr>
+<tr>
+<td>E-07</td>
+<td>交卷错题入本</td>
+<td>交卷后去错题本</td>
+<td>未通过的题出现在「未攻克」区</td>
+</tr>
+<tr>
+<td>E-08</td>
+<td>中断续考</td>
+<td>开考 → 直接关进程 → 重新打开</td>
+<td>自动回到考试页，倒计时按真实时间续算（不是重新 30 分钟）</td>
+</tr>
+<tr>
+<td>E-09</td>
+<td>考试禁用 AI</td>
+<td>考试中尝试打开 AI 面板</td>
+<td>面板提示「考试中已禁用」，无法发送</td>
+</tr>
+</tbody></table>
+<h3>模块 F：错题本</h3>
+<table>
+<thead>
+<tr>
+<th>编号</th>
+<th>用例</th>
+<th>步骤</th>
+<th>预期</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>F-01</td>
+<td>分区</td>
+<td>有错题时打开错题本</td>
+<td>分「未攻克」与「已掌握」两区，带计数</td>
+</tr>
+<tr>
+<td>F-02</td>
+<td>重做</td>
+<td>点「重做」</td>
+<td>跳转练习页并打开该题</td>
+</tr>
+<tr>
+<td>F-03</td>
+<td>手动标记</td>
+<td>点「已掌握」</td>
+<td>该条移到已掌握区</td>
+</tr>
+</tbody></table>
+<h3>模块 G：统计</h3>
+<table>
+<thead>
+<tr>
+<th>编号</th>
+<th>用例</th>
+<th>步骤</th>
+<th>预期</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>G-01</td>
+<td>数据卡片</td>
+<td>完成 1 题 1 考后打开统计</td>
+<td>6 张卡数字正确：已解决/考试/通过率/待攻克/连续天数/徽章数</td>
+</tr>
+<tr>
+<td>G-02</td>
+<td>徽章解锁</td>
+<td>完成首次判题</td>
+<td>右下角弹 toast「解锁徽章『第一枪』」；统计页徽章墙点亮</td>
+</tr>
+<tr>
+<td>G-03</td>
+<td>连续学习</td>
+<td>次日（或改系统时间后）首次启动</td>
+<td>「连续学习」天数 +1</td>
+</tr>
+<tr>
+<td>G-04</td>
+<td>薄弱知识点</td>
+<td>错题含标签后查看</td>
+<td>条形图按未攻克错题数排序</td>
+</tr>
+<tr>
+<td>G-05</td>
+<td>趋势图</td>
+<td>完成 ≥2 场考试</td>
+<td>柱状图逐场显示通过率百分比</td>
+</tr>
+<tr>
+<td>G-06</td>
+<td>逐题讲评</td>
+<td>点某场考试那一行</td>
+<td>展开逐题 ✓/✗ 和用例数（如「✗ 1 到 n 求和 0/3 用例」）</td>
+</tr>
+</tbody></table>
+<h3>模块 H：帮助与个性化</h3>
+<table>
+<thead>
+<tr>
+<th>编号</th>
+<th>用例</th>
+<th>步骤</th>
+<th>预期</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>H-01</td>
+<td>帮助完整性</td>
+<td>打开帮助页</td>
+<td>至少 6 个章节：安装教程、环境体检、快捷键、报错速查、2026 AI 使用共识</td>
+</tr>
+<tr>
+<td>H-02</td>
+<td>官方链接</td>
+<td>点「去下载 Python / JDK」</td>
+<td>系统浏览器打开对应官网</td>
+</tr>
+<tr>
+<td>H-03</td>
+<td>报错速查</td>
+<td>阅读表格</td>
+<td>含 segmentation fault、ClassNotFoundException、NPE 等条目</td>
+</tr>
+<tr>
+<td>H-04</td>
+<td>主题色</td>
+<td>设置 → 点第 5 个色球</td>
+<td>导航/按钮/徽章墙立即变色；重启后保持</td>
+</tr>
+<tr>
+<td>H-05</td>
+<td>任意取色</td>
+<td>调色板自选颜色</td>
+<td>同上，立即生效</td>
+</tr>
+<tr>
+<td>H-06</td>
+<td>昵称与教练名</td>
+<td>设置昵称「阿迪」、教练名「码灵」→ 保存 → 打开 AI</td>
+<td>AI 面板标题为「码灵」；AI 回复中用昵称呼唤</td>
+</tr>
+<tr>
+<td>H-07</td>
+<td>教练风格</td>
+<td>切换四种风格分别对话一次</td>
+<td>语气明显不同（严格/温和/幽默/冷静）</td>
+</tr>
+</tbody></table>
+<h3>模块 I：AI 助教</h3>
+<table>
+<thead>
+<tr>
+<th>编号</th>
+<th>用例</th>
+<th>步骤</th>
+<th>预期</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>I-01</td>
+<td>无 Key 引导</td>
+<td>未配置 Key 时打开 AI</td>
+<td>显示配置引导卡，不弹错误</td>
+</tr>
+<tr>
+<td>I-02</td>
+<td>配置 Key</td>
+<td>设置选 DeepSeek 预设 → 填 Key →「测试连接」</td>
+<td>提示成功</td>
+</tr>
+<tr>
+<td>I-03</td>
+<td>流式输出</td>
+<td>提问任意问题</td>
+<td><strong>首字 &lt;2 秒上屏</strong>，逐字追加，末尾光标消失</td>
+</tr>
+<tr>
+<td>I-04</td>
+<td>引导模式</td>
+<td>引导模式下说「直接给我代码」</td>
+<td>拒绝给完整代码，改问思路（第 1 条规则）</td>
+</tr>
+<tr>
+<td>I-05</td>
+<td>快捷动作</td>
+<td>点「考考我」「点评我的代码」</td>
+<td>输入框自动预填对应问题并发送</td>
+</tr>
+<tr>
+<td>I-06</td>
+<td>上下文注入</td>
+<td>判题失败后提问</td>
+<td>AI 回复引用真实判题结果（期望/实际输出）</td>
+</tr>
+<tr>
+<td>I-07</td>
+<td>学习画像</td>
+<td>做几题后重新打开面板提问</td>
+<td>AI 知道你的已解决数量和未攻克题目</td>
+</tr>
+<tr>
+<td>I-08</td>
+<td>错误 Key</td>
+<td>填一个乱码 Key 提问</td>
+<td>明确报错（401 或类似），不闪退</td>
+</tr>
+<tr>
+<td>I-09</td>
+<td>长回答</td>
+<td>让它解释较长概念</td>
+<td>流式持续输出不卡界面，可滚动</td>
+</tr>
+</tbody></table>
+<h3>模块 J：数据与便携</h3>
+<table>
+<thead>
+<tr>
+<th>编号</th>
+<th>用例</th>
+<th>步骤</th>
+<th>预期</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>J-01</td>
+<td>自动备份</td>
+<td>使用一天后再次启动</td>
+<td><code>Data\</code>（或 AppData）下出现 <code>learn.db.bak</code> 三件套</td>
+</tr>
+<tr>
+<td>J-02</td>
+<td>U 盘迁移</td>
+<td>整个 portable 文件夹拷到另一台电脑（无编译器）→ 双击</td>
+<td>正常启动，题库/进度/AI Key 全在；判题可编译</td>
+</tr>
+<tr>
+<td>J-03</td>
+<td>便携版断网判题</td>
+<td>拔网线后判 C/Java/Python 题</td>
+<td>正常判题（工具链全本地）</td>
+</tr>
+<tr>
+<td>J-04</td>
+<td>删除 .portable 标记</td>
+<td>删掉 <code>.portable</code> 后启动</td>
+<td>数据改存用户 AppData（说明书里警告过此行为）</td>
+</tr>
+</tbody></table>
+<h3>模块 M：数学建模（pandas 美赛）</h3>
+<table>
+<thead>
+<tr>
+<th>编号</th>
+<th>用例</th>
+<th>步骤</th>
+<th>预期</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>M-01</td>
+<td>pandas 入口</td>
+<td>练习页语言下拉选「pandas（美赛）」</td>
+<td>显示 10 道题，分组为「数学建模」</td>
+</tr>
+<tr>
+<td>M-02</td>
+<td>Day 1 判题</td>
+<td>打开 Day 1，按题解写 print(df.shape) 判题</td>
+<td>通过（输出包含 (22, 5)）</td>
+</tr>
+<tr>
+<td>M-03</td>
+<td>数据集沙盒</td>
+<td>任意 pandas 题判题</td>
+<td>数据文件自动复制到沙盒，无 FileNotFoundError</td>
+</tr>
+<tr>
+<td>M-04</td>
+<td>合并陷阱题</td>
+<td>Day 8 不去重直接 merge 判题</td>
+<td>通过（输出 (17, 7)，理解行数膨胀）</td>
+</tr>
+<tr>
+<td>M-05</td>
+<td>综合清洗题</td>
+<td>Day 10 按校均分排序判题</td>
+<td>通过（输出 SJTU 83.67）</td>
+</tr>
+<tr>
+<td>M-06</td>
+<td>美赛教练提示词</td>
+<td>做 pandas 题时打开 AI 提问</td>
+<td>AI 按 L1-L4 分级提示，范围外问题拒答</td>
+</tr>
+<tr>
+<td>M-07</td>
+<td>学习区可读</td>
+<td>文件树展开 mcm/，打开 README.md 与教程</td>
+<td>Markdown 正常渲染，课程地图完整</td>
+</tr>
+<tr>
+<td>M-08</td>
+<td>便携版 pandas</td>
+<td>便携版启动，判一道 pandas 题</td>
+<td>内置 pandas 可用，无需本机安装</td>
+</tr>
+<tr>
+<td>M-09</td>
+<td>matplotlib 入口</td>
+<td>语言下拉选「matplotlib（美赛）」</td>
+<td>显示 5 道存图题，分组「数学建模」</td>
+</tr>
+<tr>
+<td>M-10</td>
+<td>存图判题通过</td>
+<td>图 1 按题解画折线并以 300dpi 保存判题</td>
+<td>通过（expect_file + dpi 校验）</td>
+</tr>
+<tr>
+<td>M-11</td>
+<td>dpi 校验</td>
+<td>同一图改成 dpi=100 判题</td>
+<td>失败，提示「dpi=Some(100)，要求 300」</td>
+</tr>
+<tr>
+<td>M-12</td>
+<td>未保存校验</td>
+<td>删掉 savefig 行判题</td>
+<td>失败，提示「未生成文件 figures/year_line.png」</td>
+</tr>
+</tbody></table>
+<h3>模块 N：多语言扩展（SQL / Go / JavaScript）</h3>
+<table>
+<thead>
+<tr>
+<th>编号</th>
+<th>用例</th>
+<th>步骤</th>
+<th>预期</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>N-01</td>
+<td>SQL 判题</td>
+<td>SQL 01 写 SELECT * FROM teams 判题</td>
+<td>通过（内嵌 SQLite，零外部依赖）</td>
+</tr>
+<tr>
+<td>N-02</td>
+<td>SQL 聚合</td>
+<td>SQL 06 按校平均分判题</td>
+<td>通过（XJTLU 86.33）</td>
+</tr>
+<tr>
+<td>N-03</td>
+<td>Go 判题</td>
+<td>go-01 写正确解判题</td>
+<td>3/3 通过（go run + 持久 GOCACHE）</td>
+</tr>
+<tr>
+<td>N-04</td>
+<td>JS 判题</td>
+<td>js-01 写正确解判题</td>
+<td>2/2 通过（Node.js）</td>
+</tr>
+<tr>
+<td>N-05</td>
+<td>工具链徽标</td>
+<td>练习页查看</td>
+<td>gcc/g++/python/java/go/node 六徽标全绿</td>
+</tr>
+<tr>
+<td>N-06</td>
+<td>文件扩展名</td>
+<td>打开 Go/JS/SQL 题</td>
+<td>分别生成 .go/.js/.sql 练习文件</td>
+</tr>
+</tbody></table>
+<h3>模块 O：教学闭环深化（v1.4.0）</h3>
+<table>
+<thead>
+<tr>
+<th>编号</th>
+<th>用例</th>
+<th>步骤</th>
+<th>预期</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>O-01</td>
+<td>关卡解锁</td>
+<td>全新状态进练习页</td>
+<td>第 2 组起显示 🔒「需上一组 ≥2 题」，点击弹出引导提示</td>
+</tr>
+<tr>
+<td>O-02</td>
+<td>自由模式</td>
+<td>工具栏点「顺序解锁」</td>
+<td>变为「自由模式」，全部锁消失，重启后保持</td>
+</tr>
+<tr>
+<td>O-03</td>
+<td>变体重做</td>
+<td>做错 c-001 → 错题本</td>
+<td>出现「变体重做」按钮（无变体的题不显示）</td>
+</tr>
+<tr>
+<td>O-04</td>
+<td>变体判题</td>
+<td>变体重做 → 写通用正确解判题</td>
+<td>3/3 通过且结果条带「变体」徽标</td>
+</tr>
+<tr>
+<td>O-05</td>
+<td>AI 点评</td>
+<td>判题全过后</td>
+<td>出现「✨ AI 点评」按钮，点击预填点评请求</td>
+</tr>
+<tr>
+<td>O-06</td>
+<td>统计模块</td>
+<td>语言下拉选「统计（美赛）」</td>
+<td>6 道 scipy 题（描述统计→solve_ivp）</td>
+</tr>
+<tr>
+<td>O-07</td>
+<td>统计判题</td>
+<td>st-01 按题解判题</td>
+<td>通过（含 numpy/scipy 计算）</td>
+</tr>
+<tr>
+<td>O-08</td>
+<td>Rust 单元测试</td>
+<td>cargo test</td>
+<td>5/5 通过（normalize/png_dpi/judge_sql）</td>
+</tr>
+</tbody></table>
+<h3>模块 P：语言包（v1.5.0 插件化）</h3>
+<table>
+<thead>
+<tr>
+<th>编号</th>
+<th>用例</th>
+<th>步骤</th>
+<th>预期</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>P-01</td>
+<td>基础包纯净</td>
+<td>全新基础包启动</td>
+<td>无任何工具链徽标绿；仅 SQL 6 题内置</td>
+</tr>
+<tr>
+<td>P-02</td>
+<td>安装语言包</td>
+<td>「📦 语言包」→ 从 zip 安装 langpack-python.zip</td>
+<td>toast 成功，题库 +35 题，python 徽标变绿</td>
+</tr>
+<tr>
+<td>P-03</td>
+<td>包内判题</td>
+<td>装包后判 pandas Day 1</td>
+<td>通过（工具链 + 数据集随包就位）</td>
+</tr>
+<tr>
+<td>P-04</td>
+<td>语言包列表</td>
+<td>打开语言包界面</td>
+<td>显示已装包、题目数、工具链体积</td>
+</tr>
+<tr>
+<td>P-05</td>
+<td>卸载</td>
+<td>卸载 python 包</td>
+<td>释放 ~360MB，题目/错题清除，学习资料保留</td>
+</tr>
+<tr>
+<td>P-06</td>
+<td>卸载后状态</td>
+<td>卸载后重开练习页</td>
+<td>徽标回红，语言包列表为空</td>
+</tr>
+<tr>
+<td>P-07</td>
+<td>Rust 检测</td>
+<td>任意时刻环境体检</td>
+<td>find_tool 实时反映 Runtime 与 PATH 状态</td>
+</tr>
+<tr>
+<td>P-08</td>
+<td>规范校验</td>
+<td>安装 spec_version 非 1 的包</td>
+<td>拒装并提示版本不兼容</td>
+</tr>
+<tr>
+<td>P-09</td>
+<td>路径穿越防护</td>
+<td>安装含 ../ 的包</td>
+<td>拒装（安全闸）</td>
+</tr>
+<tr>
+<td>P-10</td>
+<td>坏题容错</td>
+<td>包内混入非法 JSON</td>
+<td>跳过计数，其余正常安装</td>
+</tr>
+<tr>
+<td>P-11</td>
+<td>第三方语言判题</td>
+<td>安装带 judge 声明的 demo 包 → 判题</td>
+<td>下拉出现新语言，2/2 通过</td>
+</tr>
+<tr>
+<td>P-12</td>
+<td>第三方卸载</td>
+<td>卸载 demo 包</td>
+<td>注册表注销 + 题目清除</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>四、缺陷记录模板</h2>
+<pre><code>缺陷编号：BUG-YYYYMMDD-序号
+关联用例：D-05
+严重程度：致命 / 严重 / 一般 / 轻微   ← 致命=崩溃或数据丢失；严重=主流程卡死；一般=功能错误可绕过；轻微=文案/样式
+复现步骤：1. 2. 3.
+实际结果：
+预期结果：
+环境：桌面版/便携版 + 系统版本
+证据：截图/录屏/终端输出
+</code></pre>
+<p><strong>判定口径</strong>：能稳定复现 → 记为缺陷；只出现一次且无法复现 → 记为「观察项」并附日志。</p>
+<hr>
+<h2>五、10 分钟冒烟清单（每次改版后先跑这个）</h2>
+<p>打勾即通过，任一项 ✗ 则本轮不发布：</p>
+<ul>
+<li><input disabled="" type="checkbox"> 冷启动出窗口，教程弹出</li>
+<li><input disabled="" type="checkbox"> C 题：判题失败 → 写对 → 3/3 → ✓ → 错题移入已掌握 → 出现「下一题」按钮</li>
+<li><input disabled="" type="checkbox"> Java 与 C++ 各测一题：正确解 3/3（javac/java 与 g++ 全链路）</li>
+<li><input disabled="" type="checkbox"> 考试：开考 → 判一题 → 交卷 → 统计 +1</li>
+<li><input disabled="" type="checkbox"> 中断续考：杀进程重启 → 自动回考试页，倒计时续算</li>
+<li><input disabled="" type="checkbox"> 主题色切换生效且重启保留</li>
+<li><input disabled="" type="checkbox"> AI 无 Key 显示引导卡（有 Key 则测一次流式首字 &lt;2s）</li>
+<li><input disabled="" type="checkbox"> 终端 ▶ 运行、⟳ 重启正常</li>
+<li><input disabled="" type="checkbox"> 便携版启动，数据落在 <code>portable\Data</code></li>
+<li><input disabled="" type="checkbox"> 全程无闪退、无白屏</li>
+</ul>
+<hr>
+<h2>六、已知非缺陷（别报成 bug）</h2>
+<table>
+<thead>
+<tr>
+<th>现象</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>首次运行 SmartScreen「已保护你的电脑」</td>
+<td>未购代码签名证书，点「更多信息→仍要运行」；可上传 VirusTotal 自证</td>
+</tr>
+<tr>
+<td>F12 控制台偶见 <code>Canceled: Canceled</code></td>
+<td>已排查：环境性噪音，无法稳定复现，不影响任何功能</td>
+</tr>
+<tr>
+<td>中文路径/用户名</td>
+<td>已全链路支持（项目就在中文路径下开发）</td>
+</tr>
+<tr>
+<td>AI 回答慢/贵</td>
+<td>取决于所购模型与 Key，不属软件缺陷</td>
+</tr>
+<tr>
+<td>便携版 858MB</td>
+<td>内置 gcc + Python + JDK，属设计取舍</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>七、结果汇总表（测试者填写）</h2>
+<table>
+<thead>
+<tr>
+<th>模块</th>
+<th>用例数</th>
+<th>通过</th>
+<th>不通过</th>
+<th>观察</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>A 安装启动</td>
+<td>7</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>B 教程</td>
+<td>4</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>C 学习工作区</td>
+<td>14</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>D 练习判题</td>
+<td>17</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>E 考试</td>
+<td>9</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>F 错题本</td>
+<td>3</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>G 统计</td>
+<td>6</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>H 帮助个性化</td>
+<td>7</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>I AI 助教</td>
+<td>9</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>J 数据便携</td>
+<td>4</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>M 数学建模</td>
+<td>12</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>N 多语言扩展</td>
+<td>6</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>O 教学闭环</td>
+<td>8</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>P 语言包</td>
+<td>7</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>118</strong></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+<p>测试人：__________　日期：__________　构建版本：v0.1.0　结论：□ 通过　□ 有条件通过　□ 不通过</p>
+
+</body>
+</html>

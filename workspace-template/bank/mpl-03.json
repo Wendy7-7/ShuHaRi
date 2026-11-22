@@ -1,0 +1,29 @@
+{
+  "id": "mpl-03",
+  "lang": "python",
+  "title": "图 3：学习时长与分数散点图",
+  "difficulty": 2,
+  "tags": [
+    "数学建模",
+    "matplotlib"
+  ],
+  "statement_md": "## 图 3：学习时长与分数散点图\n\n**任务**：读入 `mcm/matplotlib_kit/data/score_hours.csv`，画 hours（学习时长）vs score（分数）的散点图：\n- 按 college 分组着色（不同学院不同颜色，带图例）\n- 标题与轴标签\n- **以 300 dpi 保存为 `figures/hours_scatter.png`**\n\n> 美赛里「投入与产出」关系图几乎是必备——评委爱看这个。",
+  "starter_code": "import os\nimport pandas as pd\nimport matplotlib\nmatplotlib.use(\"Agg\")  # 无界面环境也能保存图片\nimport matplotlib.pyplot as plt\n\nos.makedirs(\"figures\", exist_ok=True)\n\ndf = pd.read_csv(\"mcm/matplotlib_kit/data/score_hours.csv\")\n\n# 你的代码：按学院着色的散点图 + 保存\n",
+  "hints": [
+    "按 college 分组循环：for name, g in df.groupby('college'): plt.scatter(g['hours'], g['score'], label=name)",
+    "别忘了 plt.legend()"
+  ],
+  "editorial_md": "## 题解\n\n```python\nplt.figure(figsize=(6, 4))\nfor name, g in df.groupby('college'):\n    plt.scatter(g['hours'], g['score'], label=name, s=50)\nplt.xlabel('Hours spent')\nplt.ylabel('Score')\nplt.title('Study Hours vs Score')\nplt.legend()\nplt.tight_layout()\nplt.savefig('figures/hours_scatter.png', dpi=300)\n```",
+  "test_cases": [
+    {
+      "stdin": "",
+      "expected_stdout": "",
+      "timeout_ms": 25000,
+      "expect_file": {
+        "path": "figures/hours_scatter.png",
+        "min_bytes": 3000,
+        "dpi": 300
+      }
+    }
+  ]
+}

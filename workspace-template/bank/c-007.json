@@ -1,0 +1,37 @@
+{
+  "id": "c-007",
+  "lang": "c",
+  "title": "数组最大值",
+  "difficulty": 2,
+  "tags": [
+    "数组"
+  ],
+  "statement_md": "## 数组最大值\n\n先输入 n，再输入 n 个整数，输出其中最大的。\n\n**输入**：第一行 n（1 ≤ n ≤ 100），第二行 n 个整数\n\n**输出**：最大值",
+  "starter_code": "#include <stdio.h>\n\nint main(void) {\n    // 读入 n 和数组，找最大值\n    return 0;\n}\n",
+  "hints": [
+    "先读 n，再循环读 n 个数",
+    "初始化最大值时，用第一个元素而不是用 0——数组全为负数时就靠这个"
+  ],
+  "editorial_md": "## 题解\n\n```c\nint a[100], n;\nscanf(\"%d\", &n);\nfor (int i = 0; i < n; i++) scanf(\"%d\", &a[i]);\nint mx = a[0];\nfor (int i = 1; i < n; i++) if (a[i] > mx) mx = a[i];\nprintf(\"%d\\n\", mx);\n```",
+  "test_cases": [
+    {
+      "stdin": "5\n3 7 2 9 4\n",
+      "expected_stdout": "9\n"
+    },
+    {
+      "stdin": "3\n-5 -2 -8\n",
+      "expected_stdout": "-2\n"
+    },
+    {
+      "stdin": "1\n42\n",
+      "expected_stdout": "42\n"
+    }
+  ],
+  "variant_cases": [
+    {
+      "stdin": "5\n-3 42 -17 8 29\n",
+      "expected_stdout": "42\n",
+      "timeout_ms": 8000
+    }
+  ]
+}

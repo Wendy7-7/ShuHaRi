@@ -1,0 +1,126 @@
+{
+  "program": "mcm_2027_prep",
+  "title": "2027 美赛备赛（个人基础阶段）",
+  "learner": {
+    "school": "某高校",
+    "major": "理工科",
+    "grade": "大二",
+    "python_level": "只学到函数，无项目经验",
+    "math_level": "微积分、线代已学；ODE 在学；未学概率统计",
+    "goal": "首次参加美赛，完整走完一遍，不设获奖目标"
+  },
+  "constraints": {
+    "scope_only": [
+      "pandas",
+      "matplotlib",
+      "stats_minimal",
+      "latex_overleaf",
+      "scipy_solve_ivp",
+      "scipy_optimize",
+      "mcm_abstract"
+    ],
+    "excluded": [
+      "深度学习",
+      "神经网络",
+      "遗传算法",
+      "复杂网络",
+      "GUI",
+      "前端"
+    ],
+    "daily_minutes": "45-60",
+    "exam_period": "2026-12-14 至 2027-01-04 仅复习，不学新内容",
+    "contest_window": "2027-01-29 06:00 至 2027-02-02 09:00（北京时间）"
+  },
+  "modules": [
+    {
+      "id": "pandas",
+      "order": 1,
+      "title": "pandas 数据处理",
+      "status": "content_ready",
+      "content_file": "pandas_course.json",
+      "unlock": null,
+      "estimated_days": 15
+    },
+    {
+      "id": "matplotlib",
+      "order": 2,
+      "title": "matplotlib 论文图表",
+      "status": "outline_only",
+      "unlock": "pandas",
+      "topics": [
+        "折线图",
+        "柱状图",
+        "散点图",
+        "双 Y 轴",
+        "标注",
+        "300dpi 存图"
+      ]
+    },
+    {
+      "id": "latex_overleaf",
+      "order": 3,
+      "title": "LaTeX / Overleaf 论文排版",
+      "status": "outline_only",
+      "unlock": "matplotlib",
+      "topics": [
+        "套 MCM 模板",
+        "插图",
+        "插表",
+        "公式编号与引用",
+        "参考文献"
+      ]
+    },
+    {
+      "id": "stats_minimal",
+      "order": 4,
+      "title": "统计最小集",
+      "status": "outline_only",
+      "unlock": "latex_overleaf",
+      "priority": "high",
+      "note": "学员培养方案无统计必修课，本模块是硬门槛",
+      "topics": [
+        "描述统计",
+        "相关系数",
+        "一元线性回归",
+        "多元线性回归",
+        "t 检验与 p 值"
+      ]
+    },
+    {
+      "id": "scipy_optimize",
+      "order": 5,
+      "title": "参数拟合与线性规划",
+      "status": "outline_only",
+      "unlock": "stats_minimal",
+      "topics": [
+        "curve_fit",
+        "linprog"
+      ]
+    },
+    {
+      "id": "scipy_solve_ivp",
+      "order": 6,
+      "title": "ODE 数值求解",
+      "status": "outline_only",
+      "unlock": "scipy_optimize",
+      "topics": [
+        "弹簧阻尼",
+        "SIR",
+        "单参数敏感性对比"
+      ]
+    },
+    {
+      "id": "mcm_abstract",
+      "order": 7,
+      "title": "美赛英文摘要",
+      "status": "outline_only",
+      "unlock": "scipy_solve_ivp",
+      "topics": [
+        "六段骨架",
+        "结果数字化",
+        "关键词",
+        "空洞表述排查"
+      ]
+    }
+  ]
+}

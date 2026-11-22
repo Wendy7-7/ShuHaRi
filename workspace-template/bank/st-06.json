@@ -1,0 +1,25 @@
+{
+  "id": "st-06",
+  "lang": "python",
+  "title": "ODE 数值求解 solve_ivp",
+  "difficulty": 3,
+  "tags": [
+    "数学建模",
+    "统计"
+  ],
+  "statement_md": "## ODE 数值求解\n\n解微分方程 `dy/dt = -0.5·y`，初值 `y(0) = 100`，求 `t = 4` 时的 y 值，保留 2 位小数打印。\n\n**数据已写进代码里**（美赛阶段先小数据练手，等 pandas 熟了再接真数据集）。\n",
+  "starter_code": "import numpy as np\nfrom scipy.integrate import solve_ivp\n\n# dy/dt = -0.5y, y(0)=100，求 y(4)\n\ndef rhs(t, y):\n    return -0.5 * y\n\n# 用 solve_ivp 求解并打印 y(4)（2 位小数）\n",
+  "hints": [
+    "solve_ivp(rhs, [0, 4], [100]) 的 .y 是解数组，取最后一个",
+    "sol.y[0][-1] 就是 y(4)"
+  ],
+  "editorial_md": "## 题解\n\n```python\nsol = solve_ivp(rhs, [0, 4], [100])\nprint(f\"{sol.y[0][-1]:.2f}\")\n```\n\n结果 ≈ 13.53（解析解 100·e^(-2) ≈ 13.53，对上了）。**美赛 SIR 传染模型**就是三个耦合 ODE，套路完全一样。",
+  "test_cases": [
+    {
+      "stdin": "",
+      "expected_stdout": "13.53",
+      "timeout_ms": 25000,
+      "match_mode": "contains"
+    }
+  ]
+}

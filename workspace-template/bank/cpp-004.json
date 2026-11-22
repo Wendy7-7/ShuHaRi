@@ -1,0 +1,26 @@
+{
+  "id": "cpp-004",
+  "lang": "cpp",
+  "title": "1 到 n 求和（C++）",
+  "difficulty": 1,
+  "tags": [
+    "循环"
+  ],
+  "statement_md": "## 1 到 n 求和\n\n输入 n（n ≤ 10000），输出 1+2+...+n。",
+  "starter_code": "#include <iostream>\n\nint main() {\n    // 累加 1 到 n 并输出\n    return 0;\n}\n",
+  "hints": [
+    "for (int i = 1; i <= n; i++) sum += i;",
+    "或者直接用公式 n * (n + 1) / 2"
+  ],
+  "editorial_md": "## 题解\n\n```cpp\nint n; cin >> n;\nlong long sum = 0;\nfor (int i = 1; i <= n; i++) sum += i;\ncout << sum << endl;\n```",
+  "test_cases": [
+    {
+      "stdin": "10\n",
+      "expected_stdout": "55\n"
+    },
+    {
+      "stdin": "100\n",
+      "expected_stdout": "5050\n"
+    }
+  ]
+}

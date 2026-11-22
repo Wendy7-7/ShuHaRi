@@ -1,0 +1,38 @@
+{
+  "id": "py-007",
+  "lang": "python",
+  "title": "素数判断（Python）",
+  "difficulty": 2,
+  "tags": [
+    "数学"
+  ],
+  "statement_md": "## 素数判断\n\n输入 n（2 ≤ n ≤ 100000），是素数输出 `prime`，否则输出 `composite`。",
+  "starter_code": "# 判断 n 是不是素数\n",
+  "hints": [
+    "试除 2 到 int(sqrt(n))+1",
+    "别忘了 \"prime\" / \"composite\" 的拼写要和题目一致"
+  ],
+  "editorial_md": "## 题解\n\n```python\nimport math\nis_p = all(n % i for i in range(2, int(math.sqrt(n)) + 1))\nprint(\"prime\" if is_p else \"composite\")\n```",
+  "test_cases": [
+    {
+      "stdin": "7\n",
+      "expected_stdout": "prime\n"
+    },
+    {
+      "stdin": "9\n",
+      "expected_stdout": "composite\n"
+    }
+  ],
+  "variant_cases": [
+    {
+      "stdin": "101\n",
+      "expected_stdout": "prime\n",
+      "timeout_ms": 8000
+    },
+    {
+      "stdin": "119\n",
+      "expected_stdout": "composite\n",
+      "timeout_ms": 8000
+    }
+  ]
+}

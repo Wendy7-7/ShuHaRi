@@ -1,0 +1,16 @@
+{
+  "id": "c-003",
+  "lang": "c",
+  "title": "数组逆序输出",
+  "difficulty": 2,
+  "tags": ["数组", "循环"],
+  "statement_md": "## 数组逆序输出\n\n第一行输入 n（1 ≤ n ≤ 100），第二行输入 n 个整数，逆序输出，空格分隔。\n\n**输入**：两行，第一行 n，第二行 n 个整数\n\n**输出**：一行，逆序的 n 个整数，空格分隔（行尾无多余空格）",
+  "starter_code": "#include <stdio.h>\n\nint main(void) {\n    int n;\n    int a[100];\n    scanf(\"%d\", &n);\n    // 读入并逆序输出\n    return 0;\n}\n",
+  "hints": ["从下标 n-1 循环到 0 输出", "空格分隔且行尾不能有空格：第一个元素单独处理，或用条件判断"],
+  "editorial_md": "## 题解\n\n```c\nfor (int i = n - 1; i >= 0; i--) {\n    printf(\"%d\", a[i]);\n    if (i > 0) printf(\" \");\n}\nprintf(\"\\n\");\n```\n\n\"行尾无多余空格\"是 OJ 题的经典格式要求，用 `if (i > 0)` 分隔即可。",
+  "test_cases": [
+    { "stdin": "3\n1 2 3\n", "expected_stdout": "3 2 1\n" },
+    { "stdin": "1\n42\n", "expected_stdout": "42\n" },
+    { "stdin": "5\n10 -3 0 7 8\n", "expected_stdout": "8 7 0 -3 10\n" }
+  ]
+}

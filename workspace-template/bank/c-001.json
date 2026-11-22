@@ -1,0 +1,48 @@
+{
+  "id": "c-001",
+  "lang": "c",
+  "title": "两数之和",
+  "difficulty": 1,
+  "tags": [
+    "入门",
+    "输入输出"
+  ],
+  "statement_md": "## 两数之和\n\n输入两个整数（空格分隔），输出它们的和。\n\n**输入**：一行，两个整数 a b\n\n**输出**：一行，a+b 的结果",
+  "starter_code": "#include <stdio.h>\n\nint main(void) {\n    // 读入两个整数，输出它们的和\n    return 0;\n}\n",
+  "hints": [
+    "用 scanf(\"%d %d\", &a, &b) 读入两个数",
+    "别忘了 printf 输出后加换行 \\n"
+  ],
+  "editorial_md": "## 题解\n\nscanf 读入两个 int，printf 输出和即可。\n\n```c\nint a, b;\nscanf(\"%d %d\", &a, &b);\nprintf(\"%d\\n\", a + b);\n```\n\n常见错误：scanf 忘写取地址符 &。",
+  "test_cases": [
+    {
+      "stdin": "3 4\n",
+      "expected_stdout": "7\n"
+    },
+    {
+      "stdin": "-5 10\n",
+      "expected_stdout": "5\n"
+    },
+    {
+      "stdin": "0 0\n",
+      "expected_stdout": "0\n"
+    }
+  ],
+  "variant_cases": [
+    {
+      "stdin": "12 30\n",
+      "expected_stdout": "42\n",
+      "timeout_ms": 8000
+    },
+    {
+      "stdin": "-7 40\n",
+      "expected_stdout": "33\n",
+      "timeout_ms": 8000
+    },
+    {
+      "stdin": "100 250\n",
+      "expected_stdout": "350\n",
+      "timeout_ms": 8000
+    }
+  ]
+}

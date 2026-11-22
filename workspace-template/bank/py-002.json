@@ -1,0 +1,17 @@
+{
+  "id": "py-002",
+  "lang": "python",
+  "title": "回文判断",
+  "difficulty": 1,
+  "tags": ["字符串"],
+  "statement_md": "## 回文判断\n\n输入一行字符串（只含小写字母），判断它是否为回文。是输出 `yes`，否则输出 `no`。",
+  "starter_code": "s = input().strip()\n# 判断 s 是否为回文\n",
+  "hints": ["Python 切片 s[::-1] 是反转字符串", "也可以用双指针从两头往中间比较"],
+  "editorial_md": "## 题解\n\n最简洁的写法：\n\n```python\nprint(\"yes\" if s == s[::-1] else \"no\")\n```\n\n双指针写法对学习算法更有价值：\n\n```python\nl, r = 0, len(s) - 1\nok = True\nwhile l < r:\n    if s[l] != s[r]:\n        ok = False\n        break\n    l += 1\n    r -= 1\n```\n\n注意：即便不回文也要输出 no，别 break 完忘了处理。",
+  "test_cases": [
+    { "stdin": "level\n", "expected_stdout": "yes\n" },
+    { "stdin": "abc\n", "expected_stdout": "no\n" },
+    { "stdin": "a\n", "expected_stdout": "yes\n" },
+    { "stdin": "abba\n", "expected_stdout": "yes\n" }
+  ]
+}

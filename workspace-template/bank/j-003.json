@@ -1,0 +1,19 @@
+{
+  "id": "j-003",
+  "lang": "java",
+  "title": "三个数里找最大（Java）",
+  "difficulty": 2,
+  "tags": ["分支", "数学"],
+  "statement_md": "## 三个数里找最大\n\n输入三个整数（空格分隔），输出其中最大的那个。\n\n**输入**：一行，三个整数 a b c\n\n**输出**：一行，最大值",
+  "starter_code": "import java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int a = sc.nextInt();\n        int b = sc.nextInt();\n        int c = sc.nextInt();\n        // 输出三个数中的最大值\n    }\n}\n",
+  "hints": [
+    "Math.max(a, b) 能返回两个数里较大的那个",
+    "嵌套一次 Math.max：先求前两个的最大值，再和第三个比"
+  ],
+  "editorial_md": "## 题解\n\n```java\nSystem.out.println(Math.max(Math.max(a, b), c));\n```\n\n也可以手写 if 比较，思路一样。Math.max 是 java.lang 里的静态方法，不用 import。",
+  "test_cases": [
+    { "stdin": "1 5 3\n", "expected_stdout": "5\n", "timeout_ms": 8000 },
+    { "stdin": "-2 -8 -1\n", "expected_stdout": "-1\n", "timeout_ms": 8000 },
+    { "stdin": "7 7 7\n", "expected_stdout": "7\n", "timeout_ms": 8000 }
+  ]
+}

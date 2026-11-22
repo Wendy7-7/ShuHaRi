@@ -1,0 +1,35 @@
+{
+  "id": "js-02",
+  "lang": "javascript",
+  "title": "数组最大值（JavaScript）",
+  "difficulty": 1,
+  "tags": [
+    "数组"
+  ],
+  "statement_md": "## 数组最大值（JavaScript）\n\n输入一行用空格分隔的整数，输出最大值。",
+  "starter_code": "const nums = require(\"fs\").readFileSync(0, \"utf8\").trim().split(/\\s+/).map(Number);\n\n// 输出 nums 中的最大值\n",
+  "hints": [
+    "Math.max(...nums) 用展开运算符传整个数组",
+    "或者 for 循环遍历找最大"
+  ],
+  "editorial_md": "## 题解\n\n```js\nconst nums = require(\"fs\").readFileSync(0, \"utf8\").trim().split(/\\s+/).map(Number);\nconsole.log(Math.max(...nums));\n```",
+  "test_cases": [
+    {
+      "stdin": "3 7 2 9 4\n",
+      "expected_stdout": "9\n",
+      "timeout_ms": 15000
+    },
+    {
+      "stdin": "-5 -2 -8\n",
+      "expected_stdout": "-2\n",
+      "timeout_ms": 15000
+    }
+  ],
+  "variant_cases": [
+    {
+      "stdin": "4\n200 -50 175 33\n",
+      "expected_stdout": "200\n",
+      "timeout_ms": 15000
+    }
+  ]
+}

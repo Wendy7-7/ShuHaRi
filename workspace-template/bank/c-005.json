@@ -1,0 +1,42 @@
+{
+  "id": "c-005",
+  "lang": "c",
+  "title": "1 到 n 求和",
+  "difficulty": 1,
+  "tags": [
+    "循环"
+  ],
+  "statement_md": "## 1 到 n 求和\n\n输入一个正整数 n，输出 1+2+...+n 的结果。\n\n**输入**：一个整数 n（n ≤ 10000）\n\n**输出**：累加和",
+  "starter_code": "#include <stdio.h>\n\nint main(void) {\n    // 循环累加 1 到 n\n    return 0;\n}\n",
+  "hints": [
+    "用 for 循环从 1 加到 n，累加器初值 0",
+    "n 到 10000 时和不超过 50005000，int 够用"
+  ],
+  "editorial_md": "## 题解\n\n```c\nint sum = 0;\nfor (int i = 1; i <= n; i++) sum += i;\nprintf(\"%d\\n\", sum);\n```\n\n数学公式 n*(n+1)/2 也成立，但练习目的就是让你写循环。",
+  "test_cases": [
+    {
+      "stdin": "10\n",
+      "expected_stdout": "55\n"
+    },
+    {
+      "stdin": "1\n",
+      "expected_stdout": "1\n"
+    },
+    {
+      "stdin": "100\n",
+      "expected_stdout": "5050\n"
+    }
+  ],
+  "variant_cases": [
+    {
+      "stdin": "77\n",
+      "expected_stdout": "3003\n",
+      "timeout_ms": 8000
+    },
+    {
+      "stdin": "1\n",
+      "expected_stdout": "1\n",
+      "timeout_ms": 8000
+    }
+  ]
+}

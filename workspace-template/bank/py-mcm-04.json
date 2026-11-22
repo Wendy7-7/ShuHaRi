@@ -1,0 +1,25 @@
+{
+  "id": "py-mcm-04",
+  "lang": "python",
+  "title": "Day 4：每列缺了多少个值",
+  "difficulty": 1,
+  "tags": [
+    "数学建模",
+    "pandas"
+  ],
+  "statement_md": "## Day 4：每列缺了多少个值\n\n**任务**：读入 `mcm/pandas_kit/data/level1_contest_raw.csv`，清理列名后，打印每列缺失值数量的**字典**（`df.isna().sum().to_dict()`）。\n\n**验收**：输出包含 `'Year': 1`（Year 列恰好缺 1 个）。\n\n> 先量化缺失，再决定填还是删。Year 和 Members 各有 1 个缺失，你能都看到吗？",
+  "starter_code": "import pandas as pd\n\ndf = pd.read_csv(\"mcm/pandas_kit/data/level1_contest_raw.csv\")\ndf.columns = df.columns.str.strip()\n\n# 打印每列缺失值数量的字典\n",
+  "hints": [
+    "isna() 返回同形状的布尔表",
+    "sum() 按列计数，to_dict() 转成字典方便看"
+  ],
+  "editorial_md": "## 题解\n\n```python\ndf = pd.read_csv(\"mcm/pandas_kit/data/level1_contest_raw.csv\")\ndf.columns = df.columns.str.strip()\nprint(df.isna().sum().to_dict())\n```\n\n应该看到 Year 和 Members 各缺 1 个。",
+  "test_cases": [
+    {
+      "stdin": "",
+      "expected_stdout": "'Year': 1",
+      "timeout_ms": 20000,
+      "match_mode": "contains"
+    }
+  ]
+}

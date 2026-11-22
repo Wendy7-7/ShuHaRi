@@ -1,0 +1,20 @@
+{
+  "id": "j-002",
+  "lang": "java",
+  "title": "偶数还是奇数（Java）",
+  "difficulty": 1,
+  "tags": ["分支", "取模"],
+  "statement_md": "## 偶数还是奇数\n\n输入一个整数 n，如果 n 是偶数，输出 `even`；否则输出 `odd`。\n\n**输入**：一行，一个整数 n\n\n**输出**：`even` 或 `odd`\n\n（0 算偶数，负数按绝对值判断奇偶）",
+  "starter_code": "import java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int n = sc.nextInt();\n        // 判断 n 是偶数还是奇数\n    }\n}\n",
+  "hints": [
+    "取模运算符 % 可以求余数：n % 2",
+    "偶数的判断条件是什么？想一想 4 % 2、7 % 2 分别是什么",
+    "可以用三元运算符一步输出：System.out.println(条件 ? \"even\" : \"odd\")"
+  ],
+  "editorial_md": "## 题解\n\n```java\nSystem.out.println(n % 2 == 0 ? \"even\" : \"odd\");\n```\n\n注意：负数取模在 Java 里可能得到负数（如 -7 % 2 == -1），所以判断 `n % 2 == 0` 是安全的（-8 % 2 也是 0），但不要写成 `n % 2 == 1`。",
+  "test_cases": [
+    { "stdin": "4\n", "expected_stdout": "even\n", "timeout_ms": 8000 },
+    { "stdin": "7\n", "expected_stdout": "odd\n", "timeout_ms": 8000 },
+    { "stdin": "0\n", "expected_stdout": "even\n", "timeout_ms": 8000 }
+  ]
+}

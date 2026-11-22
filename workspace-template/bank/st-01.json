@@ -1,0 +1,25 @@
+{
+  "id": "st-01",
+  "lang": "python",
+  "title": "描述统计：均值、中位数、标准差",
+  "difficulty": 1,
+  "tags": [
+    "数学建模",
+    "统计"
+  ],
+  "statement_md": "## 描述统计：均值、中位数、标准差\n\n这是统计最小集第一课：先会描述数据，再谈推断。\n\n**任务**：对数组 `[52, 55, 61, 64, 64, 68, 70, 75, 78, 83]` 计算均值、中位数、标准差（样本标准差），按顺序打印，各保留 2 位小数。\n\n**数据已写进代码里**（美赛阶段先小数据练手，等 pandas 熟了再接真数据集）。\n",
+  "starter_code": "import numpy as np\n\nx = np.array([52, 55, 61, 64, 64, 68, 70, 75, 78, 83])\n\n# 打印 mean / median / std（样本标准差，ddof=1），各保留 2 位小数\n",
+  "hints": [
+    "np.mean / np.median / np.std(x, ddof=1)",
+    "格式化输出：f'{v:.2f}'——注意每行一个数"
+  ],
+  "editorial_md": "## 题解\n\n```python\nprint(f\"{np.mean(x):.2f}\")\nprint(f\"{np.median(x):.2f}\")\nprint(f\"{np.std(x, ddof=1):.2f}\")\n```\n\n**关键点**：`ddof=1` 才是样本标准差（除以 n-1）。用默认的总体标准差（除以 n）在美赛里会被 reviewer 挑出来。",
+  "test_cases": [
+    {
+      "stdin": "",
+      "expected_stdout": "67.00",
+      "timeout_ms": 25000,
+      "match_mode": "contains"
+    }
+  ]
+}

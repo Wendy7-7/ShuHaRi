@@ -1,0 +1,25 @@
+{
+  "id": "st-05",
+  "lang": "python",
+  "title": "参数拟合 curve_fit",
+  "difficulty": 3,
+  "tags": [
+    "数学建模",
+    "统计"
+  ],
+  "statement_md": "## 参数拟合 curve_fit\n\n指数衰减模型 `y = A·exp(-k·t)`，观测数据：\n- t = [0, 1, 2, 3, 4]\n- y = [10.0, 6.1, 3.7, 2.2, 1.4]\n\n**任务**：用 `scipy.optimize.curve_fit` 拟合 A 和 k，各保留 2 位小数打印。\n\n**数据已写进代码里**（美赛阶段先小数据练手，等 pandas 熟了再接真数据集）。\n",
+  "starter_code": "import numpy as np\nfrom scipy.optimize import curve_fit\n\nt = np.array([0, 1, 2, 3, 4])\ny = np.array([10.0, 6.1, 3.7, 2.2, 1.4])\n\ndef model(t, A, k):\n    return A * np.exp(-k * t)\n\n# 拟合并打印 A、k（各 2 位小数）\n",
+  "hints": [
+    "curve_fit(model, t, y) 返回 (最优参数, 协方差)",
+    "参数是数组 popt，popt[0] 是 A，popt[1] 是 k"
+  ],
+  "editorial_md": "## 题解\n\n```python\npopt, _ = curve_fit(model, t, y)\nprint(f\"{popt[0]:.2f}\")\nprint(f\"{popt[1]:.2f}\")\n```\n\nA ≈ 10，k ≈ 0.5。**美赛高频**：放射性衰减、药物代谢、阻尼振动全是这个模型。",
+  "test_cases": [
+    {
+      "stdin": "",
+      "expected_stdout": "10.0",
+      "timeout_ms": 25000,
+      "match_mode": "contains"
+    }
+  ]
+}

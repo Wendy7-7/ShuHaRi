@@ -1,0 +1,28 @@
+{
+  "id": "j-006",
+  "lang": "java",
+  "title": "素数判断（Java）",
+  "difficulty": 2,
+  "tags": [
+    "数学"
+  ],
+  "statement_md": "## 素数判断\n\n输入 n（2 ≤ n ≤ 100000），是素数输出 `prime`，否则输出 `composite`。",
+  "starter_code": "import java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        // 判断 n 是否素数\n    }\n}\n",
+  "hints": [
+    "试除到 i*i <= n",
+    "用 boolean isPrime = true; 注意 break 的位置"
+  ],
+  "editorial_md": "## 题解\n\n```java\nboolean isPrime = true;\nfor (int i = 2; i * i <= n; i++) {\n    if (n % i == 0) { isPrime = false; break; }\n}\nSystem.out.println(isPrime ? \"prime\" : \"composite\");\n```",
+  "test_cases": [
+    {
+      "stdin": "7\n",
+      "expected_stdout": "prime\n",
+      "timeout_ms": 8000
+    },
+    {
+      "stdin": "8\n",
+      "expected_stdout": "composite\n",
+      "timeout_ms": 8000
+    }
+  ]
+}

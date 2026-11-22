@@ -1,0 +1,15 @@
+{
+  "id": "py-001",
+  "lang": "python",
+  "title": "FizzBuzz",
+  "difficulty": 1,
+  "tags": ["入门", "循环"],
+  "statement_md": "## FizzBuzz\n\n输入一个整数 n，从 1 数到 n：\n\n- 能被 3 整除输出 `Fizz`\n- 能被 5 整除输出 `Buzz`\n- 能同时被 3 和 5 整除输出 `FizzBuzz`\n- 否则输出数字本身\n\n每行一个。",
+  "starter_code": "n = int(input())\n# 从 1 到 n 依次判断输出\n",
+  "hints": ["先判断能同时被 3 和 5 整除的情况，再判断单独的", "range(1, n+1) 生成 1 到 n"],
+  "editorial_md": "## 题解\n\n```python\nfor i in range(1, n + 1):\n    if i % 15 == 0:\n        print(\"FizzBuzz\")\n    elif i % 3 == 0:\n        print(\"Fizz\")\n    elif i % 5 == 0:\n        print(\"Buzz\")\n    else:\n        print(i)\n```\n\n判断顺序很重要：先判 15，否则 3 和 5 的分支会先命中。",
+  "test_cases": [
+    { "stdin": "5\n", "expected_stdout": "1\n2\nFizz\n4\nBuzz\n" },
+    { "stdin": "15\n", "expected_stdout": "1\n2\nFizz\n4\nBuzz\nFizz\n7\n8\nFizz\nBuzz\n11\nFizz\n13\n14\nFizzBuzz\n" }
+  ]
+}

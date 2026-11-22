@@ -1,0 +1,25 @@
+{
+  "id": "sql-04",
+  "lang": "sql",
+  "title": "SQL 04：每个学校有几支队伍",
+  "difficulty": 2,
+  "tags": [
+    "SQL",
+    "数据库"
+  ],
+  "statement_md": "## SQL 04：每个学校有几支队伍\n\n**任务**：按学校分组，统计每个学校的队伍数量，输出 `school` 和 `cnt`（数量）两列，**按学校名升序**。\n\n**验收**：HIT 2、NUAA 2、SJTU 1、XJTLU 3。\n\n**本题已为你准备好两张表**（判题时自动建库）：\n- `teams(team_id, school, year, members)`：8 支队伍\n- `scores(team_id, year, score)`：8 条成绩\n\n你的 SQL 会在同一个 SQLite 内存库里执行，输出结果集与标准答案比对。\n",
+  "starter_code": "-- 按学校分组统计队伍数，输出 school 和 cnt，按学校名升序\n",
+  "hints": [
+    "GROUP BY school 把同校的行合并成一组",
+    "COUNT(*) 统计每组行数，AS cnt 给列起别名"
+  ],
+  "editorial_md": "## 题解\n\n```sql\nSELECT school, COUNT(*) AS cnt FROM teams GROUP BY school ORDER BY school;\n```",
+  "test_cases": [
+    {
+      "stdin": "",
+      "expected_stdout": "school | cnt\nHIT | 2\nNUAA | 2\nSJTU | 1\nXJTLU | 3",
+      "timeout_ms": 5000,
+      "setup_sql": "CREATE TABLE teams(team_id TEXT, school TEXT, year INTEGER, members INTEGER);\nCREATE TABLE scores(team_id TEXT, year INTEGER, score REAL);\nINSERT INTO teams VALUES\n('T01','XJTLU',2024,3),('T02','XJTLU',2025,3),('T03','NUAA',2024,2),\n('T04','HIT',2025,3),('T05','SJTU',2026,2),('T06','XJTLU',2026,1),('T07','HIT',2026,3),('T08','NUAA',2026,2);\nINSERT INTO scores VALUES\n('T01',2024,88),('T02',2025,76),('T03',2024,91),('T04',2025,85),\n('T05',2026,74),('T06',2026,95),('T07',2026,81),('T08',2026,77);"
+    }
+  ]
+}

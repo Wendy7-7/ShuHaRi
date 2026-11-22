@@ -1,0 +1,29 @@
+{
+  "id": "mpl-04",
+  "lang": "python",
+  "title": "图 4：双 Y 轴看趋势与规模",
+  "difficulty": 3,
+  "tags": [
+    "数学建模",
+    "matplotlib"
+  ],
+  "statement_md": "## 图 4：双 Y 轴看趋势与规模\n\n**任务**：读入 `mcm/matplotlib_kit/data/year_trend.csv`，画**双 Y 轴**图：\n- 左轴：平均分折线（avg_score）\n- 右轴：队伍数（teams），用不同颜色区分\n- 两轴各自标签 + 标题\n- **以 300 dpi 保存为 `figures/year_twinx.png`**\n\n> 平均分降了但队伍数涨了——双轴能把「质量」和「规模」的变化放在一张图里。",
+  "starter_code": "import os\nimport pandas as pd\nimport matplotlib\nmatplotlib.use(\"Agg\")  # 无界面环境也能保存图片\nimport matplotlib.pyplot as plt\n\nos.makedirs(\"figures\", exist_ok=True)\n\ndf = pd.read_csv(\"mcm/matplotlib_kit/data/year_trend.csv\")\n\n# 你的代码：twinx 双轴图 + 保存\n",
+  "hints": [
+    "ax2 = ax1.twinx() 创建共享 X 的第二根 Y 轴",
+    "ax1 画 avg_score，ax2 画 teams，分别 set_ylabel"
+  ],
+  "editorial_md": "## 题解\n\n```python\nfig, ax1 = plt.subplots(figsize=(6, 4))\nax1.plot(df['year'], df['avg_score'], 'o-', color='tab:blue')\nax1.set_ylabel('Average Score', color='tab:blue')\nax2 = ax1.twinx()\nax2.plot(df['year'], df['teams'], 's--', color='tab:red')\nax2.set_ylabel('Teams', color='tab:red')\nax1.set_xticks(df['year'])\nplt.title('Score vs Team Count')\nplt.tight_layout()\nplt.savefig('figures/year_twinx.png', dpi=300)\n```",
+  "test_cases": [
+    {
+      "stdin": "",
+      "expected_stdout": "",
+      "timeout_ms": 25000,
+      "expect_file": {
+        "path": "figures/year_twinx.png",
+        "min_bytes": 3000,
+        "dpi": 300
+      }
+    }
+  ]
+}

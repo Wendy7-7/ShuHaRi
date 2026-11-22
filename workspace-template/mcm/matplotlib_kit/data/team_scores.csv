@@ -1,0 +1,17 @@
+team_id,year,problem,score,school,major,region
+T01,2024,C,88,XJTLU,Robot Engineering,Suzhou
+T02,2024,C,76,XJTLU,Robot Engineering,Taicang
+T03,2024,A,81,XJTLU,Information and Computing Science,Suzhou
+T04,2024,C,91,NUAA,Applied Mathematics,Nanjing
+T05,2024,F,69,NUAA,Finance,Nanjing
+T06,2025,C,83,XJTLU,Information and Computing Science,Suzhou
+T07,2025,A,79,HIT,Computer Science,Harbin
+T08,2025,C,85,HIT,Statistics,Harbin
+T09,2025,C,92,XJTLU,Financial Mathematics,Taicang
+T10,2025,B,67,NUAA,Automation,Nanjing
+T11,2026,C,74,SJTU,Computer Science,Shanghai
+T12,2026,C,88,SJTU,Applied Mathematics,Shanghai
+T13,2026,C,95,XJTLU,Information and Computing Science,Suzhou
+T14,2026,A,58,XJTLU,Robot Engineering,Taicang
+T15,2026,F,81,HIT,Environmental Science,Harbin
+T16,2026,C,60,NUAA,English,Nanjing

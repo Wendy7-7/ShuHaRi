@@ -1,0 +1,35 @@
+{
+  "id": "j-005",
+  "lang": "java",
+  "title": "数组最大值（Java）",
+  "difficulty": 2,
+  "tags": [
+    "数组"
+  ],
+  "statement_md": "## 数组最大值\n\n先输入 n，再输入 n 个整数，输出最大值。\n\n**输入**：第一行 n，第二行 n 个整数",
+  "starter_code": "import java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        // 读入 n 和数组，找最大值\n    }\n}\n",
+  "hints": [
+    "int[] a = new int[n]; 然后循环 a[i] = sc.nextInt();",
+    "最大值初始化为 a[0]，从下标 1 开始比较"
+  ],
+  "editorial_md": "## 题解\n\n```java\nint n = sc.nextInt();\nint[] a = new int[n];\nfor (int i = 0; i < n; i++) a[i] = sc.nextInt();\nint mx = a[0];\nfor (int i = 1; i < n; i++) if (a[i] > mx) mx = a[i];\nSystem.out.println(mx);\n```",
+  "test_cases": [
+    {
+      "stdin": "5\n3 7 2 9 4\n",
+      "expected_stdout": "9\n",
+      "timeout_ms": 8000
+    },
+    {
+      "stdin": "3\n-5 -2 -8\n",
+      "expected_stdout": "-2\n",
+      "timeout_ms": 8000
+    }
+  ],
+  "variant_cases": [
+    {
+      "stdin": "4\n88 -5 123 67\n",
+      "expected_stdout": "123\n",
+      "timeout_ms": 8000
+    }
+  ]
+}

@@ -1,0 +1,49 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-and-test:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: 安装前端依赖
+        run: npm install
+
+      - name: 类型检查
+        run: npx tsc --noEmit
+
+      - name: 构建前端
+        run: npm run build
+
+      - name: Rust 单元测试（判题器核心：normalize / png_dpi / judge_sql）
+        run: cargo test --manifest-path src-tauri/Cargo.toml
+
+      - name: Rust 编译检查
+        run: cargo check --manifest-path src-tauri/Cargo.toml
+
+  # 完整打包较重（约 15 分钟），仅在打 tag 时跑，产出可直接下发的产物
+  release-build:
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: windows-latest
+    needs: build-and-test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install
+      - run: npm run tauri build -- --no-bundle
+      - uses: actions/upload-artifact@v4
+        with:
+          name: learn-platform-windows
+          path: src-tauri/target/release/learn-platform.exe

@@ -1,0 +1,26 @@
+{
+  "id": "cpp-002",
+  "lang": "cpp",
+  "title": "数组最大值（C++）",
+  "difficulty": 2,
+  "tags": [
+    "数组"
+  ],
+  "statement_md": "## 数组最大值\n\n先输入 n，再输入 n 个整数，输出最大值。\n\n**输入**：第一行 n（1 ≤ n ≤ 1000），第二行 n 个整数",
+  "starter_code": "#include <iostream>\n#include <vector>\n\nint main() {\n    // 读入 n 个数，输出最大值\n    return 0;\n}\n",
+  "hints": [
+    "vector<int> a(n); 创建长度为 n 的动态数组",
+    "读入后可以用 max 变量遍历，也可以直接 *max_element(a.begin(), a.end())"
+  ],
+  "editorial_md": "## 题解\n\n```cpp\nint n; cin >> n;\nvector<int> a(n);\nfor (auto &x : a) cin >> x;\nint mx = a[0];\nfor (auto x : a) if (x > mx) mx = x;\ncout << mx << endl;\n```\n\nC++ 的 vector 比 C 的定长数组灵活，`for (auto &x : a)` 是范围 for 循环。",
+  "test_cases": [
+    {
+      "stdin": "5\n3 7 2 9 4\n",
+      "expected_stdout": "9\n"
+    },
+    {
+      "stdin": "3\n-5 -2 -8\n",
+      "expected_stdout": "-2\n"
+    }
+  ]
+}

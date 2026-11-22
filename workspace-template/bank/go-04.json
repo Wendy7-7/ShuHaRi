@@ -1,0 +1,28 @@
+{
+  "id": "go-04",
+  "lang": "go",
+  "title": "字符串反转（Go）",
+  "difficulty": 2,
+  "tags": [
+    "字符串"
+  ],
+  "statement_md": "## 字符串反转（Go）\n\n输入一个字符串（不含空格），输出它的反转。",
+  "starter_code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\t// 读入字符串并反转输出\n}\n",
+  "hints": [
+    "Go 的字符串是字节序列，先转成 []rune 再反转（防止多字节字符被切碎）",
+    "for i, j := 0, len(r)-1; i < j; i, j = i+1, j-1 { r[i], r[j] = r[j], r[i] }"
+  ],
+  "editorial_md": "## 题解\n\n```go\nvar s string\nfmt.Scan(&s)\nr := []rune(s)\nfor i, j := 0, len(r)-1; i < j; i, j = i+1, j-1 {\n\tr[i], r[j] = r[j], r[i]\n}\nfmt.Println(string(r))\n```\n\n为什么要 []rune？直接反转字节会把中文等多字节字符拆坏。",
+  "test_cases": [
+    {
+      "stdin": "abc\n",
+      "expected_stdout": "cba\n",
+      "timeout_ms": 15000
+    },
+    {
+      "stdin": "hello\n",
+      "expected_stdout": "olleh\n",
+      "timeout_ms": 15000
+    }
+  ]
+}

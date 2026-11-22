@@ -1,0 +1,25 @@
+{
+  "id": "py-mcm-07",
+  "lang": "python",
+  "title": "Day 7：XJTLU 的平均分是多少",
+  "difficulty": 2,
+  "tags": [
+    "数学建模",
+    "pandas"
+  ],
+  "statement_md": "## Day 7：XJTLU 的平均分是多少\n\n**任务**：在 Day 5、6 的基础上（列名清理 + School 统一 + Score 数值化），计算 **XJTLU 的平均分**，保留 2 位小数打印。\n\n**验收**：输出包含 `83.5`。\n\n> 注意：平均分要跳过 NaN（pandas 的 mean 默认跳过），重复行要不要先去？这题先不去重。",
+  "starter_code": "import pandas as pd\n\ndf = pd.read_csv(\"mcm/pandas_kit/data/level1_contest_raw.csv\")\ndf.columns = df.columns.str.strip()\ndf['School'] = df['School'].str.strip().str.upper()\ndf['Score'] = pd.to_numeric(df['Score'], errors='coerce')\n\n# 计算 XJTLU 的平均分，保留 2 位小数打印\n",
+  "hints": [
+    "先筛选 df[df['School'] == 'XJTLU']，再取 Score.mean()",
+    "round(x, 2) 或 f'{x:.2f}' 都能保留两位小数"
+  ],
+  "editorial_md": "## 题解\n\n```python\ndf = pd.read_csv(\"mcm/pandas_kit/data/level1_contest_raw.csv\")\ndf.columns = df.columns.str.strip()\ndf['School'] = df['School'].str.strip().str.upper()\ndf['Score'] = pd.to_numeric(df['Score'], errors='coerce')\nxj = df[df['School'] == 'XJTLU']\nprint(round(xj['Score'].mean(), 2))\n```\n\n结果 83.5。如果先 drop_duplicates 去掉重复行，均值会变成 82.25——体会「清洗顺序影响结果」。",
+  "test_cases": [
+    {
+      "stdin": "",
+      "expected_stdout": "83.5",
+      "timeout_ms": 20000,
+      "match_mode": "contains"
+    }
+  ]
+}
