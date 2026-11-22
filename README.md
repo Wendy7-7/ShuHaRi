@@ -42,15 +42,32 @@ handing out answers), mistake-driven variant redo, and pluggable language packs.
 4. UI language: Settings -> Interface Language -> English
    (AI coach currently replies in Chinese; question statements are in Chinese)
 
-## 它跟刷题网站有什么不同
+## 核心功能
 
-| | 刷题网站 | LearnPlatform |
-|---|---|---|
-| 判题 | 只对答案 | 同样对答案，**外加分级提示和错题变体重做** |
-| AI | 给答案或不说人话 | **教练模式**：先反问你 → 指方法 → 才给片段；判题后主动点评代码风格 |
-| 数据 | 账号在云端 | 全本地：U 盘拷走即迁移，无人知道你做错了什么 |
-| 内容 | 算法为主 | 算法 + **美赛数据科学**（pandas/绘图/统计/scipy 全路径） |
-| 语言 | 固定 | **插件化**：想要的语言社区自己造（见 [PLUGIN_SPEC.md](PLUGIN_SPEC.md)） |
+### 🎯 判题：本地沙盒，即时反馈
+C / C++ / Python / Java / Go / JavaScript / SQL 七种语言，代码在隔离沙盒中运行，
+stdout / 超时 / 编译错误逐项反馈，连保存图片的 dpi 都能校验。
+
+### 🧭 AI 教练：引导你自己想出来
+教练模式先反问、再指方法、不直接给答案；判题通过后可以一键让 AI 点评你的代码风格，
+告诉你这种写法在什么场景会翻车。自带 OpenAI 兼容 Key 即可启用。
+
+### 🔁 错题闭环：练思路，不背答案
+错题自动归档、按知识点统计薄弱项；「变体重做」给错题换一组新数据——
+重做练的是思路，不是记忆力。
+
+### 📈 美赛数据科学路径
+pandas 数据清洗 → matplotlib 论文级图表（300dpi 校验）→ scipy 统计推断
+（t 检验 / curve_fit / solve_ivp），数学建模备赛的一条完整路径。
+
+### 🧩 语言包插件化
+每种语言一个独立插件包（工具链 + 题库 + 教程），按需安装、一键卸载，
+磁盘只留给要学的语言。社区可按 [PLUGIN_SPEC.md](PLUGIN_SPEC.md) 自制新语言包，
+主程序零改动接入。
+
+### 💾 全本地 · 便携优先
+无账号、无云端、无追踪。基础包 15MB 解压即用，U 盘拷走即迁移，
+机房和自己的电脑无缝切换。
 
 ## 学习闭环怎么转
 
