@@ -1,9 +1,9 @@
 # LearnPlatform
 
-**给自学编程者的离线练习场**：判题即时反馈 + AI 教练引导 + 语言按需安装。
+**给自学编程者的本地练习场**：判题即时反馈（纯本地，断网也能刷） + AI 教练引导（自备 API Key，联网调用） + 语言按需安装。
 
-写代码、判题、看错题、闯关卡、问 AI——一个 zip 解压就能用，不需要联网注册，
-不需要配置环境，数据全部留在自己电脑（或 U 盘）里。
+不需要注册账号，
+便携版连环境都不用配，数据全部留在自己电脑（或 U 盘）里。
 
 [![CI](https://img.shields.io/badge/CI-passing-brightgreen)](.github/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
@@ -32,7 +32,7 @@
 
 ## English Quick Start
 
-**ShuHaRi** is an offline coding practice ground for self-learners:
+**ShuHaRi** is a local-first coding practice ground for self-learners (judging works fully offline; the AI coach calls your own API key online):
 instant judge, a Socratic AI coach (it asks *you* questions instead of
 handing out answers), mistake-driven variant redo, and pluggable language packs.
 
