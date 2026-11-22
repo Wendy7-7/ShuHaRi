@@ -1,9 +1,11 @@
+import { useT } from "../i18n";
 import { useEffect, useState } from "react";
 import { api, type MistakeRow } from "../api";
 import { useApp } from "../store";
 import { openQuestionFile } from "./QuestionPanel";
 
 export default function MistakesView() {
+  const t = useT();
   const workspace = useApp((s) => s.workspace);
   const openEditor = useApp((s) => s.openEditor);
   const openQuestion = useApp((s) => s.openQuestion);
@@ -25,8 +27,8 @@ export default function MistakesView() {
 
   return (
     <div className="page-view">
-      <h2>错题本</h2>
-      {unresolved.length === 0 && <p className="hint-text">没有待攻克的错题。做错的题会自动出现在这里。</p>}
+      <h2>{t("错题本")}</h2>
+      {unresolved.length === 0 && <p className="hint-text">{t("没有待攻克的错题。做错的题会自动出现在这里。")}</p>}
       {unresolved.map((m) => (
         <div key={m.id} className="mistake-row">
           <div className="mistake-info">
@@ -36,11 +38,11 @@ export default function MistakesView() {
             <span className="mistake-date">{new Date(m.created_at).toLocaleString()}</span>
           </div>
           <div className="mistake-actions">
-            <button className="btn-sm" onClick={() => practice(m)} disabled={!m.question}>重做</button>
+            <button className="btn-sm" onClick={() => practice(m)} disabled={!m.question}>{t("重做")}</button>
             {(m.question?.variant_cases?.length ?? 0) > 0 && (
               <button
                 className="btn-sm variant-btn"
-                title="同样的知识点，换一组数据——防止背答案"
+                title={t("同样的知识点，换一组数据——防止背答案")}
                 onClick={async () => {
                   if (!m.question) return;
                   useApp.setState({ variantRedo: m.question.id });
@@ -52,7 +54,7 @@ export default function MistakesView() {
                 变体重做
               </button>
             )}
-            <button className="btn-sm" onClick={async () => { await api.resolveMistake(m.id); refresh(); }}>已掌握</button>
+            <button className="btn-sm" onClick={async () => { await api.resolveMistake(m.id); refresh(); }}>{t("已掌握")}</button>
           </div>
         </div>
       ))}

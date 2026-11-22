@@ -1,3 +1,4 @@
+import { useT } from "../i18n";
 import { useEffect, useState } from "react";
 import { open } from "@tauri-apps/plugin-dialog";
 import { api } from "../api";
@@ -14,6 +15,7 @@ interface PackInfo {
 
 /** 语言包管理：装哪个语言用哪个，省磁盘 */
 export default function LangPacksModal({ onClose, onChanged }: { onClose: () => void; onChanged: () => void }) {
+  const t = useT();
   const [packs, setPacks] = useState<PackInfo[] | null>(null);
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
@@ -58,22 +60,22 @@ export default function LangPacksModal({ onClose, onChanged }: { onClose: () => 
   return (
     <div className="modal-mask" onClick={onClose}>
       <div className="modal langpack-modal" onClick={(e) => e.stopPropagation()}>
-        <h3>语言包管理</h3>
+        <h3>{t("语言包管理")}</h3>
         <p className="hint-text">
           只装你要学的语言。语言包 zip 从项目的 GitHub Releases 下载（langpack-python.zip、langpack-java.zip…），
           点下面按钮从本地安装；不想要的随时卸载，磁盘只留给需要的东西。SQL 判题内置，无需安装。
         </p>
         {packs === null ? (
-          <p className="hint-text">加载中…</p>
+          <p className="hint-text">{t("加载中…")}</p>
         ) : packs.length === 0 ? (
-          <p className="hint-text">还没有安装任何语言包。</p>
+          <p className="hint-text">{t("还没有安装任何语言包。")}</p>
         ) : (
           <table className="results-table" style={{ marginBottom: 10 }}>
             <thead>
               <tr>
-                <th>语言包</th>
-                <th>题目</th>
-                <th>工具链</th>
+                <th>{t("语言包")}</th>
+                <th>{t("题目")}</th>
+                <th>{t("工具链")}</th>
                 <th></th>
               </tr>
             </thead>
@@ -98,7 +100,7 @@ export default function LangPacksModal({ onClose, onChanged }: { onClose: () => 
         )}
         {msg && <p className="hint-text">{msg}</p>}
         <div className="modal-actions">
-          <button className="btn-sm" onClick={onClose}>关闭</button>
+          <button className="btn-sm" onClick={onClose}>{t("关闭")}</button>
           <button onClick={install} disabled={busy}>📦 从 zip 安装语言包</button>
         </div>
       </div>

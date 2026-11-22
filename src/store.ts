@@ -35,6 +35,7 @@ interface AppState {
   saveNonce: number;
   /** 请求判题（编辑器 Ctrl+Enter 触发） */
   judgeNonce: number;
+  uiLang: "zh" | "en";
   variantRedo: string | null; // 变体重做中的题目 id
   /** 文件树刷新信号（练习/考试产生新文件后） */
   fileTreeNonce: number;
@@ -90,6 +91,7 @@ export const useApp = create<AppState>((set, get) => ({
   editorContent: "",
   saveNonce: 0,
   judgeNonce: 0,
+  uiLang: "zh",
   variantRedo: null,
   fileTreeNonce: 0,
   vimEnabled: false,

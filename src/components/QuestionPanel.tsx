@@ -1,3 +1,4 @@
+import { useT } from "../i18n";
 import { useCallback, useEffect, useState } from "react";
 import { open } from "@tauri-apps/plugin-dialog";
 import { api, nowIso, type Question } from "../api";
@@ -26,6 +27,7 @@ async function invokeRead(path: string): Promise<string> {
 }
 
 export default function QuestionPanel({ mode }: { mode: "practice" | "exam" }) {
+  const t = useT();
   const workspace = useApp((s) => s.workspace);
   const openEditor = useApp((s) => s.openEditor);
   const currentQuestion = useApp((s) => s.currentQuestion);
@@ -97,9 +99,9 @@ export default function QuestionPanel({ mode }: { mode: "practice" | "exam" }) {
       if (all.length === 0) {
         try {
           const n = await api.importBank(`${workspace}/bank`.replace(/\\/g, "/"));
-          setNotice(n > 0 ? `已从 bank 导入 ${n} 道题` : "题库为空：请把题目 JSON 放入工作区 bank 文件夹");
+          setNotice(n > 0 ? t("已从 bank 导入 {n} 道题", { n }) : t("题库为空：请把题目 JSON 放入工作区 bank 文件夹"));
         } catch {
-          setNotice("题库为空：请把题目 JSON 放入工作区 bank 文件夹");
+          setNotice(t("题库为空：请把题目 JSON 放入工作区 bank 文件夹"));
         }
       }
       api.listQuestions().then(setQuestions);
@@ -137,7 +139,7 @@ export default function QuestionPanel({ mode }: { mode: "practice" | "exam" }) {
   /** 工程师黑话翻译成人话：新手看到"未检测到 gcc"只会懵 */
   const friendlyJudgeError = (e: string): string => {
     if (e.includes("未检测到 gcc"))
-      return "⚠️ 你的电脑还没有安装 C 语言编译器，装好后就能判题了。\n👉 点顶栏「帮助」→ 环境体检，有手把手的安装教程（5 分钟搞定）。";
+      return t("⚠️ 你的电脑还没有安装 C 语言编译器，装好后就能判题了。👉 点顶栏「帮助」→ 环境体检，有手把手的安装教程。");
     if (e.includes("未检测到 g++"))
       return "⚠️ 还没有安装 C++ 编译器（g++）。\n👉 点顶栏「帮助」→ 环境体检，有安装教程。";
     if (e.includes("未检测到 python"))
@@ -160,7 +162,7 @@ export default function QuestionPanel({ mode }: { mode: "practice" | "exam" }) {
     if (mode === "exam" && examSession) {
       const deadline = examSession.startedAt + examSession.exam.duration_min * 60000;
       if (Date.now() > deadline) {
-        setNotice("⏰ 考试时间已结束，无法继续提交，请点击「交卷」");
+        setNotice(t("⏰ 考试时间已结束，无法继续提交，请点击「交卷」"));
         return;
       }
     }
@@ -185,7 +187,7 @@ export default function QuestionPanel({ mode }: { mode: "practice" | "exam" }) {
         markSolved(q.id);
         if (useApp.getState().variantRedo === q.id) useApp.setState({ variantRedo: null }); // 变体通过即完成，清除标记
       } else {
-        api.addMistake(q.id, `判题未全过（${results.filter((r) => !r.pass).length}/${results.length} 用例失败）`, nowIso()).catch(() => {});
+        api.addMistake(q.id, t("判题未全过（{f}/{t} 用例失败）", { f: results.filter((r) => !r.pass).length, t: results.length }), nowIso()).catch(() => {});
       }
       // 徽章只奖励真实完成的判题（放在 try 内，编译失败等异常不发徽章）
       checkAndAward(passed ? "pass" : "judge").then((news) =>
@@ -215,10 +217,10 @@ export default function QuestionPanel({ mode }: { mode: "practice" | "exam" }) {
       await api.saveExamResult(examSession.exam.id, examSession.exam.title, score, examSession.questions.length, detail, nowIso());
       // 未交的题自动记入错题
       for (const d of detail) {
-        if (!d.passed) api.addMistake(d.question_id, "考试中未通过/未交卷", nowIso()).catch(() => {});
+        if (!d.passed) api.addMistake(d.question_id, t("考试中未通过/未交卷"), nowIso()).catch(() => {});
       }
       // 结果摘要跨视图显示（交卷会切换视图，组件内 notice 会丢失）
-      useApp.getState().setLastExamSummary(`交卷完成：${score}/${examSession.questions.length} 题通过，成绩已记录，错题已进错题本。`);
+      useApp.getState().setLastExamSummary(t("交卷完成：{s}/{n} 题通过，成绩已记录，错题已进错题本。", { s: score, n: examSession.questions.length }));
       endExam();
       checkAndAward("exam").then((news) =>
         news.forEach((b) => useApp.getState().showToast(`${b.icon} 解锁徽章「${b.name}」—— ${b.desc}`)),
@@ -264,8 +266,8 @@ export default function QuestionPanel({ mode }: { mode: "practice" | "exam" }) {
     <div className="question-panel">
       {mode === "practice" && tools && (!tools.gcc || !tools.python) && (
         <div className="env-banner">
-          ⚠️ 判题环境不完整：{!tools.gcc && "缺 gcc（C 语言）"}{!tools.gcc && !tools.python && "、"}{!tools.python && "缺 python"}
-          <button className="btn-sm" onClick={() => useApp.getState().setView("help")}>去帮助看安装教程 →</button>
+          ⚠️ {t("判题环境不完整")}：{!tools.gcc && t("缺 gcc（C 语言）")}{!tools.gcc && !tools.python && "、"}{!tools.python && t("缺 python")}
+          <button className="btn-sm" onClick={() => useApp.getState().setView("help")}>{t("去帮助看安装教程 →")}</button>
         </div>
       )}
       {mode === "practice" ? (
@@ -277,7 +279,7 @@ export default function QuestionPanel({ mode }: { mode: "practice" | "exam" }) {
             <option value="java">Java</option>
             <option value="pandas">pandas（美赛）</option>
             <option value="matplotlib">matplotlib（美赛）</option>
-            <option value="stats">统计（美赛）</option>
+            <option value="stats">{t("统计（美赛）")}</option>
             <option value="sql">SQL</option>
             <option value="go">Go</option>
             <option value="javascript">JavaScript</option>
@@ -287,7 +289,7 @@ export default function QuestionPanel({ mode }: { mode: "practice" | "exam" }) {
           </select>
           <button
             className="btn-sm import-bank-btn"
-            title="从文件夹导入题库（每个 .json 一道题，或一个数组文件）"
+            title={t("从文件夹导入题库（每个 .json 一道题，或一个数组文件）")}
             onClick={async () => {
               const dir = await open({ directory: true });
               if (typeof dir !== "string") return;
@@ -301,23 +303,23 @@ export default function QuestionPanel({ mode }: { mode: "practice" | "exam" }) {
               }
             }}
           >
-            ⇪ 导入
+            {t("⇪ 导入")}
           </button>
           <button
             className={"btn-sm" + (freeMode ? " free-mode-on" : "")}
-            title={freeMode ? "自由模式：所有知识点不设解锁条件" : "顺序解锁：上一组解决 2 题解锁下一组"}
+            title={freeMode ? t("自由模式：所有知识点不设解锁条件") : t("顺序解锁：上一组解决 2 题解锁下一组")}
             onClick={() => {
               const next = !freeMode;
               setFreeMode(next);
               api.kvSet("free_mode", next ? "1" : "0").catch(() => {});
-              useApp.getState().showToast(next ? "🚧 自由模式已开启：全部题目直接可做" : "🔒 顺序解锁已开启：按知识点逐组推进");
+              useApp.getState().showToast(next ? t("🚧 自由模式已开启：全部题目直接可做") : t("🔒 顺序解锁已开启：按知识点逐组推进"));
             }}
           >
-            {freeMode ? "自由模式" : "顺序解锁"}
+            {freeMode ? t("自由模式") : t("顺序解锁")}
           </button>
-          <button className="btn-sm" title="按需安装/卸载语言模块（Python、Java…），只占你要的磁盘" onClick={() => setPacksOpen(true)}>📦 语言包</button>
+          <button className="btn-sm" title={t("按需安装/卸载语言模块（Python、Java…），只占你要的磁盘")} onClick={() => setPacksOpen(true)}>{t("📦 语言包")}</button>
           <span className="q-count">
-            {practiceList.length} 题 · 已解决 {practiceList.filter((q) => solved.includes(q.id)).length}
+            {t("{n} 题 · 已解决 {m}", { n: practiceList.length, m: practiceList.filter((q) => solved.includes(q.id)).length })}
           </span>
           <span className="tool-badges">
             {tools && (
@@ -335,7 +337,7 @@ export default function QuestionPanel({ mode }: { mode: "practice" | "exam" }) {
       ) : (
         <div className="q-toolbar">
           <span className="q-exam-title">{examSession?.exam.title ?? "考试"}</span>
-          <button className="btn-sm submit" onClick={submitExam} disabled={!examSession}>交卷</button>
+          <button className="btn-sm submit" onClick={submitExam} disabled={!examSession}>{t("交卷")}</button>
         </div>
       )}
 
@@ -352,14 +354,14 @@ export default function QuestionPanel({ mode }: { mode: "practice" | "exam" }) {
               const unlocked = freeMode || gi === 0 || prevSolved >= 2;
               return (
               <div key={tag}>
-                <div className="q-group">{tag}{!unlocked && <span className="lock"> 🔒 需上一组 ≥2 题</span>}</div>
+                <div className="q-group">{t(tag)}{!unlocked && <span className="lock"> 🔒 t("需上一组 ≥2 题")</span>}</div>
                 {qs.map((q) => (
                   <div
                     key={q.id}
                     className={"q-item" + (currentQuestion?.id === q.id ? " active" : "") + (unlocked ? "" : " locked")}
                     onClick={() => {
                       if (!unlocked) {
-                        setNotice(`🔒 知识点「${tag}」还没解锁：先在「${groupedPractice[gi - 1][0]}」里解决 2 道题。想自由练习？打开工具栏「自由模式」。`);
+                        setNotice(t("🔒 知识点「{tag}」还没解锁：先在「{prev}」里解决 2 道题。想自由练习？打开工具栏「自由模式」。", { tag, prev: groupedPractice[gi - 1][0] }));
                         return;
                       }
                       loadQuestion(q);
@@ -384,7 +386,7 @@ export default function QuestionPanel({ mode }: { mode: "practice" | "exam" }) {
                 <span className="q-diff">{"★".repeat(q.difficulty)}</span>
               </div>
             ))}
-        {displayList.length === 0 && <div className="pane-empty">暂无题目</div>}
+        {displayList.length === 0 && <div className="pane-empty">{t("暂无题目")}</div>}
       </div>
 
       {currentQuestion && (
@@ -396,7 +398,7 @@ export default function QuestionPanel({ mode }: { mode: "practice" | "exam" }) {
             <button className="btn-sm" onClick={revealHint}>提示 {hintsRevealed + 1}/{currentQuestion.hints.length}</button>
           )}
           {mode === "practice" && !editorialRevealed && (
-            <button className="btn-sm" onClick={revealEditorial}>看题解</button>
+            <button className="btn-sm" onClick={revealEditorial}>{t("看题解")}</button>
           )}
         </div>
       )}
@@ -422,8 +424,8 @@ export default function QuestionPanel({ mode }: { mode: "practice" | "exam" }) {
               <span>用例 {r.index + 1}: {r.status}（{r.time_ms}ms）</span>
               {!r.pass && (
                 <div className="judge-diff">
-                  <div><b>期望</b><pre>{r.expected}</pre></div>
-                  <div><b>实际</b><pre>{r.actual}</pre></div>
+                  <div><b>{t("期望")}</b><pre>{r.expected}</pre></div>
+                  <div><b>{t("实际")}</b><pre>{r.actual}</pre></div>
                 </div>
               )}
             </div>
@@ -431,7 +433,7 @@ export default function QuestionPanel({ mode }: { mode: "practice" | "exam" }) {
           <div className={"judge-summary " + (judgeResults.every((r) => r.pass) ? "pass" : "fail")}>
             {judgeResults.filter((r) => r.pass).length}/{judgeResults.length} 用例通过
             {lastWasVariant && (
-              <span className="variant-badge" title="本次判题使用变体数据">变体</span>
+              <span className="variant-badge" title={t("本次判题使用变体数据")}>{t("变体")}</span>
             )}
             {judgeResults.some((r) => !r.pass) && mode === "practice" && (
               <button
@@ -444,7 +446,7 @@ export default function QuestionPanel({ mode }: { mode: "practice" | "exam" }) {
             {judgeResults.every((r) => r.pass) && mode === "practice" && (
               <button
                 className="btn-sm judge-review-btn"
-                title="让 AI 点评你的代码风格，并告诉你这种写法在什么场景会翻车"
+                title={t("让 AI 点评你的代码风格，并告诉你这种写法在什么场景会翻车")}
                 onClick={() => {
                   useApp.setState({ variantRedo: null });
                   useApp.setState({

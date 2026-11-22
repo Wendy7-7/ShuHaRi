@@ -30,6 +30,18 @@
 > 你电脑已有 Python/JDK？工具链检测直接认，语言包都可以不装。
 > 嫌下载麻烦？Releases 里也有 1.5GB 全量包，一次到位。
 
+## English Quick Start
+
+**ShuHaRi** is an offline coding practice ground for self-learners:
+instant judge, a Socratic AI coach (it asks *you* questions instead of
+handing out answers), mistake-driven variant redo, and pluggable language packs.
+
+1. Download the base zip (15 MB), unzip, run learn-platform.exe
+2. Grab a langpack from Releases (langpack-python.zip, langpack-go.zip, ...)
+3. Practice -> Lang Packs -> install the zip - done
+4. UI language: Settings -> Interface Language -> English
+   (AI coach currently replies in Chinese; question statements are in Chinese)
+
 ## 它跟刷题网站有什么不同
 
 | | 刷题网站 | LearnPlatform |

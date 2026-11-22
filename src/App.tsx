@@ -1,3 +1,4 @@
+import { useT } from "./i18n";
 import { useEffect, lazy, Suspense } from "react";
 import { Allotment } from "allotment";
 import "allotment/dist/style.css";
@@ -22,6 +23,7 @@ import { api } from "./api";
 import "./App.css";
 
 export default function App() {
+  const t = useT();
   const view = useApp((s) => s.view);
   const examSession = useApp((s) => s.examSession);
 
@@ -48,6 +50,7 @@ export default function App() {
   // 首次启动自动弹出上手教程；每次启动若阅读区为空则自动翻开 README
   useEffect(() => {
     // 恢复自定义主题色
+    api.kvGet("ui_lang").then((v) => { if (v === "en") useApp.setState({ uiLang: "en" }); }).catch(() => {});
     api.kvGet("accent").then((c) => {
       if (c) {
         document.documentElement.style.setProperty("--accent", c);
@@ -102,7 +105,7 @@ export default function App() {
               <div className="area-reader"><ReaderPane /></div>
             </Allotment>
             <Allotment vertical defaultSizes={[420, 220]}>
-              <div className="area-editor"><Suspense fallback={<div className="pane-empty">编辑器加载中…</div>}><EditorPane /></Suspense></div>
+              <div className="area-editor"><Suspense fallback={<div className="pane-empty">{t("编辑器加载中…")}</div>}><EditorPane /></Suspense></div>
               <div className="area-terminal"><TerminalPane /></div>
             </Allotment>
           </Allotment>
@@ -115,7 +118,7 @@ export default function App() {
               <ReaderPane />
             </Allotment>
             <Allotment vertical defaultSizes={[420, 220]}>
-              <Suspense fallback={<div className="pane-empty">编辑器加载中…</div>}><EditorPane /></Suspense>
+              <Suspense fallback={<div className="pane-empty">{t("编辑器加载中…")}</div>}><EditorPane /></Suspense>
               <TerminalPane />
             </Allotment>
           </Allotment>
@@ -133,7 +136,7 @@ export default function App() {
               <ReaderPane />
             </Allotment>
             <Allotment vertical defaultSizes={[420, 220]}>
-              <Suspense fallback={<div className="pane-empty">编辑器加载中…</div>}><EditorPane /></Suspense>
+              <Suspense fallback={<div className="pane-empty">{t("编辑器加载中…")}</div>}><EditorPane /></Suspense>
               <TerminalPane />
             </Allotment>
           </Allotment>

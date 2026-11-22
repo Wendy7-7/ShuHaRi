@@ -1,3 +1,4 @@
+import { useT } from "../i18n";
 import { useEffect, useRef, useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import { api } from "../api";
@@ -23,6 +24,7 @@ const GUIDED_PROMPT = `你是一位编程助教，学习者正在做题——他
 const DIRECT_PROMPT = "你是一位耐心的编程助教，用简洁清晰的中文解答学习者的问题，可以给出代码示例。";
 
 export default function ChatPanel() {
+  const t = useT();
   const chatOpen = useApp((s) => s.chatOpen);
   const setChatOpen = useApp((s) => s.setChatOpen);
   const view = useApp((s) => s.view);
@@ -190,8 +192,8 @@ export default function ChatPanel() {
       <div className="chat-body" ref={bodyRef}>
         {keyMissing && (
           <div className="ai-setup-card">
-            <b>还没有配置 AI 助教</b>
-            <p>在「设置」里填一个 OpenAI 兼容的 API Key（DeepSeek / GLM / Kimi 都可以），就能随时提问了。</p>
+            <b>{t("还没有配置 AI 助教")}</b>
+            <p>{t("在「设置」里填一个 OpenAI 兼容的 API Key（DeepSeek / GLM / Kimi 都可以），就能随时提问了。")}</p>
             <button className="btn-sm" onClick={() => useApp.getState().setSettingsOpen(true)}>
               去设置 →
             </button>
@@ -229,7 +231,7 @@ export default function ChatPanel() {
           </div>
         ))}
         {busy && !messages.some((m) => m.streaming) && (
-          <div className="chat-msg assistant typing">思考中…</div>
+          <div className="chat-msg assistant typing">{t("思考中…")}</div>
         )}
       </div>
       <div className="chat-input-row">
@@ -246,7 +248,7 @@ export default function ChatPanel() {
             }
           }}
         />
-        <button className="btn-sm" disabled={view === "exam" || busy || !input.trim()} onClick={() => send()}>发送</button>
+        <button className="btn-sm" disabled={view === "exam" || busy || !input.trim()} onClick={() => send()}>{t("发送")}</button>
       </div>
     </div>
   );

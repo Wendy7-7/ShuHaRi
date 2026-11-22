@@ -1,3 +1,4 @@
+import { useT } from "../i18n";
 import { useEffect, useState } from "react";
 import { open } from "@tauri-apps/plugin-dialog";
 import { api } from "../api";
@@ -12,6 +13,7 @@ const NAV: { key: "study" | "practice" | "mistakes" | "stats" | "help"; label: s
 ];
 
 export default function TopBar() {
+  const t = useT();
   // 精准订阅：只在自己关心的切片变化时重渲染
   const workspace = useApp((s) => s.workspace);
   const setWorkspace = useApp((s) => s.setWorkspace);
@@ -45,7 +47,7 @@ export default function TopBar() {
 
   return (
     <div className="topbar">
-      <span className="brand">ShuHaRi · 守破离</span>
+      <span className="brand">{t("ShuHaRi · 守破离")}</span>
       <div className="nav">
         {NAV.map((n) => (
           <button
@@ -53,24 +55,24 @@ export default function TopBar() {
             className={"nav-btn" + (view === n.key ? " active" : "")}
             onClick={() => leaveFor(n.key)}
           >
-            {n.label}
+            {t(n.label)}
           </button>
         ))}
         {examSession ? (
           <>
             <ExamCountdown />
             {view !== "exam" && (
-              <button className="nav-btn exam" onClick={() => setView("exam")}>回到考试</button>
+              <button className="nav-btn exam" onClick={() => setView("exam")}>{t("回到考试")}</button>
             )}
           </>
         ) : (
-          <button className="nav-btn exam" onClick={() => setView("exam")}>考试模式</button>
+          <button className="nav-btn exam" onClick={() => setView("exam")}>{t("考试模式")}</button>
         )}
       </div>
       <div className="spacer" />
-      <button className="btn-sm" onClick={toggleVim}>{vimEnabled ? "Vim: 开" : "Vim: 关"}</button>
-      <button className="btn-sm" onClick={() => setChatOpen(true)}>AI 助教</button>
-      <button className="btn-sm" onClick={() => setSettingsOpen(true)}>设置</button>
+      <button className="btn-sm" onClick={toggleVim}>{vimEnabled ? t("Vim: 开") : t("Vim: 关")}</button>
+      <button className="btn-sm" onClick={() => setChatOpen(true)}>{t("AI 助教")}</button>
+      <button className="btn-sm" onClick={() => setSettingsOpen(true)}>{t("设置")}</button>
       <span className="ws" title={workspace}>{workspace}</span>
       <button className="btn-sm" onClick={pickWorkspace}>打开工作区</button>
 

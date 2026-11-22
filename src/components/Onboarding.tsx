@@ -1,3 +1,4 @@
+import { useT } from "../i18n";
 import { useEffect, useState } from "react";
 import { api } from "../api";
 import { useApp } from "../store";
@@ -57,6 +58,7 @@ const STEPS: TourStep[] = [
 ];
 
 export default function Onboarding() {
+  const t = useT();
   const open = useApp((s) => s.onboardingOpen);
   const setOpen = useApp((s) => s.setOnboardingOpen);
   const [step, setStep] = useState(0);
@@ -165,22 +167,22 @@ export default function Onboarding() {
         <h3>{cur.title}</h3>
         <p>{cur.text}</p>
         <div className="tour-actions">
-          <button className="btn-sm" onClick={finish}>跳过</button>
+          <button className="btn-sm" onClick={finish}>{t("跳过")}</button>
           <div className="tour-dots">
             {STEPS.map((_, i) => (
               <span key={i} className={i === step ? "dot on" : "dot"} />
             ))}
           </div>
           {step > 0 && (
-            <button className="btn-sm" onClick={() => setStep(step - 1)}>上一步</button>
+            <button className="btn-sm" onClick={() => setStep(step - 1)}>{t("上一步")}</button>
           )}
           {step === STEPS.length - 1 ? (
             <>
-              <button className="btn-sm" onClick={finish}>完成</button>
+              <button className="btn-sm" onClick={finish}>{t("完成")}</button>
               <button className="tour-cta" onClick={startFirstQuestion}>🎯 开始第一道题</button>
             </>
           ) : (
-            <button onClick={next}>下一步</button>
+            <button onClick={next}>{t("下一步")}</button>
           )}
         </div>
       </div>

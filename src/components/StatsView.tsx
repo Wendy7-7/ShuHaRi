@@ -1,3 +1,4 @@
+import { useT } from "../i18n";
 import { useEffect, useState } from "react";
 import { api, type ExamResultRow, type MistakeRow } from "../api";
 import { BADGES } from "./badges";
@@ -10,6 +11,7 @@ interface ExamDetailItem {
 }
 
 export default function StatsView() {
+  const t = useT();
   const [results, setResults] = useState<ExamResultRow[]>([]);
   const [mistakes, setMistakes] = useState<MistakeRow[]>([]);
   const [solvedCount, setSolvedCount] = useState(0);
@@ -51,14 +53,14 @@ export default function StatsView() {
 
   return (
     <div className="page-view">
-      <h2>学习统计</h2>
+      <h2>{t("学习统计")}</h2>
       <div className="stats-cards">
-        <div className="stat-card"><div className="stat-num">{solvedCount}</div><div>已解决题目</div></div>
-        <div className="stat-card"><div className="stat-num">{totalExams}</div><div>完成考试</div></div>
-        <div className="stat-card"><div className="stat-num">{avgScore === null ? "—" : avgScore + "%"}</div><div>平均通过率</div></div>
-        <div className="stat-card"><div className="stat-num">{unresolved.length}</div><div>待攻克错题</div></div>
-        <div className="stat-card"><div className="stat-num">{streak > 0 ? `${streak} 天` : "—"}</div><div>连续学习</div></div>
-        <div className="stat-card"><div className="stat-num">{owned.length}/{BADGES.length}</div><div>徽章收集</div></div>
+        <div className="stat-card"><div className="stat-num">{solvedCount}</div><div>{t("已解决题目")}</div></div>
+        <div className="stat-card"><div className="stat-num">{totalExams}</div><div>{t("完成考试")}</div></div>
+        <div className="stat-card"><div className="stat-num">{avgScore === null ? "—" : avgScore + "%"}</div><div>{t("平均通过率")}</div></div>
+        <div className="stat-card"><div className="stat-num">{unresolved.length}</div><div>{t("待攻克错题")}</div></div>
+        <div className="stat-card"><div className="stat-num">{streak > 0 ? `${streak} 天` : "—"}</div><div>{t("连续学习")}</div></div>
+        <div className="stat-card"><div className="stat-num">{owned.length}/{BADGES.length}</div><div>{t("徽章收集")}</div></div>
       </div>
 
       <div className="badge-wall">
@@ -74,9 +76,9 @@ export default function StatsView() {
         })}
       </div>
 
-      <h3>薄弱知识点（按未解决错题数）</h3>
+      <h3>{t("薄弱知识点（按未解决错题数）")}</h3>
       {tagRows.length === 0 ? (
-        <p className="hint-text">暂无数据。做错的题会按标签统计到这里。</p>
+        <p className="hint-text">{t("暂无数据。做错的题会按标签统计到这里。")}</p>
       ) : (
         <div className="tag-bars">
           {tagRows.map(([tag, n]) => (
@@ -91,9 +93,9 @@ export default function StatsView() {
         </div>
       )}
 
-      <h3>考试通过率趋势</h3>
+      <h3>{t("考试通过率趋势")}</h3>
       {results.length === 0 ? (
-        <p className="hint-text">还没有考试记录，去「考试模式」来一场自测。</p>
+        <p className="hint-text">{t("还没有考试记录，去「考试模式」来一场自测。")}</p>
       ) : (
         <div className="trend-chart">
           {results
@@ -119,12 +121,12 @@ export default function StatsView() {
         </div>
       )}
 
-      <h3>最近考试（点一行看逐题讲评）</h3>
+      <h3>{t("最近考试（点一行看逐题讲评）")}</h3>
       {results.length === 0 ? (
-        <p className="hint-text">还没有考试记录。</p>
+        <p className="hint-text">{t("还没有考试记录。")}</p>
       ) : (
         <table className="results-table">
-          <thead><tr><th>考试</th><th>成绩</th><th>时间</th></tr></thead>
+          <thead><tr><th>{t("考试")}</th><th>{t("成绩")}</th><th>{t("时间")}</th></tr></thead>
           <tbody>
             {results.slice(0, 10).map((r) => {
               const expanded = openExam === r.id;
@@ -165,6 +167,7 @@ function ExamRows({
   qTitles: Record<string, string>;
   onToggle: () => void;
 }) {
+  const t = useT();
   return (
     <>
       <tr className="exam-row" onClick={onToggle}>
@@ -176,7 +179,7 @@ function ExamRows({
         <tr className="exam-detail-row">
           <td colSpan={3}>
             {detail.length === 0 ? (
-              <p className="hint-text">这场考试没有逐题数据。</p>
+              <p className="hint-text">{t("这场考试没有逐题数据。")}</p>
             ) : (
               <div className="exam-detail-list">
                 {detail.map((d) => (

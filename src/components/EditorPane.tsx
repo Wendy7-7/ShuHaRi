@@ -1,3 +1,4 @@
+import { useT } from "../i18n";
 import Editor, { type OnMount } from "@monaco-editor/react";
 import { KeyMod, KeyCode } from "monaco-editor";
 import { initVimMode, type VimMode } from "monaco-vim";
@@ -18,6 +19,7 @@ function langOf(path: string): string {
 }
 
 export default function EditorPane() {
+  const t = useT();
   const editorFile = useApp((s) => s.editorFile);
   const nonce = useApp((s) => s.editorNonce);
   const saveNonce = useApp((s) => s.saveNonce);
@@ -139,7 +141,7 @@ export default function EditorPane() {
   }, [vimEnabled]);
 
   if (!editorFile) {
-    return <div className="pane-empty">右侧是代码编辑器（Ctrl+S 保存，顶栏可切换 Vim 模式）</div>;
+    return <div className="pane-empty">{t("右侧是代码编辑器（Ctrl+S 保存，顶栏可切换 Vim 模式）")}</div>;
   }
 
   const name = editorFile.split(/[\\/]/).pop() ?? editorFile;
@@ -150,10 +152,10 @@ export default function EditorPane() {
       <div className="editor-tab">
         <span>{name}</span>
         {dirtyRef.current && <span className="dirty-dot"> ●</span>}
-        {saveError && <span className="save-error" title={saveError}>保存失败!</span>}
+        {saveError && <span className="save-error" title={saveError}>{t("保存失败!")}</span>}
         {vimEnabled && <span className="vim-badge">VIM</span>}
         {runnable && (
-          <button className="btn-sm run-btn" onClick={runFile} title="保存并编译运行到下方终端">
+          <button className="btn-sm run-btn" onClick={runFile} title={t("保存并编译运行到下方终端")}>
             ▶ 运行
           </button>
         )}

@@ -1,8 +1,10 @@
+import { useT } from "../i18n";
 import { useEffect, useState } from "react";
 import { api, nowIso, type Question } from "../api";
 import { useApp } from "../store";
 
 export default function ExamSetup() {
+  const t = useT();
   const startExam = useApp((s) => s.startExam);
   const [lang, setLang] = useState("c");
   const [count, setCount] = useState(3);
@@ -37,13 +39,13 @@ export default function ExamSetup() {
 
   return (
     <div className="exam-setup">
-      <h2>创建考试</h2>
+      <h2>{t("创建考试")}</h2>
       <p className="hint-text">
         从题库加权抽题（错过的题权重更高）。考试中左栏只显示题目，AI 助教禁用，倒计时结束前交卷。
-        在校生可以拿它当<b>模拟考</b>，自学者当<b>阶段自测</b>——练没练会，测一下才知道。
+        在校生可以拿它当<b>{t("模拟考")}</b>，自学者当<b>{t("阶段自测")}</b>——练没练会，测一下才知道。
       </p>
       <div className="form-row">
-        <label>语言</label>
+        <label>{t("语言")}</label>
         <select value={lang} onChange={(e) => setLang(e.target.value)}>
           {langs.map((l) => <option key={l} value={l}>{l}</option>)}
           {langs.length === 0 && <option value="c">c</option>}
@@ -55,7 +57,7 @@ export default function ExamSetup() {
           onChange={(e) => setCount(Math.max(1, parseInt(e.target.value) || 1))} />
       </div>
       <div className="form-row">
-        <label>时长（分钟）</label>
+        <label>{t("时长（分钟）")}</label>
         <input type="number" min={5} max={240} value={duration}
           onChange={(e) => setDuration(Math.max(5, parseInt(e.target.value) || 5))} />
       </div>

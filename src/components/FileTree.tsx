@@ -1,3 +1,4 @@
+import { useT } from "../i18n";
 import { useEffect, useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import { useApp } from "../store";
@@ -21,6 +22,7 @@ function TreeNode({
   onRename: (e: Entry) => void;
   onDelete: (e: Entry) => void;
 }) {
+  const t = useT();
   const [open, setOpen] = useState(false);
   const [children, setChildren] = useState<Entry[]>([]);
   const openReader = useApp((s) => s.openReader);
@@ -53,7 +55,7 @@ function TreeNode({
           <span className="node-actions">
             <button
               className="node-btn"
-              title="重命名"
+              title={t("重命名")}
               onClick={(ev) => {
                 ev.stopPropagation();
                 onRename(entry);
@@ -63,7 +65,7 @@ function TreeNode({
             </button>
             <button
               className="node-btn"
-              title="删除"
+              title={t("删除")}
               onClick={(ev) => {
                 ev.stopPropagation();
                 onDelete(entry);
@@ -86,6 +88,7 @@ function TreeNode({
 }
 
 export default function FileTree() {
+  const t = useT();
   const workspace = useApp((s) => s.workspace);
   const fileTreeNonce = useApp((s) => s.fileTreeNonce);
   const [entries, setEntries] = useState<Entry[]>([]);
@@ -164,12 +167,12 @@ export default function FileTree() {
   return (
     <div className="filetree">
       <div className="tree-header">
-        <span>资源管理器</span>
+        <span>{t("资源管理器")}</span>
         <span className="tree-actions">
-          <button className="btn-sm tree-refresh" title="新建文件" onClick={() => setNewFileOpen(true)}>＋</button>
+          <button className="btn-sm tree-refresh" title={t("新建文件")} onClick={() => setNewFileOpen(true)}>＋</button>
           <button
             className="btn-sm tree-refresh"
-            title="刷新"
+            title={t("刷新")}
             onClick={() => useApp.getState().refreshFileTree()}
           >
             ⟳
@@ -199,8 +202,8 @@ export default function FileTree() {
       {renameTarget && (
         <div className="modal-mask" onClick={() => setRenameTarget(null)}>
           <div className="modal newfile-modal" onClick={(ev) => ev.stopPropagation()}>
-            <h3>重命名</h3>
-            <label>新文件名</label>
+            <h3>{t("重命名")}</h3>
+            <label>{t("新文件名")}</label>
             <input
               autoFocus
               value={renameVal}
@@ -209,8 +212,8 @@ export default function FileTree() {
             />
             {renameErr && <p className="hint-text" style={{ color: "#f48771" }}>{renameErr}</p>}
             <div className="modal-actions">
-              <button className="btn-sm" onClick={() => setRenameTarget(null)}>取消</button>
-              <button onClick={doRename}>确定</button>
+              <button className="btn-sm" onClick={() => setRenameTarget(null)}>{t("取消")}</button>
+              <button onClick={doRename}>{t("确定")}</button>
             </div>
           </div>
         </div>
@@ -218,12 +221,12 @@ export default function FileTree() {
       {deleteTarget && (
         <div className="modal-mask" onClick={() => setDeleteTarget(null)}>
           <div className="modal newfile-modal" onClick={(ev) => ev.stopPropagation()}>
-            <h3>删除文件</h3>
+            <h3>{t("删除文件")}</h3>
             <p className="hint-text">确定删除「{deleteTarget.name}」？删除后不可恢复（学习记录不受影响）。</p>
             {deleteErr && <p className="hint-text" style={{ color: "#f48771" }}>{deleteErr}</p>}
             <div className="modal-actions">
-              <button className="btn-sm" onClick={() => setDeleteTarget(null)}>取消</button>
-              <button className="btn-danger" onClick={doDelete}>删除</button>
+              <button className="btn-sm" onClick={() => setDeleteTarget(null)}>{t("取消")}</button>
+              <button className="btn-danger" onClick={doDelete}>{t("删除")}</button>
             </div>
           </div>
         </div>
@@ -231,8 +234,8 @@ export default function FileTree() {
       {newFileOpen && (
         <div className="modal-mask" onClick={() => setNewFileOpen(false)}>
           <div className="modal newfile-modal" onClick={(ev) => ev.stopPropagation()}>
-            <h3>新建文件</h3>
-            <label>文件名（在工作区根目录创建，支持 .md / .c / .py 等）</label>
+            <h3>{t("新建文件")}</h3>
+            <label>{t("文件名（在工作区根目录创建，支持 .md / .c / .py 等）")}</label>
             <input
               autoFocus
               value={newFileName}
@@ -242,8 +245,8 @@ export default function FileTree() {
             />
             {newFileErr && <p className="hint-text" style={{ color: "#f48771" }}>{newFileErr}</p>}
             <div className="modal-actions">
-              <button className="btn-sm" onClick={() => setNewFileOpen(false)}>取消</button>
-              <button onClick={createFile}>创建</button>
+              <button className="btn-sm" onClick={() => setNewFileOpen(false)}>{t("取消")}</button>
+              <button onClick={createFile}>{t("创建")}</button>
             </div>
           </div>
         </div>

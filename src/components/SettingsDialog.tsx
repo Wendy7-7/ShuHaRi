@@ -1,3 +1,4 @@
+import { useT } from "../i18n";
 import { useEffect, useState } from "react";
 import { openUrl } from "@tauri-apps/plugin-opener";
 import { api } from "../api";
@@ -39,6 +40,7 @@ const PRESETS: Record<
 };
 
 export default function SettingsDialog() {
+  const t = useT();
   const open = useApp((s) => s.settingsOpen);
   const setOpen = useApp((s) => s.setSettingsOpen);
   const [preset, setPreset] = useState<string>("glm");
@@ -52,6 +54,7 @@ export default function SettingsDialog() {
   // 个性化
   const ACCENTS = ["#4fc1ff", "#4ade80", "#fb923c", "#f472b6", "#a78bfa", "#22d3ee"];
   const [accent, setAccent] = useState("#4fc1ff");
+  const [uiLang, setUiLang] = useState<"zh" | "en">("zh");
   const [nickname, setNickname] = useState("");
   const [coachName, setCoachName] = useState("");
   const [coachStyle, setCoachStyle] = useState("gentle");
@@ -63,6 +66,7 @@ export default function SettingsDialog() {
 
   useEffect(() => {
     if (!open) return;
+    api.kvGet("ui_lang").then((v) => { if (v === "en") { setUiLang("en"); useApp.setState({ uiLang: "en" }); } }).catch(() => {});
     Promise.all([
       api.kvGet("ai_base"),
       api.kvGet("ai_key"),
@@ -132,8 +136,8 @@ export default function SettingsDialog() {
   return (
     <div className="modal-mask" onClick={() => setOpen(false)}>
       <div className="modal settings-modal" onClick={(e) => e.stopPropagation()}>
-        <h3>个性化</h3>
-        <label>主题色（点一下，整个应用跟着变）</label>
+        <h3>{t("个性化")}</h3>
+        <label>{t("主题色（点一下，整个应用跟着变）")}</label>
         <div className="swatch-row">
           {ACCENTS.map((c) => (
             <button
@@ -148,29 +152,40 @@ export default function SettingsDialog() {
             type="color"
             className="swatch-picker"
             value={accent}
-            title="自定义任意颜色"
+            title={t("自定义任意颜色")}
             onChange={(e) => { setAccent(e.target.value); applyAccent(e.target.value); api.kvSet("accent", e.target.value).catch(() => {}); }}
           />
         </div>
-        <label>你的昵称（AI 教练会这样称呼你）</label>
-        <input value={nickname} onChange={(e) => setNickname(e.target.value)} placeholder="比如：阿迪、Captain Debug…" />
+        <label>{t("界面语言 / Language")}</label>
+        <div style={{ display: "flex", gap: 8, marginBottom: 14 }}>
+          <button
+            className={"btn-sm" + (uiLang === "zh" ? " free-mode-on" : "")}
+            onClick={() => { setUiLang("zh"); useApp.setState({ uiLang: "zh" }); api.kvSet("ui_lang", "zh").catch(() => {}); }}
+          >中文</button>
+          <button
+            className={"btn-sm" + (uiLang === "en" ? " free-mode-on" : "")}
+            onClick={() => { setUiLang("en"); useApp.setState({ uiLang: "en" }); api.kvSet("ui_lang", "en").catch(() => {}); }}
+          >English</button>
+        </div>
+        <label>{t("你的昵称（AI 教练会这样称呼你）")}</label>
+        <input value={nickname} onChange={(e) => setNickname(e.target.value)} placeholder={t("比如：阿迪、Captain Debug…")} />
         <label>AI 教练的名字</label>
-        <input value={coachName} onChange={(e) => setCoachName(e.target.value)} placeholder="默认：AI 助教（比如叫它『码灵』『Debug 师傅』）" />
-        <label>教练风格</label>
+        <input value={coachName} onChange={(e) => setCoachName(e.target.value)} placeholder={t("默认：AI 助教（比如叫它『码灵』『Debug 师傅』）")} />
+        <label>{t("教练风格")}</label>
         <select value={coachStyle} onChange={(e) => setCoachStyle(e.target.value)}>
-          <option value="gentle">温和鼓励型（多肯定，慢慢推）</option>
-          <option value="strict">严格教练型（直接指出问题，绝不放水）</option>
-          <option value="funny">幽默段子型（程序员梗管够，气氛拉满）</option>
-          <option value="calm">冷静理工型（像资深工程师做 code review）</option>
+          <option value="gentle">{t("温和鼓励型（多肯定，慢慢推）")}</option>
+          <option value="strict">{t("严格教练型（直接指出问题，绝不放水）")}</option>
+          <option value="funny">{t("幽默段子型（程序员梗管够，气氛拉满）")}</option>
+          <option value="calm">{t("冷静理工型（像资深工程师做 code review）")}</option>
         </select>
 
-        <h3 style={{ marginTop: 20 }}>设置 · AI 助教</h3>
+        <h3 style={{ marginTop: 20 }}>{t("设置 · AI 助教")}</h3>
 
         <p className="hint-text">
           AI 助教需要一个"API Key"（一把钥匙，从 AI 公司官网申请）。照下面三步走：
         </p>
 
-        <label>第 1 步：选一家 AI 服务商</label>
+        <label>{t("第 1 步：选一家 AI 服务商")}</label>
         <select value={preset} onChange={(e) => pickPreset(e.target.value)}>
           {Object.entries(PRESETS).map(([k, v]) => (
             <option key={k} value={k}>{v.label}</option>
@@ -190,21 +205,21 @@ export default function SettingsDialog() {
           </p>
         )}
 
-        <label>第 2 步：把官网复制来的 Key 粘贴到这里</label>
-        <input value={key} onChange={(e) => setKey(e.target.value)} type="password" placeholder="粘贴到这个框里（就是一串字母数字组成的密码）" />
+        <label>{t("第 2 步：把官网复制来的 Key 粘贴到这里")}</label>
+        <input value={key} onChange={(e) => setKey(e.target.value)} type="password" placeholder={t("粘贴到这个框里（就是一串字母数字组成的密码）")} />
 
         {preset === "custom" && (
           <>
             <label>API 地址（高级）</label>
             <input value={base} onChange={(e) => setBase(e.target.value)} placeholder="https://..." />
-            <label>模型名（高级）</label>
-            <input value={model} onChange={(e) => setModel(e.target.value)} placeholder="模型名" />
+            <label>{t("模型名（高级）")}</label>
+            <input value={model} onChange={(e) => setModel(e.target.value)} placeholder={t("模型名")} />
           </>
         )}
 
         <div className="check-row">
           <input id="guided" type="checkbox" checked={guided} onChange={(e) => setGuided(e.target.checked)} />
-          <label htmlFor="guided">引导模式（推荐）：AI 不直接给答案，用提问引导你自己想出来</label>
+          <label htmlFor="guided">{t("引导模式（推荐）：AI 不直接给答案，用提问引导你自己想出来")}</label>
         </div>
 
         <p className="hint-text">
@@ -215,8 +230,8 @@ export default function SettingsDialog() {
           <span className={"test-result " + (saved || testResult?.startsWith("✓") ? "pass" : "")}>
             {saved ? "已保存 ✓" : testing ? "测试中…" : testResult ?? ""}
           </span>
-          <button className="btn-sm" onClick={testConnection} disabled={testing}>测试连接</button>
-          <button onClick={save}>保存</button>
+          <button className="btn-sm" onClick={testConnection} disabled={testing}>{t("测试连接")}</button>
+          <button onClick={save}>{t("保存")}</button>
         </div>
         <VersionLine />
       </div>
