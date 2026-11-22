@@ -45,7 +45,7 @@ export default function TopBar() {
 
   return (
     <div className="topbar">
-      <span className="brand">LearnPlatform</span>
+      <span className="brand">ShuHaRi · 守破离</span>
       <div className="nav">
         {NAV.map((n) => (
           <button

@@ -10,7 +10,7 @@ interface TourStep {
 
 const STEPS: TourStep[] = [
   {
-    title: "欢迎使用 LearnPlatform",
+    title: "欢迎使用 ShuHaRi（守破离）",
     text: "这是一个「左书右码」的本地编程学习平台：左边看资料，右边写代码，底部跑终端，还带题库、考试和 AI 助教。花一分钟走完这个教程，就能上手了。",
   },
   {

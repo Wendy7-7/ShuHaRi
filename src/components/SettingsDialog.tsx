@@ -231,7 +231,7 @@ function VersionLine() {
   }, []);
   return (
     <p className="hint-text" style={{ marginTop: 14, opacity: 0.55, textAlign: "center", fontSize: 11 }}>
-      LearnPlatform v{info?.version ?? "…"}{info?.portable ? " · 便携版" : ""} · 数据全部本地存储
+      ShuHaRi v{info?.version ?? "…"}{info?.portable ? " · 便携版" : ""} · 数据全部本地存储
     </p>
   );
 }

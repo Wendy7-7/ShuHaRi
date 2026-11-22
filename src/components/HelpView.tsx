@@ -162,7 +162,7 @@ export default function HelpView() {
         这里没找到答案？把问题原样发给 AI 助教，或者截图发给你靠谱的学长。
       </p>
       <p className="hint-text" style={{ marginTop: 8, opacity: 0.5, fontSize: 11 }}>
-        LearnPlatform v1.0.0 · 本地优先 · C / C++ / Python / Java 判题 · 数据全部在你自己的电脑（或 U 盘）里
+        ShuHaRi v1.5.0 · 本地优先 · C / C++ / Python / Java 判题 · 数据全部在你自己的电脑（或 U 盘）里
       </p>
     </div>
   );
