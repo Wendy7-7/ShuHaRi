@@ -4,7 +4,13 @@
 import os
 import sys
 import zipfile
-import datetime
+
+# CI/控制台编码非 UTF-8 时 print 中文会抛 UnicodeEncodeError（GitHub Actions 踩过）
+try:
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+except Exception:
+    pass
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -19,7 +25,10 @@ def main():
         print(f"exe 不存在: {exe}")
         return 1
 
-    os.makedirs(os.path.dirname(os.path.abspath(out)) or ".", exist_ok=True)
+    # CI 上 release/ 不存在，zipfile 不会自动建目录
+    out_dir = os.path.dirname(os.path.abspath(out))
+    if out_dir:
+        os.makedirs(out_dir, exist_ok=True)
 
     tpl = os.path.join(ROOT, "workspace-template")
     manual = os.path.join(ROOT, "assets", "使用说明.txt")

@@ -53,6 +53,8 @@ jobs:
         run: npm run tauri build -- --no-bundle
 
       - name: 组装基础包（exe + 工作区模板 + 说明）
+        env:
+          PYTHONIOENCODING: utf-8
         run: |
           $ver = "${{ github.ref_name }}".TrimStart("v")
           python scripts/build-base.py "src-tauri/target/release/learn-platform.exe" "release/LearnPlatform-$ver-base.zip" $ver
