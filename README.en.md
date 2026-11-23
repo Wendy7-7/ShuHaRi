@@ -62,7 +62,7 @@ then click a file name under **Assets** — or just use these direct links:
 
 | You want to learn | Size | Link |
 |---|---|---|
-| Any language (**required**) | Base pack 13MB | [LearnPlatform-v1.5.0-base.zip](https://github.com/Wendy7-7/ShuHaRi/releases/download/v1.5.0/LearnPlatform-v1.5.0-base.zip) |
+| Any language (**required**) | Base pack 13MB | [LearnPlatform-v1.5.0-base.zip](https://github.com/Wendy7-7/ShuHaRi/releases/download/v1.5.1/LearnPlatform-1.5.1-base.zip) |
 | Python / data science / MCM | 127MB | [langpack-python.zip](https://github.com/Wendy7-7/ShuHaRi/releases/download/v1.5.0/langpack-python.zip) |
 | C or C++ | 133MB | [langpack-c-cpp.zip](https://github.com/Wendy7-7/ShuHaRi/releases/download/v1.5.0/langpack-c-cpp.zip) |
 | Java | 193MB | [langpack-java.zip](https://github.com/Wendy7-7/ShuHaRi/releases/download/v1.5.0/langpack-java.zip) |
@@ -71,6 +71,7 @@ then click a file name under **Assets** — or just use these direct links:
 | Everything (USB users) | 1.5GB | [LearnPlatform-v1.5.0-portable.zip](https://github.com/Wendy7-7/ShuHaRi/releases/download/v1.5.0/LearnPlatform-v1.5.0-portable.zip) |
 
 > Only learning Python? The first two rows are enough (140MB total). Lazy or USB users: grab the 1.5GB all-in-one pack instead.
+> Lang packs still live in the v1.5.0 release (toolchains unchanged, fully compatible with the v1.5.1 base pack).
 
 Install: unzip the base pack, run the app, then Practice → 📦 Lang Packs → install the
 langpack zip (**no need to unzip it**).

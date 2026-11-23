@@ -56,7 +56,7 @@
 
 | 你想学什么 | 下载这个 | 直链 |
 |-----------|---------|------|
-| 任何语言（**必下**） | 基础包 13MB | [LearnPlatform-v1.5.0-base.zip](https://github.com/Wendy7-7/ShuHaRi/releases/download/v1.5.0/LearnPlatform-v1.5.0-base.zip) |
+| 任何语言（**必下**） | 基础包 13MB | [LearnPlatform-v1.5.0-base.zip](https://github.com/Wendy7-7/ShuHaRi/releases/download/v1.5.1/LearnPlatform-1.5.1-base.zip) |
 | Python / 数据科学 / 美赛 | 语言包 127MB | [langpack-python.zip](https://github.com/Wendy7-7/ShuHaRi/releases/download/v1.5.0/langpack-python.zip) |
 | C 或 C++ | 语言包 133MB | [langpack-c-cpp.zip](https://github.com/Wendy7-7/ShuHaRi/releases/download/v1.5.0/langpack-c-cpp.zip) |
 | Java | 语言包 193MB | [langpack-java.zip](https://github.com/Wendy7-7/ShuHaRi/releases/download/v1.5.0/langpack-java.zip) |
@@ -65,6 +65,7 @@
 | 全都要 / U 盘党 | 全量包 1.5GB | [LearnPlatform-v1.5.0-portable.zip](https://github.com/Wendy7-7/ShuHaRi/releases/download/v1.5.0/LearnPlatform-v1.5.0-portable.zip) |
 
 > 只学 Python？下第 1、2 行就够了（共 140MB）。懒人或 U 盘党直接下全量包（1.5GB，含全部语言 + 工具链），一次到位。
+> 语言包仍在 v1.5.0 的 Release 里（工具链未变，与 v1.5.1 基础包完全兼容）。
 
 ### 第 3 步：装进软件（语言包不用解压！）
 
