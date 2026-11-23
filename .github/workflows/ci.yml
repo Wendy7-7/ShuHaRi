@@ -32,6 +32,19 @@ jobs:
       - name: Rust 编译检查
         run: cargo check --manifest-path src-tauri/Cargo.toml
 
+      - name: 构建 exe
+        run: npm run tauri build -- --no-bundle
+
+      - name: exe 启动自检（防白窗口坏包）
+        run: |
+          $exe = "src-tauri/target/release/learn-platform.exe"
+          $p = Start-Process -FilePath $exe -PassThru
+          Start-Sleep -Seconds 15
+          if ($p.HasExited) { Write-Error "exe 启动即退出 code=$($p.ExitCode)"; exit 1 }
+          "进程存活 PID=$($p.Id) 窗口标题=$($p.MainWindowTitle)"
+          if (-not (Test-Path "src-tauri/target/release/Data/learn.db")) { Write-Error "DB 未创建"; exit 1 }
+          Stop-Process -Id $p.Id -Force
+
   # 打 tag（v*）自动发版：编译 exe -> 组装基础包 -> 挂到 GitHub Release
   release-build:
     if: startsWith(github.ref, 'refs/tags/v')
@@ -51,6 +64,18 @@ jobs:
 
       - name: 构建 exe
         run: npm run tauri build -- --no-bundle
+
+      - name: exe 启动自检（防白窗口坏包）
+        run: |
+          $exe = "src-tauri/target/release/learn-platform.exe"
+          $p = Start-Process -FilePath $exe -PassThru
+          Start-Sleep -Seconds 15
+          if ($p.HasExited) { Write-Error "exe 启动即退出，code=$($p.ExitCode)"; exit 1 }
+          "进程存活 PID=$($p.Id)，窗口标题=$($p.MainWindowTitle)"
+          $db = "src-tauri/target/release/Data/learn.db"
+          if (-not (Test-Path $db)) { Write-Error "数据库未创建"; exit 1 }
+          "数据库已创建 ✓"
+          Stop-Process -Id $p.Id -Force
 
       - name: 组装基础包（exe + 工作区模板 + 说明）
         env:
