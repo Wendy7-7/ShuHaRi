@@ -19,6 +19,8 @@ def main():
         print(f"exe 不存在: {exe}")
         return 1
 
+    os.makedirs(os.path.dirname(os.path.abspath(out)) or ".", exist_ok=True)
+
     tpl = os.path.join(ROOT, "workspace-template")
     manual = os.path.join(ROOT, "assets", "使用说明.txt")
     if not os.path.isdir(tpl):
