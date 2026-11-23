@@ -55,15 +55,28 @@ pub struct LangPackInfo {
     pub runtime_mb: u64,
 }
 
+/// zip 条目相对路径安全校验：拒绝 ..、盘符、绝对路径（防穿越/防覆盖任意文件）
+fn sanitize_rel(rel: &str) -> Result<(), String> {
+    if rel.is_empty() {
+        return Err("空路径".into());
+    }
+    if rel.starts_with('/') {
+        return Err(format!("绝对路径「{}」", rel));
+    }
+    if rel.split('/').any(|seg| seg == "..") {
+        return Err(format!("包含 .. 的路径「{}」", rel));
+    }
+    // Windows：盘符（C:/x）在 Path::join 时会覆盖目标根
+    if rel.contains(':') {
+        return Err(format!("包含盘符分隔的路径「{}」", rel));
+    }
+    Ok(())
+}
+
 fn runtime_root() -> std::path::PathBuf {
     let exe = std::env::current_exe().unwrap_or_default();
     let dir = exe.parent().unwrap_or(&exe).to_path_buf();
-    let portable = dir.join(".portable");
-    if portable.exists() {
-        dir.join("Runtime")
-    } else {
-        dir.join("Runtime")
-    }
+    dir.join("Runtime")
 }
 
 fn dir_size(p: &std::path::Path) -> u64 {
@@ -203,8 +216,11 @@ pub fn install_langpack(db: State<'_, Db>, zip_path: String) -> Result<serde_jso
         if entry.is_dir() || name == "manifest.json" {
             continue;
         }
-        // 统一路径分隔，取 zip 内相对路径
+        // 统一路径分隔，取 zip 内相对路径；先过安全校验（防穿越：.. / 盘符 / 绝对路径）
         let rel = name.trim_start_matches('/');
+        if let Err(reason) = sanitize_rel(rel) {
+            return Err(format!("语言包含有不安全条目「{}」（{}），已拒装", name, reason));
+        }
         let target = if let Some(rest) = rel.strip_prefix("runtime/") {
             runtime_dir.join(rest)
         } else if let Some(rest) = rel.strip_prefix("bank/") {
@@ -314,4 +330,31 @@ pub fn list_custom_langs() -> Result<Vec<serde_json::Value>, String> {
         }
     }
     Ok(out)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::sanitize_rel;
+
+    #[test]
+    fn sanitize_blocks_traversal() {
+        assert!(sanitize_rel("runtime/../../evil.txt").is_err());
+        assert!(sanitize_rel("bank/../../../Users/x/launchd.plist").is_err());
+        assert!(sanitize_rel("../secret").is_err());
+        assert!(sanitize_rel("a/b/../../../c").is_err());
+    }
+
+    #[test]
+    fn sanitize_blocks_absolute_and_drive() {
+        assert!(sanitize_rel("C:/Windows/system32/evil.dll").is_err());
+        assert!(sanitize_rel("/etc/passwd").is_err());
+        assert!(sanitize_rel("").is_err());
+    }
+
+    #[test]
+    fn sanitize_allows_normal_paths() {
+        assert!(sanitize_rel("runtime/python/python.exe").is_ok());
+        assert!(sanitize_rel("bank/py-001.json").is_ok());
+        assert!(sanitize_rel("workspace/mcm/README.md").is_ok());
+    }
 }
