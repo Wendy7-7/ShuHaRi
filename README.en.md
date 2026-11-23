@@ -22,7 +22,8 @@ teaching software.
 
 ## What it has (honestly)
 
-- **Judge framework**: code is copied to an isolated directory for C/C++/Python/Java/Go/JavaScript
+- **Judge framework**: code is copied to an isolated directory for C/C++/Python/Java/Go/JavaScript,
+  with a timeout plus a **2 GB memory cap and 16-process limit** (Windows Job Object, whole process tree killed on exit; still runs as the current user — not a security sandbox)
   (timeout / stdin injection / output normalization), embedded SQLite for SQL
   with zero deps, PNG dpi verification for figure-saving tasks
 - **Language pack system**: one zip per language (toolchain + problems + tutorials),

@@ -18,7 +18,7 @@
 
 ## 现在有什么（如实版）
 
-- **判题框架**：C/C++/Python/Java/Go/JavaScript 代码复制到隔离目录运行（超时/stdin 注入/输出规范化；无内存与文件系统隔离，勿跑来路不明的代码），
+- **判题框架**：C/C++/Python/Java/Go/JavaScript 代码复制到隔离目录运行，带超时 + **内存上限 2GB + 进程数上限 16**（Windows Job Object，退出即杀整棵进程树；仍以当前用户权限运行，不是安全沙盒），
   SQL 内嵌 SQLite 零依赖，存图类任务可校验 PNG dpi
 - **语言包插件系统**：每种语言一个 zip（工具链+题库+教程），装/卸/注册第三方判题执行器，
   主程序零改动接入（规范见 [PLUGIN_SPEC.md](PLUGIN_SPEC.md)）
