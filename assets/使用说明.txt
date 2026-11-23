@@ -1,0 +1,45 @@
+========================================
+ LearnPlatform 便携版 · 使用说明
+========================================
+
+【怎么用】
+双击 learn-platform.exe 即可。所有东西都在这个文件夹里：
+  Data\        你的学习数据（做题记录、错题、徽章、设置）
+  workspace\   学习工作区（资料、题库、你的代码）
+  Runtime\     自带的 C 编译器（gcc）和 Python
+
+【搬到 U 盘 / 换电脑】
+把整个文件夹复制过去，双击 exe 就能继续学——
+进度、设置、代码全都跟着你走，不依赖任何一台电脑。
+对方的电脑不需要装编译器，也不需要装 Python。
+
+【注意】
+1. 千万别删除 .portable 这个隐藏文件。它是"便携模式"的开关：
+   没有它，程序会把数据存到当前电脑的用户目录里，换电脑就找不到进度了。
+2. 首次在别的电脑上运行，Windows 可能提示"已保护你的电脑"，
+   点「更多信息」→「仍要运行」。这是因为没有购买代码签名证书，
+   不是病毒（不放心可以把 exe 拖到 virustotal.com 查）。
+3. AI 助教的 Key 存在 Data\learn.db 里，跟着 U 盘走。
+   如果在网吧等公共电脑上用过，记得删掉或在设置里换掉 Key。
+
+【包含的组件】
+  Runtime\w64devkit  MinGW-w64 GCC —— C / C++ 判题用
+  Runtime\python     Python 3.13 —— Python 判题用
+  Runtime\jdk        OpenJDK 21 (Temurin) —— Java 判题用
+  对方的电脑不需要装任何东西：C / C++ / Python / Java 四种语言都能直接判题。
+  程序里的"帮助"页有完整的安装/用法教程。
+
+祝学习愉快。
+
+
+========================================
+ English Guide (ShuHaRi · LearnPlatform)
+========================================
+
+1. Unzip anywhere (USB stick friendly) and double-click learn-platform.exe
+2. Solve problems in Practice; the built-in judge gives instant feedback
+3. UI language: Settings (top-right) → Interface Language → English
+4. Want more languages? Practice → 📦 Lang Packs → install a pack zip
+   (download langpack-*.zip from GitHub Releases; SQL is built-in, zero setup)
+5. Judging works fully offline; data stays in the Data folder next to the exe. The AI coach needs your own API key (internet).
+6. For AI coaching: Settings → pick a provider → paste an OpenAI-compatible API key.

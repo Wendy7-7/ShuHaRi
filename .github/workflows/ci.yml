@@ -25,25 +25,45 @@ jobs:
       - name: 构建前端
         run: npm run build
 
-      - name: Rust 单元测试（判题器核心：normalize / png_dpi / judge_sql）
+      - name: Rust 单元测试（判题器核心 + 沙盒）
         run: cargo test --manifest-path src-tauri/Cargo.toml
 
       - name: Rust 编译检查
         run: cargo check --manifest-path src-tauri/Cargo.toml
 
-  # 完整打包较重（约 15 分钟），仅在打 tag 时跑，产出可直接下发的产物
+  # 打 tag（v*）自动发版：编译 exe -> 组装基础包 -> 挂到 GitHub Release
   release-build:
     if: startsWith(github.ref, 'refs/tags/v')
     runs-on: windows-latest
     needs: build-and-test
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-      - run: npm install
-      - run: npm run tauri build -- --no-bundle
-      - uses: actions/upload-artifact@v4
+
+      - name: 安装前端依赖
+        run: npm install
+
+      - name: 构建 exe
+        run: npm run tauri build -- --no-bundle
+
+      - name: 组装基础包（exe + 工作区模板 + 说明）
+        run: |
+          $ver = "${{ github.ref_name }}".TrimStart("v")
+          python scripts/build-base.py "src-tauri/target/release/learn-platform.exe" "release/LearnPlatform-$ver-base.zip" $ver
+
+      - name: 发布到 GitHub Release
+        uses: softprops/action-gh-release@v2
         with:
-          name: learn-platform-windows
-          path: src-tauri/target/release/learn-platform.exe
+          files: |
+            release/LearnPlatform-*-base.zip
+            src-tauri/target/release/learn-platform.exe
+          body: |
+            基础包已自动构建：`LearnPlatform-${{ github.ref_name }}-base.zip`（解压即用，内置 SQL 判题）。
+
+            > 语言包（langpack-*.zip）由维护者用 `build-langpacks.py` 在本地构建后手工上传——
+            > 工具链快照不进 CI（省 400MB+ 下载与构建时间），构建脚本入库可复现。
