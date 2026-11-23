@@ -3,6 +3,7 @@ mod db;
 mod files;
 mod judge;
 mod langpack;
+mod sandbox;
 mod portable;
 mod pty;
 

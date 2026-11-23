@@ -44,6 +44,14 @@ fn run_cmd(mut cmd: Command, stdin_data: Option<String>, timeout: Duration) -> R
         }
     };
 
+    // 资源限制：内存上限 2GB、进程数 16、随句柄关闭杀整棵进程树。
+    // attach 失败（极少数环境）退化为裸进程模式，不阻塞判题。
+    #[cfg(windows)]
+    let sandbox = {
+        use std::os::windows::io::AsRawHandle;
+        crate::sandbox::attach(child.as_raw_handle(), 2048, 16)
+    };
+
     let mut stdin = child.stdin.take();
     let writer = std::thread::spawn(move || {
         if let (Some(s), Some(d)) = (stdin.as_mut(), stdin_data) {
@@ -82,6 +90,10 @@ fn run_cmd(mut cmd: Command, stdin_data: Option<String>, timeout: Duration) -> R
             Err(_) => break,
         }
     }
+    // 关 Job：无论正常结束还是超时，残留进程树（含孙进程）一并杀掉，
+    // 也释放管道写端，保证下方 join 不会因孙进程持有管道而阻塞
+    #[cfg(windows)]
+    drop(sandbox);
     let _ = writer.join();
     RunOutcome {
         stdout: out_handle.join().unwrap_or_default(),
