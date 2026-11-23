@@ -22,13 +22,13 @@ teaching software.
 
 ## What it has (honestly)
 
-- **Judge framework**: local sandboxes for C/C++/Python/Java/Go/JavaScript
+- **Judge framework**: code is copied to an isolated directory for C/C++/Python/Java/Go/JavaScript
   (timeout / stdin injection / output normalization), embedded SQLite for SQL
   with zero deps, PNG dpi verification for figure-saving tasks
 - **Language pack system**: one zip per language (toolchain + problems + tutorials),
   install / uninstall / register third-party judge executors — zero changes to the
   main program (spec in [PLUGIN_SPEC.md](PLUGIN_SPEC.md))
-- **Learning loop**: mistake variant redo (anti-memorization), sequential topic
+- **Learning loop**: mistake variant redo (raises the cost of memorizing), sequential topic
   unlock, mistake archive, exam mode, stats, badges
 - **AI coach layer**: bring your own OpenAI-compatible key; Socratic prompts
   (ask for the idea first, hint second, never full code)
