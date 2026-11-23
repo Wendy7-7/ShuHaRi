@@ -69,7 +69,8 @@ const check = (name, ok) => { if (ok) { PASS++; console.log(`  ✓ ${name}`); } 
     await syn(".exam-setup button", "开始考试"); await sleep(1500);
     await syn(".q-toolbar button", "交卷"); await sleep(1800);
     await syn(".nav-btn", "统计"); await sleep(1000);
-    check("考试入库+统计", ((await ev('[...document.querySelectorAll(".stat-card")].map(c=>c.textContent).find(t=>t.includes("完成考试"))')) || "").includes("1"));
+    // 幂等断言：重复跑冒烟时场次会累加，只要求至少有 1 场
+    check("考试入库+统计", /[1-9]/.test(((await ev('[...document.querySelectorAll(".stat-card")].map(c=>c.textContent).find(t=>t.includes("完成考试"))')) || "")));
     // 8 主题
     await syn(".topbar button", "设置"); await sleep(600);
     await ev('document.querySelectorAll(".swatch")[3]?.click()');
