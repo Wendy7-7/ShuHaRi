@@ -62,8 +62,9 @@
 | Java | 语言包 193MB | [langpack-java.zip](https://github.com/Wendy7-7/ShuHaRi/releases/download/v1.5.0/langpack-java.zip) |
 | Go | 语言包 77MB | [langpack-go.zip](https://github.com/Wendy7-7/ShuHaRi/releases/download/v1.5.0/langpack-go.zip) |
 | JavaScript | 语言包 35MB | [langpack-node.zip](https://github.com/Wendy7-7/ShuHaRi/releases/download/v1.5.0/langpack-node.zip) |
+| 全都要 / U 盘党 | 全量包 1.5GB | [LearnPlatform-v1.5.0-portable.zip](https://github.com/Wendy7-7/ShuHaRi/releases/download/v1.5.0/LearnPlatform-v1.5.0-portable.zip) |
 
-> 只学 Python？下前两行就够了（共 140MB）。全量包（1.5GB，含全部语言）暂未提供，用「基础包 + 语言包」组合效果完全一样。
+> 只学 Python？下第 1、2 行就够了（共 140MB）。懒人或 U 盘党直接下全量包（1.5GB，含全部语言 + 工具链），一次到位。
 
 ### 第 3 步：装进软件（语言包不用解压！）
 

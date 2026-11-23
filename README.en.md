@@ -67,9 +67,9 @@ then click a file name under **Assets** — or just use these direct links:
 | Java | 193MB | [langpack-java.zip](https://github.com/Wendy7-7/ShuHaRi/releases/download/v1.5.0/langpack-java.zip) |
 | Go | 77MB | [langpack-go.zip](https://github.com/Wendy7-7/ShuHaRi/releases/download/v1.5.0/langpack-go.zip) |
 | JavaScript | 35MB | [langpack-node.zip](https://github.com/Wendy7-7/ShuHaRi/releases/download/v1.5.0/langpack-node.zip) |
+| Everything (USB users) | 1.5GB | [LearnPlatform-v1.5.0-portable.zip](https://github.com/Wendy7-7/ShuHaRi/releases/download/v1.5.0/LearnPlatform-v1.5.0-portable.zip) |
 
-> Only learning Python? The first two rows are enough (140MB total).
-> The 1.5GB all-in-one pack is not provided yet — base + langpack works exactly the same.
+> Only learning Python? The first two rows are enough (140MB total). Lazy or USB users: grab the 1.5GB all-in-one pack instead.
 
 Install: unzip the base pack, run the app, then Practice → 📦 Lang Packs → install the
 langpack zip (**no need to unzip it**).
