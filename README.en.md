@@ -54,6 +54,27 @@ teaching software.
 
 > Already have Python/JDK on PATH? It just works — packs are optional.
 
+## Direct download links
+
+New to GitHub? Open the [Releases page](https://github.com/Wendy7-7/ShuHaRi/releases),
+then click a file name under **Assets** — or just use these direct links:
+
+| You want to learn | Size | Link |
+|---|---|---|
+| Any language (**required**) | Base pack 13MB | [LearnPlatform-v1.5.0-base.zip](https://github.com/Wendy7-7/ShuHaRi/releases/download/v1.5.0/LearnPlatform-v1.5.0-base.zip) |
+| Python / data science / MCM | 127MB | [langpack-python.zip](https://github.com/Wendy7-7/ShuHaRi/releases/download/v1.5.0/langpack-python.zip) |
+| C or C++ | 133MB | [langpack-c-cpp.zip](https://github.com/Wendy7-7/ShuHaRi/releases/download/v1.5.0/langpack-c-cpp.zip) |
+| Java | 193MB | [langpack-java.zip](https://github.com/Wendy7-7/ShuHaRi/releases/download/v1.5.0/langpack-java.zip) |
+| Go | 77MB | [langpack-go.zip](https://github.com/Wendy7-7/ShuHaRi/releases/download/v1.5.0/langpack-go.zip) |
+| JavaScript | 35MB | [langpack-node.zip](https://github.com/Wendy7-7/ShuHaRi/releases/download/v1.5.0/langpack-node.zip) |
+
+> Only learning Python? The first two rows are enough (140MB total).
+> The 1.5GB all-in-one pack is not provided yet — base + langpack works exactly the same.
+
+Install: unzip the base pack, run the app, then Practice → 📦 Lang Packs → install the
+langpack zip (**no need to unzip it**).
+
+
 ## The learning loop
 
 ```
