@@ -11,6 +11,22 @@
 | **做一个新语言的插件包** | 读 [PLUGIN_SPEC.md](PLUGIN_SPEC.md)（零代码改主程序） | ⭐⭐ |
 | 修 bug / 改功能 | 本文 §3 | ⭐⭐⭐ |
 
+## 🌱 待认领任务（Good First Issues）
+
+挑一个，在对应 Issue 下说一句"我来试试"，然后开工。都标注了大概工作量。
+
+| 任务 | 说明 | 工作量 |
+|------|------|--------|
+| **题面英文翻译（认领制）** | 65 道题的 statement 逐题翻译，可只认领一个语言（Python 18 题/Java 8 题…），一题一个 PR 也行 | 每题 10 分钟 |
+| **AI 教练英文提示词** | `src/components/ChatPanel.tsx` 的 `GUIDED_PROMPT`/`DIRECT_PROMPT` 做双语，界面切 English 时用英文教练 | 半天 |
+| **加题** | 每个语言补到 15-20 题，见本文 §1 | 每题 15 分钟 |
+| **新语言包（Lua / Rust / PHP）** | 按 [PLUGIN_SPEC.md](PLUGIN_SPEC.md) 打包，主程序零改动 | 1-2 天 |
+| **界面文案校对** | 英文界面里有没有翻译生硬的地方？截图 + 建议译文提 PR | 半小时 |
+| **学习记录导出** | 导出错题/统计为 JSON/CSV（"数据在你手里"的兑现） | 半天 |
+
+> 没有 Issue 对应？直接开一个 Feature Request 说想做哪个，维护者会给你指路。
+
+
 ## §1 加一道题（5 分钟学会）
 
 题目 = 一个 JSON 文件，放 `workspace-template/bank/`：

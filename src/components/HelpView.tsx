@@ -26,9 +26,11 @@ export default function HelpView() {
   const setOnboardingOpen = useApp((s) => s.setOnboardingOpen);
   const setSettingsOpen = useApp((s) => s.setSettingsOpen);
   const [tools, setTools] = useState<Record<string, boolean> | null>(null);
+  const [info, setInfo] = useState<{ version: string; portable: boolean } | null>(null);
 
   useEffect(() => {
     api.checkToolchain().then(setTools).catch(() => setTools({}));
+    api.appInfo().then((i) => setInfo({ version: i.version, portable: i.portable })).catch(() => {});
   }, []);
 
   const toolRow = (name: string, ok: boolean | undefined, guide?: any) => (
@@ -159,11 +161,33 @@ export default function HelpView() {
         </ol>
       </Section>
 
+      <Section title={t("打不开 / 白屏 / 闪退怎么办")}>
+        <ol style={{ margin: "6px 0 0 18px", lineHeight: 2, fontSize: 13 }}>
+          <li>
+            <b>{t("删掉 WebView2 缓存目录，重开程序（能解决大部分白屏）")}</b>：
+            {t("按 Win+R 输入")} <code>%LOCALAPPDATA%\com.learnplatform.app</code>
+            {t("，把整个 EBWebView 文件夹删掉，再双击 exe。强杀进程、断电后最常见。")}
+          </li>
+          <li>
+            <b>{t("被杀毒软件拦截")}</b>：{t("软件没有数字签名（开源项目常见），点「仍要运行」或加入白名单即可。")}
+          </li>
+          <li>
+            <b>{t("双击完全没反应")}</b>：{t("先看任务管理器里有没有残留的 learn-platform.exe 或 msedgewebview2.exe，结束它们再重试。")}
+          </li>
+          <li>
+            <b>{t("还是不行")}</b>：{t("重启电脑；仍无法解决请到 GitHub Issues 反馈，附上系统版本和截图。")}{" "}
+            <a href="#" onClick={(e) => { e.preventDefault(); openUrl("https://github.com/Wendy7-7/ShuHaRi/issues"); }}>
+              github.com/Wendy7-7/ShuHaRi/issues
+            </a>
+          </li>
+        </ol>
+      </Section>
+
       <p className="hint-text" style={{ marginTop: 24 }}>
         这里没找到答案？把问题原样发给 AI 助教，或者截图发给你靠谱的学长。
       </p>
       <p className="hint-text" style={{ marginTop: 8, opacity: 0.5, fontSize: 11 }}>
-        ShuHaRi v1.5.0 · 本地优先 · C / C++ / Python / Java 判题 · 数据全部在你自己的电脑（或 U 盘）里
+        ShuHaRi v{info?.version ?? "…"}{info?.portable ? " · 便携版" : ""} · 本地优先 · C / C++ / Python / Java 判题 · 数据全部在你自己的电脑（或 U 盘）里
       </p>
     </div>
   );

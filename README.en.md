@@ -76,6 +76,11 @@ then click a file name under **Assets** — or just use these direct links:
 Install: unzip the base pack, run the app, then Practice → 📦 Lang Packs → install the
 langpack zip (**no need to unzip it**).
 
+> **Blank window / nothing happens on double-click?** Open `%LOCALAPPDATA%\com.learnplatform.app`
+> (Win+R) and **delete the whole `EBWebView` folder**, then relaunch — most common after
+> force-killing the app or a power loss. Still stuck? [Open an issue](https://github.com/Wendy7-7/ShuHaRi/issues)
+> with your OS version and a screenshot.
+
 
 ## The learning loop
 

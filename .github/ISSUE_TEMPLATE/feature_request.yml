@@ -1,0 +1,42 @@
+name: 功能建议 / Feature Request
+description: 想要的新功能、想加的语言、想改的体验
+title: "[Feature] "
+labels: ["enhancement"]
+body:
+  - type: dropdown
+    id: kind
+    attributes:
+      label: 建议类型
+      options:
+        - 加一个语言包（Lua/PHP/Rust…）
+        - 加题 / 题库内容
+        - 界面与交互体验
+        - AI 助教能力
+        - 其他
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: 你遇到什么问题 / 缺什么
+      description: 先说痛点，再说想要的解法
+      placeholder: 例如：我想学 Rust，但找不到语言包……
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: 你期望的方案
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: willing
+    attributes:
+      label: 参与意愿
+      options:
+        - label: 我愿意自己实现并提交 PR（需要的话可以给我指路）
+        - label: 我可以帮忙测试
+        - label: 我只是提个建议

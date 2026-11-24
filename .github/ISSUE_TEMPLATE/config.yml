@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 下载与安装问题（先看这里）
+    url: https://github.com/Wendy7-7/ShuHaRi#下载教学手把手版
+    about: 白屏、打不开、装语言包——90% 的问题在这一节有答案
+  - name: 语言包插件规范
+    url: https://github.com/Wendy7-7/ShuHaRi/blob/main/PLUGIN_SPEC.md
+    about: 想自己做一个语言包？规范在这
+  - name: 贡献指南
+    url: https://github.com/Wendy7-7/ShuHaRi/blob/main/CONTRIBUTING.md
+    about: 加题、改代码、写文档的流程
