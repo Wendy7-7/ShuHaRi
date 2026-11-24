@@ -4,6 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ShuHaRi · 守破离 — 在线试玩</title>
+<meta name="description" content="3 分钟在线试玩：判题不只告诉你对错，答错时像教练一样先问你一句。8 道题含 3 道 SQL 真跑。">
+<meta property="og:title" content="ShuHaRi · 守破离 — 在线试玩">
+<meta property="og:description" content="8 道编程题，浏览器里直接判。答错不会只告诉你「错误」，而是先问你一句。">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230b0f14'/%3E%3Ctext x='50%25' y='54%25' font-size='34' text-anchor='middle' dominant-baseline='middle' fill='%234fc1ff' font-family='monospace'%3E%E5%AE%88%3C/text%3E%3C/svg%3E">
 <style>
   :root{
     --bg:#0b0f14; --panel:#111821; --line:#1f2a37; --text:#e6edf3; --dim:#8b98a5;
@@ -227,6 +233,7 @@ const QUIZ = [
 let lang = (navigator.language || "zh").toLowerCase().startsWith("zh") ? "zh" : "en";
 let solved = new Set();
 let tried = {};
+let drafts = {}; // 输入草稿：重绘/切语言后不丢
 let SQL = null;
 const t = () => T[lang];
 
@@ -236,7 +243,7 @@ async function initSql() {
   catch (e) { console.warn("sql.js failed", e); return null; }
 }
 
-function esc(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+function esc(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); }
 
 function render() {
   const L = t();
@@ -277,15 +284,29 @@ function render() {
       "</div>" +
       (done
         ? '<div class="fb show ok" style="margin-top:10px"><b>' + t().correct + '</b><div class="who">' + t().coach + "：</div><div>" + esc(q.explain[lang]) + "</div></div>"
-        : '<div class="fb" id="fb-' + q.id + '"></div>') +
+        : (tried[q.id] >= 2
+            ? '<div class="fb show bad" id="fb-' + q.id + '"></div><div class="solve" style="display:block"><b>' + t().answerIs + "</b><pre>" + esc(q.solution || q.answer) + "</pre></div>"
+            : '<div class="fb" id="fb-' + q.id + '"></div>')) +
       "</div>";
     quiz.appendChild(card);
   });
   quiz.querySelectorAll("[data-run]").forEach((b) => b.addEventListener("click", () => handleJudge(b.getAttribute("data-run"))));
   quiz.querySelectorAll("[data-solve]").forEach((b) => b.addEventListener("click", () => showSolution(b.getAttribute("data-solve"))));
-  quiz.querySelectorAll("input").forEach((inp) => inp.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") handleJudge(inp.id.replace("in-", ""));
-  }));
+  quiz.querySelectorAll("input, textarea").forEach((inp) => {
+    const qid = inp.id.replace("in-", "");
+    if (drafts[qid]) inp.value = drafts[qid];
+    inp.addEventListener("input", () => { drafts[qid] = inp.value; });
+    inp.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" && inp.tagName === "INPUT") handleJudge(qid);
+    });
+  });
+  // 已看过解答的题：按钮不再显示
+  QUIZ.forEach((q) => {
+    if (tried[q.id] >= 2) {
+      const b = document.querySelector('[data-solve="' + q.id + '"]');
+      if (b) b.style.display = "none";
+    }
+  });
 }
 
 function norm(s) { return String(s).trim().replace(/\s+/g, " "); }
@@ -295,7 +316,7 @@ function feedback(qid, ok, coachText, extraHtml) {
   const L = t();
   box.className = "fb show " + (ok ? "ok" : "bad");
   box.innerHTML = "<b>" + (ok ? L.correct : L.wrong) + "</b>" +
-    '<div class="who">' + L.coach + "：</div>" +
+    '<div class="who">' + L.coach + (lang === "zh" ? "：" : ": ") + "</div>" +
     "<div>" + esc(coachText) + "</div>" + (extraHtml || "");
 }
 
@@ -316,8 +337,10 @@ async function handleJudge(qid) {
   if (q.type === "output") {
     if (norm(val) === norm(q.answer)) {
       solved.add(qid);
-      feedback(qid, true, q.explain[lang]);
       render();
+      const card = document.querySelectorAll(".card")[QUIZ.findIndex((x) => x.id === qid)];
+      if (card) setTimeout(() => card.scrollIntoView({ behavior: "smooth", block: "center" }), 60);
+      if (solved.size === QUIZ.length) setTimeout(() => document.getElementById("cta").scrollIntoView({ behavior: "smooth", block: "center" }), 400);
       return;
     }
   } else {
@@ -343,8 +366,10 @@ async function handleJudge(qid) {
     const got = JSON.stringify(rows.map((r) => r.map((v) => (typeof v === "number" ? String(Number(v)) : String(v)))));
     if (got === JSON.stringify(q.expect)) {
       solved.add(qid);
-      feedback(qid, true, q.explain[lang]);
       render();
+      const card = document.querySelectorAll(".card")[QUIZ.findIndex((x) => x.id === qid)];
+      if (card) setTimeout(() => card.scrollIntoView({ behavior: "smooth", block: "center" }), 60);
+      if (solved.size === QUIZ.length) setTimeout(() => document.getElementById("cta").scrollIntoView({ behavior: "smooth", block: "center" }), 400);
       return;
     }
   }
