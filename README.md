@@ -56,7 +56,7 @@
 
 | 你想学什么 | 下载这个 | 直链 |
 |-----------|---------|------|
-| 任何语言（**必下**） | 基础包 13MB | [LearnPlatform-v1.5.0-base.zip](https://github.com/Wendy7-7/ShuHaRi/releases/download/v1.5.1/LearnPlatform-1.5.1-base.zip) |
+| 任何语言（**必下**） | 基础包 13MB | [LearnPlatform-v1.5.0-base.zip](https://github.com/Wendy7-7/ShuHaRi/releases/download/v1.5.2/LearnPlatform-1.5.2-base.zip) |
 | Python / 数据科学 / 美赛 | 语言包 127MB | [langpack-python.zip](https://github.com/Wendy7-7/ShuHaRi/releases/download/v1.5.0/langpack-python.zip) |
 | C 或 C++ | 语言包 133MB | [langpack-c-cpp.zip](https://github.com/Wendy7-7/ShuHaRi/releases/download/v1.5.0/langpack-c-cpp.zip) |
 | Java | 语言包 193MB | [langpack-java.zip](https://github.com/Wendy7-7/ShuHaRi/releases/download/v1.5.0/langpack-java.zip) |

@@ -62,7 +62,7 @@ then click a file name under **Assets** — or just use these direct links:
 
 | You want to learn | Size | Link |
 |---|---|---|
-| Any language (**required**) | Base pack 13MB | [LearnPlatform-v1.5.0-base.zip](https://github.com/Wendy7-7/ShuHaRi/releases/download/v1.5.1/LearnPlatform-1.5.1-base.zip) |
+| Any language (**required**) | Base pack 13MB | [LearnPlatform-v1.5.0-base.zip](https://github.com/Wendy7-7/ShuHaRi/releases/download/v1.5.2/LearnPlatform-1.5.2-base.zip) |
 | Python / data science / MCM | 127MB | [langpack-python.zip](https://github.com/Wendy7-7/ShuHaRi/releases/download/v1.5.0/langpack-python.zip) |
 | C or C++ | 133MB | [langpack-c-cpp.zip](https://github.com/Wendy7-7/ShuHaRi/releases/download/v1.5.0/langpack-c-cpp.zip) |
 | Java | 193MB | [langpack-java.zip](https://github.com/Wendy7-7/ShuHaRi/releases/download/v1.5.0/langpack-java.zip) |
