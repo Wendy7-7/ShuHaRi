@@ -57,6 +57,9 @@ teaching software.
 
 ## Direct download links
 
+> 🎮 **Don't want to download yet? Try the 3-minute web playground**: [wendy7-7.github.io/ShuHaRi](https://wendy7-7.github.io/ShuHaRi/)
+> (8 problems including 3 live SQL challenges, judged right in your browser)
+
 New to GitHub? Open the [Releases page](https://github.com/Wendy7-7/ShuHaRi/releases),
 then click a file name under **Assets** — or just use these direct links:
 

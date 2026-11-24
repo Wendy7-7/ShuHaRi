@@ -44,6 +44,9 @@
 
 ## 下载教学（手把手版）
 
+> 🎮 **不想下载？先在线试玩 3 分钟**：[wendy7-7.github.io/ShuHaRi](https://wendy7-7.github.io/ShuHaRi/)
+> （8 道题，含 3 道 SQL 真跑，浏览器里直接判题）
+
 ### 第 1 步：打开下载页
 
 浏览器打开 👉 **https://github.com/Wendy7-7/ShuHaRi/releases**
