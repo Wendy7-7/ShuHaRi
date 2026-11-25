@@ -24,7 +24,7 @@ def digest(path):
 
 def main():
     files = sorted(BANK.glob("py-mcm-*.json"))
-    assert len(files) == 10
+    assert len(files) == 11
     watched = files + [ROOT / "mcm-bank.cjs", KIT / "week2_answers.py"] + sorted((KIT / "data").glob("*.csv"))
     before = {path: digest(path) for path in watched}
     raw = pd.read_csv(KIT / "data" / "level1_contest_raw.csv")
