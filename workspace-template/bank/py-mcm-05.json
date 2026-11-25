@@ -14,6 +14,8 @@
     "统计某个值出现次数：(df['School'] == 'XJTLU').sum()"
   ],
   "editorial_md": "## 题解\n\n```python\ndf = pd.read_csv(\"mcm/pandas_kit/data/level1_contest_raw.csv\")\ndf.columns = df.columns.str.strip()\ndf['School'] = df['School'].str.strip().str.upper()\nprint((df['School'] == 'XJTLU').sum())\n```\n\n统一后 XJTLU 有 9 行（含重复行）。顺手打印 `df['School'].value_counts()` 看看其他学校各几行。",
+  "reference_code": "import pandas as pd\ndf = pd.read_csv(\"mcm/pandas_kit/data/level1_contest_raw.csv\")\ndf.columns = df.columns.str.strip()\ndf['School'] = df['School'].str.strip().str.upper()\nprint((df['School'] == 'XJTLU').sum())\n",
+  "content_version": "1.1",
   "test_cases": [
     {
       "stdin": "",

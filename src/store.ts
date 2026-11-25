@@ -33,6 +33,9 @@ interface AppState {
   editorContent: string;
   /** 请求编辑器保存（判题前先落盘） */
   saveNonce: number;
+  saveCompletedNonce: number;
+  saveSucceeded: boolean;
+  completeSave: (nonce: number, succeeded: boolean) => void;
   /** 请求判题（编辑器 Ctrl+Enter 触发） */
   judgeNonce: number;
   uiLang: "zh" | "en";
@@ -61,7 +64,7 @@ interface AppState {
   openReader: (f: string) => void;
   openEditor: (f: string) => void;
   setEditorContent: (c: string) => void;
-  requestSave: () => void;
+  requestSave: () => Promise<boolean>;
   requestJudge: () => void;
   refreshFileTree: () => void;
   toggleVim: () => void;
@@ -90,6 +93,8 @@ export const useApp = create<AppState>((set, get) => ({
   editorNonce: 0,
   editorContent: "",
   saveNonce: 0,
+  saveCompletedNonce: 0,
+  saveSucceeded: true,
   judgeNonce: 0,
   uiLang: "zh",
   variantRedo: null,
@@ -115,7 +120,37 @@ export const useApp = create<AppState>((set, get) => ({
   openEditor: (editorFile) =>
     set((s) => ({ editorFile, editorNonce: s.editorNonce + 1 })),
   setEditorContent: (editorContent) => set({ editorContent }),
-  requestSave: () => set((s) => ({ saveNonce: s.saveNonce + 1 })),
+  requestSave: () => {
+    const nonce = get().saveNonce + 1;
+    const { workspace, editorFile, editorNonce } = get();
+    return new Promise<boolean>((resolve) => {
+      let done = false;
+      let unsubscribe = () => {};
+      const finish = (succeeded: boolean) => {
+        if (done) return;
+        done = true;
+        clearTimeout(timer);
+        unsubscribe();
+        resolve(succeeded);
+      };
+      // 超时只表示未确认保存，绝不能据此继续判题。
+      const timer = setTimeout(() => finish(false), 15000);
+      unsubscribe = useApp.subscribe((state) => {
+        if (state.workspace !== workspace || state.editorFile !== editorFile
+          || state.editorNonce !== editorNonce || state.saveNonce > nonce) {
+          finish(false);
+        } else if (state.saveCompletedNonce === nonce) {
+          finish(state.saveSucceeded);
+        }
+      });
+      set({ saveNonce: nonce });
+    });
+  },
+  completeSave: (nonce, succeeded) => {
+    if (get().saveNonce === nonce) {
+      set({ saveCompletedNonce: nonce, saveSucceeded: succeeded });
+    }
+  },
   requestJudge: () => set((s) => ({ judgeNonce: s.judgeNonce + 1 })),
   refreshFileTree: () => set((s) => ({ fileTreeNonce: s.fileTreeNonce + 1 })),
   toggleVim: () => set((s) => ({ vimEnabled: !s.vimEnabled })),

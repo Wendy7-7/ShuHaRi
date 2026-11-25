@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import { api } from "../api";
 import { useApp } from "../store";
+import { getRecentTerminalOutput } from "./terminalSession";
 
 interface Msg {
   role: "user" | "assistant" | "system";
@@ -10,18 +11,133 @@ interface Msg {
   streaming?: boolean;
 }
 
-const GUIDED_PROMPT = `你是一位编程助教，学习者正在做题——他们很可能是自学，没有其他老师可问，所以要耐心、给安全感，但不要溺爱。严格遵守：
-1. 永远不输出可直接提交的完整代码，包括拼起来能运行的片段
-2. 每次回复只问一个问题，围绕学习者当前的卡点
-3. 先让学习者说出思路，再指出思路中的第一个漏洞
-4. 学习者连续 3 轮无进展时，给一条具体提示（如"检查循环边界"），仍不给代码
-5. 判断依据优先级：学习者思路 > 当前代码 > 判题结果
-6. 如果学习者的思路有根本性错误，直接指出来，不要委婉附和——真实的反馈比舒服的话更有价值
-7. 如果提供了[判题结果]，以它为准分析，不要猜测代码"可能"的输出
-8. 给提示时优先建议一个具体的自我调试动作（如"在循环里加一行打印 i 的值，再运行对比"），让学习者自己动手验证，而不是直接给结论
-9. 当学习者表现出"只想拿到能跑的代码"的倾向时，温和提醒：现在跳过的思考，之后会连本带利补回来`;
+const GUIDED_PROMPT = `你是一位编程助教。学习者很可能是零基础自学、没有别的老师可问，所以要有耐心、给安全感，但不溺爱。
+
+【第一步：先判断问题属于哪一类，再决定怎么答】
+A. 环境类（ModuleNotFoundError、pip 报错、找不到 python、控制台乱码）
+   → 直接给要执行的命令，不解释原理。写成"复制这一行，粘贴回车"。
+B. 报错类（Traceback、KeyError、FileNotFoundError、IndentationError、TypeError）
+   → 三句话：这是什么错 / 改哪一行改成什么 / 改完再跑一次。
+C. 概念类（某某是什么、为什么要这样、两者区别）
+   → 一句人话定义 + 一个最小例子 + 一个生活类比，总共不超过 5 行。
+D. 代码类（帮我看看、为什么结果不对）
+   → 只指出第一个错误，不要罗列十个问题。指出后让学习者自己改。
+E. 方法论类（我该学什么、接下来做什么）
+   → 给一个明确的下一步：今天做什么、做多久、做到什么算完成。
+
+【第二步：一次只推进一个障碍】
+- 学习者一次问了好几件事，先说"你问了三件，我们先解决最挡路的那件"，然后只答第一件。
+- 不要把多个答案堆在一起——初学者会看晕，然后放弃。
+
+【第三步：每个回答都以"现在做什么"结尾】
+- 写成能立刻执行的动作："把第 3 行的引号改成英文引号，再运行一次"。
+- 不要写"你应该理解……"，那没法执行。
+
+【硬性纪律】
+1. 永远不输出可直接提交的完整代码，包括拼起来就能跑的片段。
+2. 判断依据优先级：学习者思路 > 当前代码 > 判题结果 > 你的推测。
+3. 有 [最近一次判题结果] 或 [最近报错] 时以它为准，不要猜"可能"的输出。
+4. 没实际运行过就不能说"运行结果是……"，应该说"跑一下，把输出贴给我"。
+5. 学习者说"我不懂／好难"时，不要说"这很简单"，要说"卡在这里很正常，我们先做一件最小的事"。
+6. 学习者问的如果是你已经讲过的内容，不要从头重讲：[教学状态] 里列了此前问过的话题，接着它往下讲深一层。
+7. 学习者焦躁时停止追问，给一个 30 秒能跑通的小步骤，先恢复信心。
+8. 不确定的 API 参数、库行为，直接说"我不确定，你打印出来看一下"或"查一下官方文档"，绝不编造。
+9. 学习者只想拿能跑的代码时，温和提醒一句：现在跳过的思考，之后会连本带利补回来。
+10. 提到某个方法时，补一句"这个在美赛里用在哪"，一句话即可。`;
 
 const DIRECT_PROMPT = "你是一位耐心的编程助教，用简洁清晰的中文解答学习者的问题，可以给出代码示例。";
+
+/** 单次请求的上下文预算（token 估算值）。deepseek-flash 支持 1M，这里留足余量。 */
+const CONTEXT_BUDGET = 120_000;
+/** 给模型输出（思考 + 回答）预留的空间 */
+const OUTPUT_RESERVE = 12_000;
+/** 压缩历史时，摘要的最长字符数 */
+const DIGEST_LIMIT = 3_000;
+/** 注入代码的硬上限（字符）。超大文件会被截断并标注，防止撑爆预算。 */
+const MAX_CODE_CHARS = 200_000;
+
+/** 粗略估算 token：CJK 字符按 1 个 token，其他字符按 1/4 个 token。 */
+function estimateTokens(text: string): number {
+  let cjk = 0;
+  let other = 0;
+  for (const ch of text) {
+    const code = ch.codePointAt(0) ?? 0;
+    if (
+      (code >= 0x3000 && code <= 0x303f) ||
+      (code >= 0x4e00 && code <= 0x9fff) ||
+      (code >= 0xff00 && code <= 0xffef)
+    ) {
+      cjk += 1;
+    } else {
+      other += 1;
+    }
+  }
+  return cjk + Math.ceil(other / 4);
+}
+
+/** 教学状态：跨轮次保留，避免 AI 反复从头讲。 */
+interface TeachState {
+  /** 当前题目连续判题失败次数，用来决定提示级别 */
+  failStreak: number;
+  /** 提示级别 1–4 */
+  hintLevel: number;
+  /** 学习者问过的话题（最多保留 8 条，防止无限增长） */
+  askedTopics: string[];
+  /** 上次看到的判题结果签名；同一结果不重复计数 */
+  lastJudgeSig: string;
+}
+
+const EMPTY_TEACH_STATE: TeachState = {
+  failStreak: 0,
+  hintLevel: 1,
+  askedTopics: [],
+  lastJudgeSig: "",
+};
+
+function normalizeTeachState(raw: unknown): TeachState {
+  if (!raw || typeof raw !== "object") return { ...EMPTY_TEACH_STATE };
+  const o = raw as Record<string, unknown>;
+  const streak = Number(o.failStreak);
+  const level = Number(o.hintLevel);
+  const topics = Array.isArray(o.askedTopics)
+    ? o.askedTopics.filter((t): t is string => typeof t === "string").slice(-8)
+    : [];
+  return {
+    failStreak: Number.isFinite(streak) && streak > 0 ? Math.min(99, Math.floor(streak)) : 0,
+    hintLevel: Number.isFinite(level) ? Math.min(4, Math.max(1, Math.floor(level))) : 1,
+    askedTopics: topics,
+    lastJudgeSig: typeof o.lastJudgeSig === "string" ? o.lastJudgeSig : "",
+  };
+}
+
+/**
+ * 从最近往前取历史消息，直到用完预算。
+ * 放不下的更早消息压成一条摘要（每条取前 60 字），而不是直接丢掉。
+ */
+function buildHistoryWithinBudget(all: Msg[], budget: number): Msg[] {
+  const picked: Msg[] = [];
+  let used = 0;
+  for (let i = all.length - 1; i >= 0; i -= 1) {
+    const m = all[i];
+    if (m.streaming) continue;
+    const cost = estimateTokens(m.content) + 8;
+    if (used + cost > budget) {
+      const rest = all.slice(0, i + 1).filter((x) => !x.streaming);
+      if (rest.length === 0) break;
+      let digest = rest
+        .map((x) => `${x.role === "user" ? "问" : "答"}：${x.content.replace(/\s+/g, " ").slice(0, 60)}`)
+        .join("\n");
+      if (digest.length > DIGEST_LIMIT) digest = digest.slice(0, DIGEST_LIMIT) + "……";
+      return [
+        { role: "system", content: `[此前对话摘要，仅供衔接，细节以最新对话为准]\n${digest}` },
+        ...picked,
+      ];
+    }
+    picked.unshift(m);
+    used += cost;
+  }
+  return picked;
+}
 
 export default function ChatPanel() {
   const t = useT();
@@ -112,28 +228,65 @@ export default function ChatPanel() {
 
     try {
       const guided = (await api.kvGet("ai_guided")) !== "0";
-      let context = "";
-      if (currentQuestion) {
-        context += `\n\n[当前题目] ${currentQuestion.title}（${currentQuestion.lang}）\n${currentQuestion.statement_md}`;
-      }
-      if (editorContent.trim()) {
-        context += `\n\n[学习者当前代码]\n${editorContent.slice(0, 3000)}`;
+
+      // —— 教学状态：跨轮次保留，避免反复从头讲 ——
+      let teach: TeachState = { ...EMPTY_TEACH_STATE };
+      try {
+        const raw = await api.kvGet("teach_state");
+        if (raw) teach = normalizeTeachState(JSON.parse(raw));
+      } catch {
+        teach = { ...EMPTY_TEACH_STATE };
       }
       const jr = useApp.getState().judgeResults;
-      if (jr && jr.length > 0) {
-        context +=
-          "\n\n[最近一次判题结果（真实执行数据）]\n" +
-          jr
-            .map(
-              (r) =>
-                `用例${r.index + 1}: ${r.status}（${r.time_ms}ms）` +
-                (!r.pass ? ` | 期望输出: ${JSON.stringify(r.expected)} | 实际输出: ${JSON.stringify(r.actual)}` : ""),
-            )
-            .join("\n");
+      const judgeSig = jr && jr.length > 0 ? jr.map((r) => `${r.index}:${r.status}`).join("|") : "";
+      // 只有判题结果真的变了才计数，避免学生连问几个问题时同一失败被重复累加
+      if (jr && jr.length > 0 && judgeSig !== teach.lastJudgeSig) {
+        teach.failStreak = jr.every((r) => r.pass) ? 0 : teach.failStreak + 1;
+        if (teach.failStreak >= 2) teach.hintLevel = Math.max(teach.hintLevel, 2);
+        if (teach.failStreak >= 4) teach.hintLevel = Math.max(teach.hintLevel, 3);
+        teach.lastJudgeSig = judgeSig;
       }
-      if (profileRef.current) context += `\n\n${profileRef.current}`;
 
-      const history: Msg[] = messages.slice(-12).map((m) => ({ role: m.role, content: m.content }));
+      // —— 固定层：每次都带，代码不再截断 ——
+      const fixed: string[] = [];
+      if (currentQuestion) {
+        fixed.push(`[当前题目] ${currentQuestion.title}（${currentQuestion.lang}）\n${currentQuestion.statement_md}`);
+      }
+      if (editorContent.trim()) {
+        const code =
+          editorContent.length > MAX_CODE_CHARS
+            ? editorContent.slice(0, MAX_CODE_CHARS) +
+              `\n……（代码过长已截断，原始共 ${editorContent.length} 字符）`
+            : editorContent;
+        fixed.push(`[学习者当前代码]\n${code}`);
+      }
+      if (jr && jr.length > 0) {
+        fixed.push(
+          "[最近一次判题结果（真实执行数据）]\n" +
+            jr
+              .map(
+                (r) =>
+                  `用例${r.index + 1}: ${r.status}（${r.time_ms}ms）` +
+                  (!r.pass ? ` | 期望输出: ${JSON.stringify(r.expected)} | 实际输出: ${JSON.stringify(r.actual)}` : ""),
+              )
+              .join("\n"),
+        );
+      }
+      if (profileRef.current) fixed.push(profileRef.current);
+
+      const stateLines = [
+        `当前提示级别：L${teach.hintLevel}（1 反问 / 2 指方法 / 3 给片段 / 4 完整答案并要求重写）`,
+      ];
+      if (teach.failStreak > 0) stateLines.push(`当前题目已连续失败 ${teach.failStreak} 次`);
+      if (teach.askedTopics.length > 0) {
+        stateLines.push(`学习者此前问过：${teach.askedTopics.join("、")}（不要从头重讲）`);
+      }
+      const openFile = useApp.getState().editorFile;
+      if (openFile) stateLines.push(`当前打开的文件：${openFile}`);
+      fixed.push(`[教学状态]\n${stateLines.join("\n")}`);
+
+      const fixedText = fixed.join("\n\n");
+
       // 美赛 pandas 题目：加载专属教练提示词（分级提示 L1-L4、范围限定）
       let promptBody = guided ? GUIDED_PROMPT : DIRECT_PROMPT;
       if (currentQuestion?.tags?.includes("数学建模")) {
@@ -147,7 +300,21 @@ export default function ChatPanel() {
           /* 提示词文件缺失则退回通用 */
         }
       }
-      const sys = (personaRef.current ? personaRef.current + "\n" : "") + promptBody + context;
+
+      const sysBase = (personaRef.current ? personaRef.current + "\n" : "") + promptBody;
+      const budget = Math.max(
+        2_000,
+        CONTEXT_BUDGET - OUTPUT_RESERVE - estimateTokens(sysBase) - estimateTokens(fixedText),
+      );
+      // messages 是本次渲染的快照，不含刚才 push 的这条用户消息，这里显式补上，
+      // 否则模型收不到学习者当前的问题。
+      const history = buildHistoryWithinBudget([...messages, { role: "user", content: text }], budget);
+      const sys = sysBase + "\n\n" + fixedText;
+
+      // 记录本轮话题，供下一轮避免重复
+      const topic = text.replace(/\s+/g, " ").slice(0, 24);
+      if (topic) teach.askedTopics = [...teach.askedTopics, topic].slice(-8);
+      void api.kvSet("teach_state", JSON.stringify(teach)).catch(() => {});
 
       setMessages((m) => [...m, { role: "assistant", content: "", streaming: true }]);
       await api.aiChatStream([{ role: "system", content: sys }, ...history], (delta) => {
@@ -181,6 +348,21 @@ export default function ChatPanel() {
     } finally {
       setBusy(false);
     }
+  };
+
+  /** 把终端最近输出填进输入框（可继续编辑再发），解决"AI 看不到报错"。 */
+  const attachTerminalError = () => {
+    const raw = getRecentTerminalOutput(80);
+    const tail = raw.trim() ? raw.split("\n").slice(-40).join("\n") : "";
+    setInput((prev) => {
+      if (!tail) {
+        return prev.trim() ? prev : "我想把终端报错发给你，但终端里现在没有内容。";
+      }
+      const block = "```\n" + tail + "\n```";
+      return prev.trim()
+        ? `${prev}\n\n${block}`
+        : `帮我看看这个报错：\n\n${block}\n\n（下面补充：我做了什么、期望看到什么）`;
+    });
   };
 
   return (
@@ -234,6 +416,17 @@ export default function ChatPanel() {
           <div className="chat-msg assistant typing">{t("思考中…")}</div>
         )}
       </div>
+      {view !== "exam" && (
+        <div className="chat-tools">
+          <button
+            className="btn-sm"
+            onClick={attachTerminalError}
+            title="把终端最近 40 行输出附到输入框，你可以再补充说明"
+          >
+            附上终端报错
+          </button>
+        </div>
+      )}
       <div className="chat-input-row">
         <textarea
           value={input}

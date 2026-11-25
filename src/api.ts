@@ -4,6 +4,19 @@ export interface TestCase {
   stdin: string;
   expected_stdout: string;
   timeout_ms?: number;
+  match_mode?: "exact" | "contains";
+  expect_file?: { path: string; min_bytes?: number; dpi?: number } | null;
+  setup_sql?: string | null;
+  input_assets?: { path: string; content: string }[];
+  expect_json?: { path: string; value: unknown; abs_tol?: number; rel_tol?: number } | null;
+  expect_csv?: {
+    path: string;
+    columns: string[];
+    rows: Record<string, unknown>[];
+    key_columns?: string[];
+    abs_tol?: number;
+    rel_tol?: number;
+  } | null;
 }
 
 export interface Question {
@@ -89,8 +102,8 @@ export const api = {
   resolveMistake: (id: number) => invoke<void>("resolve_mistake", { id }),
   resolveMistakeByQuestion: (questionId: string) =>
     invoke<void>("resolve_mistake_by_question", { questionId }),
-  judge: (codePath: string, lang: string, cases: TestCase[]) =>
-    invoke<CaseResult[]>("judge", { codePath, lang, cases }),
+  judge: (codePath: string, lang: string, cases: TestCase[], workspaceRoot?: string) =>
+    invoke<CaseResult[]>("judge", { codePath, lang, cases, workspaceRoot: workspaceRoot ?? null }),
   checkToolchain: () => invoke<Record<string, boolean>>("check_toolchain"),
   aiChat: (messages: { role: string; content: string }[]) =>
     invoke<string>("ai_chat", { messages }),

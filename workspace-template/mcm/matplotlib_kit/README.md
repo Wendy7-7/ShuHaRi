@@ -22,7 +22,7 @@
 | `answers.py` | 参考答案，已运行验证 |
 | `开放任务.md` | 不给图表类型，自己选择并辩护 |
 | `exam.py` / `exam_answers.py` | 闭卷验收 |
-| `data/` | 练习数据，来自 pandas 练习的真实计算结果 |
+| `mcm/matplotlib_kit/data/` | 练习数据，来自 pandas 练习的真实计算结果（路径从工作区根目录算起） |
 
 ## 三、环境
 

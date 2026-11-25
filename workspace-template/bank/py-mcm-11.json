@@ -1,0 +1,102 @@
+{
+  "id": "py-mcm-11",
+  "lang": "python",
+  "title": "Day 12：多指标汇总并导出",
+  "difficulty": 3,
+  "tags": [
+    "数学建模",
+    "pandas"
+  ],
+  "statement_md": "## Day 12：多指标汇总并导出\n\n前 10 题都在「看数据」，这一题开始「产出结果」——美赛论文里的每张汇总表都是这么做出来的。\n\n**任务**：\n1. 读入 `mcm/pandas_kit/data/level1_contest_raw.csv`，去掉列名首尾空格\n2. `School` 统一为去空格 + 全大写\n3. `Score` 用 `pd.to_numeric(..., errors='coerce')` 转数值\n4. **去掉完全重复的行**（`drop_duplicates()`）\n5. 按 `School` 分组，算出平均分 `avg`（保留 2 位小数）和样本数 `n`\n6. 导出到当前目录的 `school_summary.csv`，列名严格为 `school,avg,n`（小写）\n7. **不要 print**——这题只检查产物文件\n\n**验收**：`school_summary.csv` 恰好 4 行数据，列名 `school,avg,n`，数值允许 0.01 误差。\n\n> 顺序很重要：这题要求「先转数值、再去重」，反过来做结果可能不同。",
+  "starter_code": "import pandas as pd\n\ndf = pd.read_csv(\"mcm/pandas_kit/data/level1_contest_raw.csv\")\ndf.columns = df.columns.str.strip()\ndf[\"School\"] = df[\"School\"].str.strip().str.upper()\ndf[\"Score\"] = pd.to_numeric(df[\"Score\"], errors=\"coerce\")\ndf = df.drop_duplicates()\n\n# 1. 按 School 分组，一次算出 avg（2 位小数）和 n\n\n# 2. 把列名改成小写 school / avg / n\n\n# 3. 导出到 school_summary.csv（index=False，encoding=\"utf-8-sig\"）\n\n# 4. 不用 print\n",
+  "hints": [
+    "df.groupby('School')['Score'].agg(avg='mean', n='count') 一次拿到两个指标",
+    "reset_index() 把 School 从索引变回普通列，然后 .columns = ['school','avg','n'] 改名",
+    "to_csv('school_summary.csv', index=False, encoding='utf-8-sig')；小数位用 round(2)"
+  ],
+  "editorial_md": "## 题解\n\n```python\nimport pandas as pd\n\ndf = pd.read_csv(\"mcm/pandas_kit/data/level1_contest_raw.csv\")\ndf.columns = df.columns.str.strip()\ndf[\"School\"] = df[\"School\"].str.strip().str.upper()\ndf[\"Score\"] = pd.to_numeric(df[\"Score\"], errors=\"coerce\")\ndf = df.drop_duplicates()\n\nsummary = df.groupby(\"School\")[\"Score\"].agg(avg=\"mean\", n=\"count\").reset_index()\nsummary.columns = [\"school\", \"avg\", \"n\"]\nsummary[\"avg\"] = summary[\"avg\"].round(2)\nsummary.to_csv(\"school_summary.csv\", index=False, encoding=\"utf-8-sig\")\n```\n\n结果是 4 行：HIT 79.25 / 4、NUAA 78.33 / 3、SJTU 83.67 / 3、XJTLU 82.29 / 7。\n\n**`n` 是 `count()`（非空计数），不是行数**：XJTLU 去重后有 8 行，但只有 7 个有效分数。\n\n**美赛视角**：论文里的「各校平均分与样本量」表就是这张。样本量必须一起给出，否则「1 个样本考了 90 分」会被当成强证据。",
+  "reference_code": "import pandas as pd\nimport pandas as pd\n\ndf = pd.read_csv(\"mcm/pandas_kit/data/level1_contest_raw.csv\")\ndf.columns = df.columns.str.strip()\ndf[\"School\"] = df[\"School\"].str.strip().str.upper()\ndf[\"Score\"] = pd.to_numeric(df[\"Score\"], errors=\"coerce\")\ndf = df.drop_duplicates()\n\nsummary = df.groupby(\"School\")[\"Score\"].agg(avg=\"mean\", n=\"count\").reset_index()\nsummary.columns = [\"school\", \"avg\", \"n\"]\nsummary[\"avg\"] = summary[\"avg\"].round(2)\nsummary.to_csv(\"school_summary.csv\", index=False, encoding=\"utf-8-sig\")\n",
+  "content_version": "1.1",
+  "test_cases": [
+    {
+      "stdin": "",
+      "expected_stdout": "",
+      "timeout_ms": 20000,
+      "match_mode": "contains",
+      "expect_csv": {
+        "path": "school_summary.csv",
+        "columns": [
+          "school",
+          "avg",
+          "n"
+        ],
+        "rows": [
+          {
+            "school": "HIT",
+            "avg": 79.25,
+            "n": 4
+          },
+          {
+            "school": "NUAA",
+            "avg": 78.33,
+            "n": 3
+          },
+          {
+            "school": "SJTU",
+            "avg": 83.67,
+            "n": 3
+          },
+          {
+            "school": "XJTLU",
+            "avg": 82.29,
+            "n": 7
+          }
+        ],
+        "key_columns": [
+          "school"
+        ],
+        "abs_tol": 0.01,
+        "rel_tol": 0
+      }
+    }
+  ],
+  "variant_cases": [
+    {
+      "stdin": "",
+      "expected_stdout": "",
+      "timeout_ms": 20000,
+      "match_mode": "contains",
+      "input_assets": [
+        {
+          "path": "mcm/pandas_kit/data/level1_contest_raw.csv",
+          "content": "Team ID, School ,Year,Score,Members\nV01, Alpha ,2025,80,3\nV02,ALPHA,2026,90,3\nV03,beta ,2025,70,3\nV04,BETA,2026,缺考,3\nV05,Alpha,2026,,2\n"
+        }
+      ],
+      "expect_csv": {
+        "path": "school_summary.csv",
+        "columns": [
+          "school",
+          "avg",
+          "n"
+        ],
+        "rows": [
+          {
+            "school": "ALPHA",
+            "avg": 85,
+            "n": 2
+          },
+          {
+            "school": "BETA",
+            "avg": 70,
+            "n": 1
+          }
+        ],
+        "key_columns": [
+          "school"
+        ],
+        "abs_tol": 0.01,
+        "rel_tol": 0
+      }
+    }
+  ]
+}

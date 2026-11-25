@@ -27,8 +27,8 @@ import pandas as pd
 # ========== 1. 读入 ==========
 print("=" * 40)
 print("STEP 1 读入原始数据")
-scores = pd.read_csv("data/level2_scores_raw.csv")
-teams = pd.read_csv("data/level2_teams_raw.csv")
+scores = pd.read_csv("mcm/pandas_kit/data/level2_scores_raw.csv")
+teams = pd.read_csv("mcm/pandas_kit/data/level2_teams_raw.csv")
 print(f"scores: {scores.shape}, teams: {teams.shape}")
 
 # ========== 2. 清洗键 ==========
@@ -41,7 +41,9 @@ for d in (scores, teams):
 print("=" * 40)
 print("STEP 3 去除重复键")
 before = len(teams)
-teams = teams.drop_duplicates(subset="team_id")
+teams = teams.drop_duplicates()
+if teams["team_id"].duplicated().any():
+    raise ValueError("team_id 存在字段冲突，拒绝静默保留第一条")
 print(f"teams: {before} -> {len(teams)}")
 
 # ========== 4. 合并 ==========
@@ -70,15 +72,15 @@ print(by_problem)
 # ========== 6. 导出 ==========
 print("=" * 40)
 print("STEP 6 导出")
-merged.to_csv("data/merged_clean.csv", index=False, encoding="utf-8-sig")
-by_school.to_csv("data/summary_by_school.csv", index=False, encoding="utf-8-sig")
+merged.to_csv("mcm/pandas_kit/data/merged_clean.csv", index=False, encoding="utf-8-sig")
+by_school.to_csv("mcm/pandas_kit/data/summary_by_school.csv", index=False, encoding="utf-8-sig")
 print("完成")
 ```
 
 运行：
 
 ```bash
-python pipeline.py
+python mcm/pandas_kit/pipeline.py
 ```
 
 **屏幕会按步骤打印，你能清楚看到每一步的行数变化。** 出问题一眼定位。
@@ -95,8 +97,8 @@ python pipeline.py
 
 ## 9.4 验证它的可复现性（重要实验）
 
-1. 把 `data/merged_clean.csv` 和 `data/summary_by_school.csv` 删掉
-2. 再运行一次 `python pipeline.py`
+1. 把 `mcm/pandas_kit/data/merged_clean.csv` 和 `mcm/pandas_kit/data/summary_by_school.csv` 删掉
+2. 再运行一次 `python mcm/pandas_kit/pipeline.py`
 3. 文件应该重新出现，内容完全一样
 
 再把输入文件名改成一个不存在的名字，运行一次，看看 `FileNotFoundError`，然后改回来。
@@ -116,12 +118,12 @@ python pipeline.py
 
 ---
 
-## 9.6 闭卷验收（1 月 4 日前）
+## 9.6 可选综合练习（1 月 4 日前）
 
-用 `exam.py`，限时 45 分钟，不看任何资料。
+`exam.py` 是可选综合练习，可限时 45 分钟挑战；允许查看速查表并修改任务。它只检验本模块数据处理能力，不代表完整美赛能力。
 
 **过关标准**
-1. 45 分钟内全部跑通
+1. 可在自己的时间约束内跑通，并解释行数变化
 2. 每一步行数变化都能解释
 3. 四个口头追问答得上来（见 exam.py 末尾）
 4. 能写出一段英文的数据预处理说明

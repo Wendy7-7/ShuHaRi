@@ -119,6 +119,38 @@ pub struct ExpectFile {
 }
 
 #[derive(Serialize, Deserialize, Clone)]
+pub struct InputAsset {
+    pub path: String,
+    pub content: String,
+}
+
+#[derive(Serialize, Deserialize, Clone)]
+pub struct ExpectJson {
+    pub path: String,
+    pub value: serde_json::Value,
+    #[serde(default = "default_abs_tol")]
+    pub abs_tol: f64,
+    #[serde(default = "default_rel_tol")]
+    pub rel_tol: f64,
+}
+
+#[derive(Serialize, Deserialize, Clone)]
+pub struct ExpectCsv {
+    pub path: String,
+    pub columns: Vec<String>,
+    pub rows: Vec<serde_json::Value>,
+    #[serde(default)]
+    pub key_columns: Vec<String>,
+    #[serde(default = "default_abs_tol")]
+    pub abs_tol: f64,
+    #[serde(default = "default_rel_tol")]
+    pub rel_tol: f64,
+}
+
+fn default_abs_tol() -> f64 { 1e-8 }
+fn default_rel_tol() -> f64 { 1e-6 }
+
+#[derive(Serialize, Deserialize, Clone)]
 pub struct TestCase {
     pub stdin: String,
     pub expected_stdout: String,
@@ -133,6 +165,15 @@ pub struct TestCase {
     /// SQL 题专用：建库建表与插入数据的初始化脚本
     #[serde(default)]
     pub setup_sql: Option<String>,
+    /// 每个用例独立目录中的明确输入资产。
+    #[serde(default)]
+    pub input_assets: Vec<InputAsset>,
+    /// 由外部校验器按容差比较的 JSON 产物。
+    #[serde(default)]
+    pub expect_json: Option<ExpectJson>,
+    /// 由外部校验器检查结构、行序和数值容差的 CSV 产物。
+    #[serde(default)]
+    pub expect_csv: Option<ExpectCsv>,
 }
 fn default_timeout() -> u64 {
     3000

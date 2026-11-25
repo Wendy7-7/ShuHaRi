@@ -5,6 +5,7 @@ import { initVimMode, type VimMode } from "monaco-vim";
 import { useEffect, useRef, useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import { useApp } from "../store";
+import { ensureCwd } from "./terminalSession";
 
 function langOf(path: string): string {
   const ext = path.split(".").pop()?.toLowerCase() ?? "";
@@ -23,7 +24,9 @@ export default function EditorPane() {
   const editorFile = useApp((s) => s.editorFile);
   const nonce = useApp((s) => s.editorNonce);
   const saveNonce = useApp((s) => s.saveNonce);
+  const completeSave = useApp((s) => s.completeSave);
   const vimEnabled = useApp((s) => s.vimEnabled);
+  const workspace = useApp((s) => s.workspace);
   const setEditorContent = useApp((s) => s.setEditorContent);
 
   const [content, setContent] = useState("");
@@ -35,12 +38,15 @@ export default function EditorPane() {
   const statusRef = useRef<HTMLDivElement>(null);
   const mirrorTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const loadSeq = useRef(0);
+  const saveQueue = useRef<Promise<unknown>>(Promise.resolve());
   const [saveError, setSaveError] = useState<string | null>(null);
   const [, forceRender] = useState(0);
 
   useEffect(() => {
-    if (!editorFile) return;
     const seq = ++loadSeq.current;
+    fileRef.current = null;
+    dirtyRef.current = false;
+    if (!editorFile) return;
     invoke<string>("read_file", { path: editorFile })
       .then((c) => {
         // 竞态防护：快速切换文件时，丢弃过期文件的读取结果
@@ -57,56 +63,90 @@ export default function EditorPane() {
       });
   }, [editorFile, nonce, setEditorContent]);
 
-  const doSave = async () => {
+  const doSave = async (): Promise<boolean> => {
     const path = fileRef.current;
-    if (!path) return;
+    const selected = useApp.getState();
+    if (!path || selected.editorFile !== path) return false;
+    const text = contentRef.current;
+    const sequence = loadSeq.current;
+    const editorNonce = selected.editorNonce;
+    const pending = saveQueue.current.then(() => invoke("save_file", { path, content: text }));
+    saveQueue.current = pending.catch(() => {});
     try {
-      await invoke("save_file", { path, content: contentRef.current });
-      dirtyRef.current = false;
+      await pending;
+      const current = useApp.getState();
+      if (fileRef.current !== path || sequence !== loadSeq.current
+        || current.editorFile !== path || current.editorNonce !== editorNonce) return false;
+      // 写入期间继续输入时，保留脏标记，也不提交旧快照。
+      const unchanged = contentRef.current === text;
+      if (unchanged) dirtyRef.current = false;
       setSaveError(null);
       forceRender((n) => n + 1);
+      return unchanged;
     } catch (e) {
-      // Tauri WebView2 无 alert，错误直接显示在标签栏
-      setSaveError(String(e).slice(0, 80));
+      if (fileRef.current === path && sequence === loadSeq.current) {
+        // Tauri WebView2 无 alert，错误直接显示在标签栏
+        setSaveError(String(e).slice(0, 80));
+        forceRender((n) => n + 1);
+      }
+      return false;
+    }
+  };
+
+  // 一键运行：保存并等待工作区终端就绪后，把编译+运行命令写进终端
+  const runFile = async () => {
+    const path = fileRef.current;
+    if (!path || !workspace || useApp.getState().editorFile !== path) return;
+    const selectedNonce = useApp.getState().editorNonce;
+    const ext = path.split(".").pop()?.toLowerCase() ?? "";
+    if (!["c", "cpp", "py", "java", "go", "js"].includes(ext)) return;
+    if (!(await doSave())) return;
+    try {
+      await ensureCwd(workspace);
+    } catch (error) {
+      setSaveError(String(error).slice(0, 80));
+      forceRender((n) => n + 1);
+      return;
+    }
+    const quote = (value: string) => "'" + value.replace(/'/g, "''") + "'";
+    const p = path.replace(/\//g, "\\");
+    let run: string;
+    if (ext === "py") {
+      run = `python -X utf8 ${quote(p)}`;
+    } else if (ext === "java") {
+      // Java 入口类固定 Main：复制成 Main.java 编译，避开文件命名限制
+      run = `chcp 65001 > $null; Copy-Item -LiteralPath ${quote(p)} -Destination "$env:TEMP\\Main.java" -Force; javac -encoding UTF-8 "$env:TEMP\\Main.java" -d "$env:TEMP"; if ($?) { java -cp "$env:TEMP" Main }`;
+    } else if (ext === "go") {
+      run = `chcp 65001 > $null; go run ${quote(p)}`;
+    } else if (ext === "js") {
+      run = `chcp 65001 > $null; node ${quote(p)}`;
+    } else {
+      const cc = ext === "c" ? "gcc" : "g++";
+      const std = ext === "c" ? "-std=c17" : "-std=c++17";
+      const exe = p.replace(/\.[^.]+$/, ".exe");
+      run = `chcp 65001 > $null; ${cc} -O2 ${std} ${quote(p)} -o ${quote(exe)}; if ($?) { & ${quote(exe)} }`;
+    }
+    const cmd = `Set-Location -LiteralPath ${quote(workspace)} -ErrorAction Stop; if ($?) { ${run} }`;
+    const current = useApp.getState();
+    if (current.workspace !== workspace || current.editorFile !== path
+      || current.editorNonce !== selectedNonce || fileRef.current !== path || dirtyRef.current) return;
+    try {
+      await invoke("pty_write", { data: cmd + "\r" });
+    } catch (error) {
+      setSaveError(String(error).slice(0, 80));
       forceRender((n) => n + 1);
     }
   };
 
-  // 一键运行：保存后把编译+运行命令写进终端
-  const runFile = () => {
-    const path = fileRef.current;
-    if (!path) return;
-    const ext = path.split(".").pop()?.toLowerCase() ?? "";
-    if (!["c", "cpp", "py", "java", "go", "js"].includes(ext)) return;
-    doSave();
-    setTimeout(() => {
-      const p = path.replace(/\//g, "\\");
-      let cmd: string;
-      if (ext === "py") {
-        cmd = `python -X utf8 "${p}"`;
-      } else if (ext === "java") {
-        // Java 入口类固定 Main：复制成 Main.java 编译，避开文件命名限制
-        // Java 21 默认 UTF-8（JEP 400），不再传 -Dfile.encoding（PowerShell 会传坏）
-        cmd = `chcp 65001 > $null; Copy-Item "${p}" "$env:TEMP\\Main.java" -Force; javac -encoding UTF-8 "$env:TEMP\\Main.java" -d "$env:TEMP"; if ($?) { java -cp "$env:TEMP" Main }`;
-      } else if (ext === "go") {
-        cmd = `chcp 65001 > $null; go run "${p}"`;
-      } else if (ext === "js") {
-        cmd = `chcp 65001 > $null; node "${p}"`;
-      } else {
-        const cc = ext === "c" ? "gcc" : "g++";
-        // 内置 MinGW g++ 8.1 只支持到 C++17
-        const std = ext === "c" ? "-std=c17" : "-std=c++17";
-        const exe = p.replace(/\.[^.]+$/, ".exe");
-        // chcp 65001：避免 C 程序的中文输出在 GBK 控制台乱码
-        cmd = `chcp 65001 > $null; ${cc} -O2 ${std} "\"${p}\"" -o "${exe}"; if ($?) { & "${exe}" }`;
-      }
-      invoke("pty_write", { data: cmd + "\r" }).catch(() => {});
-    }, 400);
-  };
-
-  // 外部请求保存（判题前）
+  // 外部请求保存（判题前）：明确回报成功/失败，调用方不会靠固定延时猜保存状态。
   useEffect(() => {
-    if (saveNonce > 0 && dirtyRef.current) doSave();
+    if (saveNonce <= 0) return;
+    let cancelled = false;
+    const save = doSave();
+    save.then((succeeded) => {
+      if (!cancelled) completeSave(saveNonce, succeeded);
+    });
+    return () => { cancelled = true; };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [saveNonce]);
 

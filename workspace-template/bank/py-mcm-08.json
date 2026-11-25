@@ -15,6 +15,8 @@
     "打印 merged.shape 看行数——为什么会多？"
   ],
   "editorial_md": "## 题解\n\n```python\nscores = pd.read_csv(\"mcm/pandas_kit/data/level2_scores_raw.csv\")\nteams = pd.read_csv(\"mcm/pandas_kit/data/level2_teams_raw.csv\")\nfor d in (scores, teams):\n    d['team_id'] = d['team_id'].str.strip().str.upper()\nmerged = pd.merge(scores, teams, on='team_id')\nprint(merged.shape)\n```\n\n结果 (17, 7)：teams 里 T16 出现了两次，merge 时一条成绩配上了两条队伍信息，行数就膨胀了。",
+  "reference_code": "import pandas as pd\nscores = pd.read_csv(\"mcm/pandas_kit/data/level2_scores_raw.csv\")\nteams = pd.read_csv(\"mcm/pandas_kit/data/level2_teams_raw.csv\")\nfor d in (scores, teams):\n    d['team_id'] = d['team_id'].str.strip().str.upper()\nmerged = pd.merge(scores, teams, on='team_id')\nprint(merged.shape)\n",
+  "content_version": "1.1",
   "test_cases": [
     {
       "stdin": "",

@@ -14,6 +14,8 @@
     "sum() 把 True 当 1 计数"
   ],
   "editorial_md": "## 题解\n\n```python\ndf = pd.read_csv(\"mcm/pandas_kit/data/level1_contest_raw.csv\")\ndf.columns = df.columns.str.strip()\nprint(df.duplicated().sum())\n```\n\n想看具体哪一行重复？`df[df.duplicated(keep=False)]` 会把重复的行都显示出来——原来是 T09 被记了两次。",
+  "reference_code": "import pandas as pd\ndf = pd.read_csv(\"mcm/pandas_kit/data/level1_contest_raw.csv\")\ndf.columns = df.columns.str.strip()\nprint(df.duplicated().sum())\n",
+  "content_version": "1.1",
   "test_cases": [
     {
       "stdin": "",

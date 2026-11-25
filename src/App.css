@@ -575,6 +575,7 @@ button:hover {
 .chat-msg.user { background: #094771; margin-left: 24px; }
 .chat-msg.assistant { background: #2d2d2d; margin-right: 12px; }
 .chat-msg.typing { color: #888; }
+.chat-tools { display: flex; gap: 6px; padding: 6px 8px 0; flex-wrap: wrap; }
 .chat-input-row { display: flex; gap: 6px; padding: 8px; border-top: 1px solid #3c3c3c; }
 .chat-input-row textarea {
   flex: 1;

@@ -77,15 +77,17 @@ mod win {
 
 /// 非 Windows 平台：空实现（项目当前只发布 Windows 便携版）
 #[cfg(not(windows))]
-pub struct Sandbox;
+pub use non_windows::*;
 
 #[cfg(not(windows))]
-pub fn attach(
-    _process: std::os::windows::io::RawHandle,
-    _mem_limit_mb: u64,
-    _max_procs: u32,
-) -> Option<Sandbox> {
-    None
+mod non_windows {
+    /// 非 Windows 平台没有 Job 句柄守卫。
+    pub struct Sandbox;
+
+    /// 非 Windows 平台无法附加 Windows Job Object，始终返回 `None`。
+    pub fn attach() -> Option<Sandbox> {
+        None
+    }
 }
 
 #[cfg(all(test, windows))]

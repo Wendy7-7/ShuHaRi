@@ -7,14 +7,16 @@
     "数学建模",
     "pandas"
   ],
-  "statement_md": "## Day 10：哪所学校平均分最高\n\n**任务**：在 Day 5、6 基础上（School 统一 + Score 数值化），按学校分组求平均分，找出**平均分最高的学校**，以 `学校名 平均分（2位小数）` 的格式打印。\n\n**验收**：输出包含 `SJTU 83.67`。\n\n> 小心：XJTLU 的平均分是 83.5，非常接近——如果你算出来最高是 XJTLU，多半是把「缺考」当成 0 分了。",
-  "starter_code": "import pandas as pd\n\ndf = pd.read_csv(\"mcm/pandas_kit/data/level1_contest_raw.csv\")\ndf.columns = df.columns.str.strip()\ndf['School'] = df['School'].str.strip().str.upper()\ndf['Score'] = pd.to_numeric(df['Score'], errors='coerce')\n\n# 按学校分组求平均分，找出最高的一所，按格式打印\n",
+  "statement_md": "## Day 10：哪所学校平均分最高\n\n**任务**：在 Day 5、6 基础上（School 统一 + Score 数值化），按学校分组求平均分，找出**平均分最高的学校**，以 `学校名 平均分（2位小数）` 的格式打印。\n\n**验收**：输出包含 `SJTU 83.67`。\n\n> 本题保留重复记录，只统计有效观测分数；XJTLU 为 83.5，SJTU 为 83.666667。填零会改变统计口径，不能仅凭最高学校判断犯了哪种错误。",
+  "starter_code": "import pandas as pd\n\ndf = pd.read_csv(\"mcm/pandas_kit/data/level1_contest_raw.csv\")\ndf.columns = df.columns.str.strip()\ndf['School'] = df['School'].str.strip().str.upper()\ndf['Score_raw'] = df['Score'].copy()\ndf['Score'] = pd.to_numeric(df['Score_raw'], errors='coerce')\ndf['Score_status'] = 'observed'\ndf.loc[df['Score_raw'].isna(), 'Score_status'] = 'unknown'\ndf.loc[df['Score_raw'].eq('缺考'), 'Score_status'] = 'absent'\ndf.loc[df['Score'].isna() & df['Score_raw'].notna() & ~df['Score_raw'].eq('缺考'), 'Score_status'] = 'parse_error'\n\n# 按学校分组求平均分，找出最高的一所，按格式打印\n",
   "hints": [
     "df.groupby('School')['Score'].mean() 得到每校平均分",
     "sort_values(ascending=False) 后取第一行",
     "格式化：f'{school} {mean:.2f}'"
   ],
-  "editorial_md": "## 题解\n\n```python\ndf = pd.read_csv(\"mcm/pandas_kit/data/level1_contest_raw.csv\")\ndf.columns = df.columns.str.strip()\ndf['School'] = df['School'].str.strip().str.upper()\ndf['Score'] = pd.to_numeric(df['Score'], errors='coerce')\nmeans = df.groupby('School')['Score'].mean().sort_values(ascending=False)\nprint(f'{means.index[0]} {means.iloc[0]:.2f}')\n```\n\n结果 SJTU 83.67。把「缺考」当 0 分会把 SJTU 的均值拉到 62.75——这就是为什么 NaN 处理决定结论。",
+  "editorial_md": "## 题解\n\n```python\ndf = pd.read_csv(\"mcm/pandas_kit/data/level1_contest_raw.csv\")\ndf.columns = df.columns.str.strip()\ndf['School'] = df['School'].str.strip().str.upper()\ndf['Score_raw'] = df['Score'].copy()\ndf['Score'] = pd.to_numeric(df['Score_raw'], errors='coerce')\ndf['Score_status'] = 'observed'\ndf.loc[df['Score_raw'].isna(), 'Score_status'] = 'unknown'\ndf.loc[df['Score_raw'].eq('缺考'), 'Score_status'] = 'absent'\ndf.loc[df['Score'].isna() & df['Score_raw'].notna() & ~df['Score_raw'].eq('缺考'), 'Score_status'] = 'parse_error'\nmeans = df.groupby('School')['Score'].mean().sort_values(ascending=False)\nprint(f'{means.index[0]} {means.iloc[0]:.2f}')\n```\n\n结果 SJTU 83.67。将所有转换后空分数填 0 时，SJTU 为 62.75，但 XJTLU 为 74.22、HIT 为 79.25，最高会变成 HIT。结论取决于完整处理口径。缺考、原始空值和解析失败应保留原值与状态，不能盲目填零或均值。",
+  "reference_code": "import pandas as pd\ndf = pd.read_csv(\"mcm/pandas_kit/data/level1_contest_raw.csv\")\ndf.columns = df.columns.str.strip()\ndf['School'] = df['School'].str.strip().str.upper()\ndf['Score_raw'] = df['Score'].copy()\ndf['Score'] = pd.to_numeric(df['Score_raw'], errors='coerce')\ndf['Score_status'] = 'observed'\ndf.loc[df['Score_raw'].isna(), 'Score_status'] = 'unknown'\ndf.loc[df['Score_raw'].eq('缺考'), 'Score_status'] = 'absent'\ndf.loc[df['Score'].isna() & df['Score_raw'].notna() & ~df['Score_raw'].eq('缺考'), 'Score_status'] = 'parse_error'\nmeans = df.groupby('School')['Score'].mean().sort_values(ascending=False)\nprint(f'{means.index[0]} {means.iloc[0]:.2f}')\n",
+  "content_version": "1.1",
   "test_cases": [
     {
       "stdin": "",

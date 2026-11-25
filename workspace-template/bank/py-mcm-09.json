@@ -7,13 +7,15 @@
     "数学建模",
     "pandas"
   ],
-  "statement_md": "## Day 9：先去重再合并\n\n**任务**：在 Day 8 基础上，合并**之前**先给 teams 按 team_id 去重（保留第一条），再 merge 并打印 shape。\n\n**验收**：输出包含 `(16, 7)`——行数回到 scores 的 16 行。\n\n> 什么时候去重？在合并的「右表」（被查字典的那张表）上。这是 merge 防膨胀的标准动作。",
-  "starter_code": "import pandas as pd\n\nscores = pd.read_csv(\"mcm/pandas_kit/data/level2_scores_raw.csv\")\nteams = pd.read_csv(\"mcm/pandas_kit/data/level2_teams_raw.csv\")\nfor d in (scores, teams):\n    d['team_id'] = d['team_id'].str.strip().str.upper()\n\n# 1. teams 按 team_id 去重\n\n# 2. 合并并打印 shape\n",
+  "statement_md": "## Day 9：先去重再合并\n\n**任务**：在 Day 8 基础上，确认 T16 两行全列完全相同后，给 teams 全列去重，再用 `validate='many_to_one'` 合并并打印 shape。若重复键的其他字段冲突，必须报告并拒绝静默保留第一条。\n\n**验收**：本模拟数据输出包含 `(16, 7)`，冲突数据不得静默 keep='first'。\n\n> 右表是被查字典，键必须唯一；先检查重复记录的含义，再去重。",
+  "starter_code": "import pandas as pd\n\nscores = pd.read_csv(\"mcm/pandas_kit/data/level2_scores_raw.csv\")\nteams = pd.read_csv(\"mcm/pandas_kit/data/level2_teams_raw.csv\")\nfor d in (scores, teams):\n    d['team_id'] = d['team_id'].str.strip().str.upper()\n\n# 1. teams 只删全列重复行；键仍重复则报错\n\n# 2. 合并并打印 shape\n",
   "hints": [
-    "teams.drop_duplicates(subset='team_id')",
-    "drop_duplicates 默认 keep='first'，保留第一次出现的行"
+    "teams.drop_duplicates() 只删除全列完全相同的行",
+    "去重后 team_id 若仍重复则报告冲突；merge 加 validate='many_to_one'"
   ],
-  "editorial_md": "## 题解\n\n```python\nscores = pd.read_csv(\"mcm/pandas_kit/data/level2_scores_raw.csv\")\nteams = pd.read_csv(\"mcm/pandas_kit/data/level2_teams_raw.csv\")\nfor d in (scores, teams):\n    d['team_id'] = d['team_id'].str.strip().str.upper()\nteams = teams.drop_duplicates(subset='team_id')\nmerged = pd.merge(scores, teams, on='team_id')\nprint(merged.shape)\n```\n\n去重后合并结果 (16, 7)，每行成绩恰好对应一条队伍信息。",
+  "editorial_md": "## 题解\n\n```python\nscores = pd.read_csv(\"mcm/pandas_kit/data/level2_scores_raw.csv\")\nteams = pd.read_csv(\"mcm/pandas_kit/data/level2_teams_raw.csv\")\nfor d in (scores, teams):\n    d['team_id'] = d['team_id'].str.strip().str.upper()\nteams = teams.drop_duplicates()  # 只删除全列相同的记录\nif teams['team_id'].duplicated().any():\n    raise ValueError('team_id 存在冲突记录，拒绝静默保留第一条')\nmerged = pd.merge(scores, teams, on='team_id', validate='many_to_one')\nprint(merged.shape)\n```\n\n去重后合并结果 (16, 7)，每行成绩恰好对应一条队伍信息。",
+  "reference_code": "import pandas as pd\nscores = pd.read_csv(\"mcm/pandas_kit/data/level2_scores_raw.csv\")\nteams = pd.read_csv(\"mcm/pandas_kit/data/level2_teams_raw.csv\")\nfor d in (scores, teams):\n    d['team_id'] = d['team_id'].str.strip().str.upper()\nteams = teams.drop_duplicates()  # 只删除全列相同的记录\nif teams['team_id'].duplicated().any():\n    raise ValueError('team_id 存在冲突记录，拒绝静默保留第一条')\nmerged = pd.merge(scores, teams, on='team_id', validate='many_to_one')\nprint(merged.shape)\n",
+  "content_version": "1.1",
   "test_cases": [
     {
       "stdin": "",

@@ -1,54 +1,65 @@
 {
   "module_id": "pandas",
   "title": "pandas：读入、清洗、合并、汇总",
-  "version": "1.0",
+  "version": "1.1",
   "entry_requirement": "完成 00 环境与准备、01 Python 速成补课",
-  "run_cwd": "pandas_kit",
+  "run_cwd": "workspace_root",
   "datasets": [
     {
       "id": "level1",
-      "path": "data/level1_contest_raw.csv",
+      "path": "mcm/pandas_kit/data/level1_contest_raw.csv",
       "sealed": false,
       "rows": 22,
-      "planted_issues": ["列名带空格", "同校 4 种写法", "Score 含文本缺考", "1 行完全重复", "Year 缺失 1", "Members 缺失 1"]
+      "planted_issues": [
+        "列名带空格",
+        "同校 4 种写法",
+        "Score 含文本缺考",
+        "1 行完全重复",
+        "Year 缺失 1",
+        "Members 缺失 1"
+      ]
     },
     {
       "id": "level2_scores",
-      "path": "data/level2_scores_raw.csv",
+      "path": "mcm/pandas_kit/data/level2_scores_raw.csv",
       "sealed": false,
       "rows": 16,
-      "planted_issues": ["team_id 大小写与空格不一致"]
+      "planted_issues": [
+        "team_id 大小写与空格不一致"
+      ]
     },
     {
       "id": "level2_teams",
-      "path": "data/level2_teams_raw.csv",
+      "path": "mcm/pandas_kit/data/level2_teams_raw.csv",
       "sealed": false,
       "rows": 18,
-      "planted_issues": ["team_id 有 1 个重复键 T16"]
+      "planted_issues": [
+        "team_id 有 1 个重复键 T16"
+      ]
     },
     {
       "id": "practice_single",
-      "path": "data/practice_single.csv",
+      "path": "mcm/pandas_kit/data/practice_single.csv",
       "sealed": false,
       "rows": 12
     },
     {
       "id": "practice_info",
-      "path": "data/practice_info.csv",
+      "path": "mcm/pandas_kit/data/practice_info.csv",
       "sealed": false,
       "rows": 13
     },
     {
       "id": "exam_main",
-      "path": "data/exam_main.csv",
-      "sealed": true,
-      "note": "闭卷验收专用，学习阶段不得展示"
+      "path": "mcm/pandas_kit/data/exam_main.csv",
+      "sealed": false,
+      "note": "可选综合练习数据；练习时允许速查与修改任务。"
     },
     {
       "id": "exam_info",
-      "path": "data/exam_info.csv",
-      "sealed": true,
-      "note": "闭卷验收专用，学习阶段不得展示"
+      "path": "mcm/pandas_kit/data/exam_info.csv",
+      "sealed": false,
+      "note": "可选综合练习数据；练习时允许速查与修改任务。"
     }
   ],
   "days": [
@@ -61,20 +72,32 @@
       "tasks": [
         {
           "id": "d1_t1",
-          "instruction": "读入 data/level1_contest_raw.csv，打印 df.shape",
+          "instruction": "读入 mcm/pandas_kit/data/level1_contest_raw.csv，打印 df.shape",
           "hints": {
             "l1": "你需要先 import 哪个库？文件路径是相对于哪个目录的？",
             "l2": "import pandas as pd，然后 pd.read_csv(路径)，最后 print(df.shape)"
           },
           "checks": [
-            {"type": "output_contains", "expected": "(22, 5)", "description": "输出包含 (22, 5)"}
+            {
+              "type": "output_contains",
+              "expected": "(22, 5)",
+              "description": "输出包含 (22, 5)"
+            }
           ]
         },
         {
           "id": "d1_t2",
           "instruction": "打印列名与前 5 行，观察列名是否有异常",
-          "hints": {"l1": "列名里有没有肉眼不容易看到的空格？", "l2": "print(df.columns) 与 print(df.head())"},
-          "checks": [{"type": "ai_review", "description": "能指出 ' School ' 两端有空格"}]
+          "hints": {
+            "l1": "列名里有没有肉眼不容易看到的空格？",
+            "l2": "print(df.columns) 与 print(df.head())"
+          },
+          "checks": [
+            {
+              "type": "ai_review",
+              "description": "能指出 ' School ' 两端有空格"
+            }
+          ]
         }
       ]
     },
@@ -88,14 +111,31 @@
         {
           "id": "d2_t1",
           "instruction": "打印 dtypes、isna().sum()，写出各列缺失数量",
-          "hints": {"l1": "哪一列看起来应该是数字却被识别成文本？", "l2": "df.dtypes 与 df.isna().sum()"},
-          "checks": [{"type": "ai_review", "expected": "Year 1、Score 2、Members 1；Score 为文本", "description": "缺失数量与 Score 类型判断正确"}]
+          "hints": {
+            "l1": "哪一列看起来应该是数字却被识别成文本？",
+            "l2": "df.dtypes 与 df.isna().sum()"
+          },
+          "checks": [
+            {
+              "type": "ai_review",
+              "expected": "Year 1、Score 2、Members 1；Score 为文本",
+              "description": "缺失数量与 Score 类型判断正确"
+            }
+          ]
         },
         {
           "id": "d2_t2",
           "instruction": "打印 describe()，说明它为什么没有包含 Score",
-          "hints": {"l1": "describe 默认处理什么类型的列？", "l2": "Score 是文本列，被排除"},
-          "checks": [{"type": "ai_review", "description": "理解 describe 只对数值列生效"}]
+          "hints": {
+            "l1": "describe 默认处理什么类型的列？",
+            "l2": "Score 是文本列，被排除"
+          },
+          "checks": [
+            {
+              "type": "ai_review",
+              "description": "理解 describe 只对数值列生效"
+            }
+          ]
         }
       ]
     },
@@ -109,14 +149,32 @@
         {
           "id": "d3_t1",
           "instruction": "打印 duplicated().sum()，并显示重复的行",
-          "hints": {"l1": "想看重复的双方，keep 参数该怎么设？", "l2": "df[df.duplicated(keep=False)]"},
-          "checks": [{"type": "output_contains", "expected": "1", "description": "重复行数为 1（T09）"}]
+          "hints": {
+            "l1": "想看重复的双方，keep 参数该怎么设？",
+            "l2": "df[df.duplicated(keep=False)]"
+          },
+          "checks": [
+            {
+              "type": "output_contains",
+              "expected": "1",
+              "description": "重复行数为 1（T09）"
+            }
+          ]
         },
         {
           "id": "d3_t2",
           "instruction": "用 unique() 和 value_counts() 找出 XJTLU 有几种写法",
-          "hints": {"l1": "大小写和空格算不算不同取值？", "l2": "df[' School '].unique()"},
-          "checks": [{"type": "ai_review", "expected": "4 种写法，合计 9 条", "description": "答出 4 种写法、共 9 条"}]
+          "hints": {
+            "l1": "大小写和空格算不算不同取值？",
+            "l2": "df[' School '].unique()"
+          },
+          "checks": [
+            {
+              "type": "ai_review",
+              "expected": "4 种写法，合计 9 条",
+              "description": "答出 4 种写法、共 9 条"
+            }
+          ]
         }
       ]
     },
@@ -130,8 +188,17 @@
         {
           "id": "d4_t1",
           "instruction": "不看答案，写出这份数据的问题清单（至少 5 条），并逐条给出证据代码",
-          "hints": {"l1": "从列名、取值、类型、缺失、重复五个角度检查", "l2": "Score 里除了空值还有什么？"},
-          "checks": [{"type": "ai_review", "expected": "至少 5 条，含列名空格、同校多写法、文本分数、缺失、重复", "description": "清单完整且有证据"}]
+          "hints": {
+            "l1": "从列名、取值、类型、缺失、重复五个角度检查",
+            "l2": "Score 里除了空值还有什么？"
+          },
+          "checks": [
+            {
+              "type": "ai_review",
+              "expected": "至少 5 条，含列名空格、同校多写法、文本分数、缺失、重复",
+              "description": "清单完整且有证据"
+            }
+          ]
         }
       ]
     },
@@ -145,8 +212,17 @@
         {
           "id": "d5_t1",
           "instruction": "对 level2_scores 与 level2_teams 各做一次体检，报告大小、缺失、重复、键写法",
-          "hints": {"l1": "键是否唯一？写法是否统一？", "l2": "duplicated(subset='team_id')"},
-          "checks": [{"type": "ai_review", "expected": "scores 16 行；teams 有 1 个重复键 T16；键写法不统一", "description": "两份表体检结论正确"}]
+          "hints": {
+            "l1": "键是否唯一？写法是否统一？",
+            "l2": "duplicated(subset='team_id')"
+          },
+          "checks": [
+            {
+              "type": "ai_review",
+              "expected": "scores 16 行；teams 有 1 个重复键 T16；键写法不统一",
+              "description": "两份表体检结论正确"
+            }
+          ]
         }
       ]
     },
@@ -160,8 +236,17 @@
         {
           "id": "d6_t1",
           "instruction": "列名去空格，School 统一为去空格大写，打印 unique()",
-          "hints": {"l1": "对整列文本操作要先点哪个访问器？", "l2": "df.columns.str.strip() 与 df['School'].str.strip().str.upper()"},
-          "checks": [{"type": "ai_review", "expected": "['XJTLU', 'NUAA', 'HIT', 'SJTU']", "description": "取值从 7 种降到 4 种"}]
+          "hints": {
+            "l1": "对整列文本操作要先点哪个访问器？",
+            "l2": "df.columns.str.strip() 与 df['School'].str.strip().str.upper()"
+          },
+          "checks": [
+            {
+              "type": "ai_review",
+              "expected": "['XJTLU', 'NUAA', 'HIT', 'SJTU']",
+              "description": "取值从 7 种降到 4 种"
+            }
+          ]
         }
       ]
     },
@@ -175,8 +260,17 @@
         {
           "id": "d7_t1",
           "instruction": "用 to_numeric 转换 Score，统计转换后的缺失数并解释原因",
-          "hints": {"l1": "转不了的值你希望报错还是变缺失？", "l2": "errors='coerce'"},
-          "checks": [{"type": "ai_review", "expected": "缺失由 2 变 4", "description": "缺失变为 4，且能解释缺考被转为 NaN"}]
+          "hints": {
+            "l1": "转不了的值你希望报错还是变缺失？",
+            "l2": "errors='coerce'"
+          },
+          "checks": [
+            {
+              "type": "ai_review",
+              "expected": "原始缺失2个；coerce后4个缺失、18个有效；保留Score_raw与状态标记。",
+              "description": "缺失变为 4，且能解释缺考被转为 NaN"
+            }
+          ]
         }
       ]
     },
@@ -189,11 +283,17 @@
       "tasks": [
         {
           "id": "d8_t1",
-          "instruction": "去重并打印前后行数；Year 缺失删行；Score 用当年均值填；Members 用众数填",
-          "hints": {"l1": "填充要按组算均值，应该用 mean 还是 transform？", "l2": "fillna(df.groupby('Year')['Score'].transform('mean'))"},
+          "instruction": "去重并打印前后行数；Year缺失可按分析目的排除；保留Score_raw/status，缺考和解析失败不填；仅 unknown 可选用同年原始观测均值填到独立分析列，并标记估计。Members 众数填充仅为模拟假设。",
+          "hints": {
+            "l1": "缺失原因是否相同？先用 Score_status 区分 unknown、absent、parse_error。",
+            "l2": "对 observed 观测用 groupby(Year).transform(mean)，只填 unknown 到 Score_analysis。"
+          },
           "checks": [
-            {"type": "ai_review", "expected": "最终 20 行、无缺失", "description": "行数 22→21→20，缺失全为 0"},
-            {"type": "ai_review", "description": "能回答为什么删 Year、为什么用当年均值、为什么 Members 填众数"}
+            {
+              "type": "ai_review",
+              "expected": "22→21→20；Score仍4缺失，分析列2缺失；unknown估计2条，缺考2条仍缺失；保存估计标记。",
+              "description": "保留原值、状态与估计语义，不强求无缺失"
+            }
           ]
         }
       ]
@@ -208,14 +308,32 @@
         {
           "id": "d9_t1",
           "instruction": "筛出 2026 年 XJTLU 且 Score>80 的记录",
-          "hints": {"l1": "多条件用什么符号连接？每个条件要不要括号？", "l2": "(df['Year']==2026) & (df['School']=='XJTLU') & (df['Score']>80)"},
-          "checks": [{"type": "ai_review", "expected": "T13 95、T19 84 两行", "description": "筛选结果为 2 行"}]
+          "hints": {
+            "l1": "多条件用什么符号连接？每个条件要不要括号？",
+            "l2": "(df['Year']==2026) & (df['School']=='XJTLU') & (df['Score']>80)"
+          },
+          "checks": [
+            {
+              "type": "ai_review",
+              "expected": "T13 95、T19 84 两行",
+              "description": "筛选结果为 2 行"
+            }
+          ]
         },
         {
           "id": "d9_t2",
           "instruction": "导出 level1_clean.csv 并重新读入验证",
-          "hints": {"l1": "为什么会多出 Unnamed: 0？", "l2": "index=False, encoding='utf-8-sig'"},
-          "checks": [{"type": "ai_review", "expected": "(20, 5)，无 Unnamed: 0", "description": "导出文件可复读且无多余索引列"}]
+          "hints": {
+            "l1": "为什么会多出 Unnamed: 0？",
+            "l2": "index=False, encoding='utf-8-sig'"
+          },
+          "checks": [
+            {
+              "type": "ai_review",
+              "expected": "(20, 5)，无 Unnamed: 0",
+              "description": "导出文件可复读且无多余索引列"
+            }
+          ]
         }
       ]
     },
@@ -229,14 +347,32 @@
         {
           "id": "d10_t1",
           "instruction": "先不清洗直接 merge，观察行数和缺失，解释原因",
-          "hints": {"l1": "行数为什么变多？哪些键没对上？", "l2": "检查 teams 的重复键和两边 team_id 写法"},
-          "checks": [{"type": "ai_review", "expected": "16→17，3 行未匹配", "description": "能解释键重复与写法不一致两种原因"}]
+          "hints": {
+            "l1": "行数为什么变多？哪些键没对上？",
+            "l2": "检查 teams 的重复键和两边 team_id 写法"
+          },
+          "checks": [
+            {
+              "type": "ai_review",
+              "expected": "16→17，3 行未匹配",
+              "description": "能解释键重复与写法不一致两种原因"
+            }
+          ]
         },
         {
           "id": "d10_t2",
           "instruction": "清洗键、去重后用 left + validate 合并并检查",
-          "hints": {"l1": "为什么不推荐 inner？", "l2": "validate='many_to_one'"},
-          "checks": [{"type": "ai_review", "expected": "16→16，无缺失", "description": "合并正确，能说明 left 与 inner 的差别"}]
+          "hints": {
+            "l1": "为什么不推荐 inner？",
+            "l2": "validate='many_to_one'"
+          },
+          "checks": [
+            {
+              "type": "ai_review",
+              "expected": "16→16，无缺失",
+              "description": "合并正确，能说明 left 与 inner 的差别"
+            }
+          ]
         }
       ]
     },
@@ -250,8 +386,17 @@
         {
           "id": "d11_t1",
           "instruction": "按 school 求平均得分与队伍数，并按平均分降序",
-          "hints": {"l1": "分组、取列、计算三步怎么写？", "l2": "merged.groupby('school')['score'].mean()"},
-          "checks": [{"type": "ai_review", "expected": "XJTLU 81.86、HIT 81.67、SJTU 81.00、NUAA 71.75", "description": "均值与排序正确"}]
+          "hints": {
+            "l1": "分组、取列、计算三步怎么写？",
+            "l2": "merged.groupby('school')['score'].mean()"
+          },
+          "checks": [
+            {
+              "type": "ai_review",
+              "expected": "XJTLU 81.86、HIT 81.67、SJTU 81.00、NUAA 71.75",
+              "description": "均值与排序正确"
+            }
+          ]
         }
       ]
     },
@@ -265,8 +410,17 @@
         {
           "id": "d12_t1",
           "instruction": "按 school 算 avg/top/n，reset_index 后保留两位小数并导出",
-          "hints": {"l1": "agg 里等号左右各是什么？", "l2": ".agg(avg='mean', top='max', n='count')"},
-          "checks": [{"type": "file_exists", "expected": "data/summary_by_school.csv", "description": "汇总表导出成功且含样本量列"}]
+          "hints": {
+            "l1": "agg 里等号左右各是什么？",
+            "l2": ".agg(avg='mean', top='max', n='count')"
+          },
+          "checks": [
+            {
+              "type": "file_exists",
+              "expected": "mcm/pandas_kit/data/summary_by_school.csv",
+              "description": "汇总表导出成功且含样本量列"
+            }
+          ]
         }
       ]
     },
@@ -280,14 +434,32 @@
         {
           "id": "d13_t1",
           "instruction": "按 problem 算队伍数与占比",
-          "hints": {"l1": "占比是分组计数除以什么？", "l2": "t / t.sum() * 100"},
-          "checks": [{"type": "ai_review", "expected": "C 题 10 队，占 62.5%", "description": "占比计算正确"}]
+          "hints": {
+            "l1": "占比是分组计数除以什么？",
+            "l2": "t / t.sum() * 100"
+          },
+          "checks": [
+            {
+              "type": "ai_review",
+              "expected": "C 题 10 队，占 62.5%",
+              "description": "占比计算正确"
+            }
+          ]
         },
         {
           "id": "d13_t2",
           "instruction": "找出平均得分最高的 5 个专业，并写一句含样本量提醒的结论",
-          "hints": {"l1": "只有 1 支队伍的专业能直接下结论吗？", "l2": "sort_values(ascending=False).head(5)"},
-          "checks": [{"type": "ai_review", "expected": "Financial Mathematics 92 居首但仅 1 队", "description": "结论包含样本量局限"}]
+          "hints": {
+            "l1": "只有 1 支队伍的专业能直接下结论吗？",
+            "l2": "sort_values(ascending=False).head(5)"
+          },
+          "checks": [
+            {
+              "type": "ai_review",
+              "expected": "Financial Mathematics 92 居首但仅 1 队",
+              "description": "结论包含样本量局限"
+            }
+          ]
         }
       ]
     },
@@ -301,8 +473,17 @@
         {
           "id": "d14_t1",
           "instruction": "把读入、清洗、合并、汇总、导出串成 pipeline.py，删除输出后一键重建",
-          "hints": {"l1": "每一步打印什么才能快速定位错误？", "l2": "每一步打印行数与缺失数"},
-          "checks": [{"type": "script_runs", "expected": "exit_code 0", "description": "脚本无人工干预运行成功"}]
+          "hints": {
+            "l1": "每一步打印什么才能快速定位错误？",
+            "l2": "每一步打印行数与缺失数"
+          },
+          "checks": [
+            {
+              "type": "script_runs",
+              "expected": "exit_code 0",
+              "description": "脚本无人工干预运行成功"
+            }
+          ]
         }
       ]
     },
@@ -315,9 +496,17 @@
       "tasks": [
         {
           "id": "d15_t1",
-          "instruction": "完成开放任务：评价学校表现、分析年份变化、给一条备赛建议",
-          "hints": {"l1": "先定义'整体表现'的指标，再谈结果", "l2": "结论必须包含样本量与数据局限"},
-          "checks": [{"type": "ai_review", "description": "按开放任务自评表六项评审：清洗、指标、结论、样本意识、可复现、局限"}]
+          "instruction": "完成开放任务：以模拟数据评价分组结果、分析年份变化、提出一条数据处理建议；结论须说明样本量与数据局限。",
+          "hints": {
+            "l1": "先定义'整体表现'的指标，再谈结果",
+            "l2": "结论必须包含样本量与数据局限"
+          },
+          "checks": [
+            {
+              "type": "ai_review",
+              "description": "按开放任务自评表六项评审：清洗、指标、结论、样本意识、可复现、局限"
+            }
+          ]
         }
       ]
     }
@@ -325,27 +514,44 @@
   "maintenance": {
     "period": "2026-12-14 至 2027-01-04",
     "rule": "每周 30 分钟重跑或重写 pipeline，不学新内容",
-    "review_intervals_days": [1, 3, 7, 14]
+    "review_intervals_days": [
+      1,
+      3,
+      7,
+      14
+    ]
   },
   "final_assessment": {
     "file": "exam.py",
-    "datasets": ["exam_main", "exam_info"],
-    "time_limit_minutes": 45,
-    "closed_book": true,
+    "datasets": [
+      "exam_main",
+      "exam_info"
+    ],
+    "time_limit_minutes": null,
+    "closed_book": false,
     "anchor_results": {
       "raw_shape": "(18, 5)",
       "after_dedup": 17,
       "after_year_drop": 16,
       "score_missing_after_coerce": 4,
       "merged_rows": 16,
-      "college_avg": {"SAT": 82.60, "IME": 81.75, "BUS": 81.33},
-      "campus_split": {"Suzhou": 8, "Taicang": 8}
+      "college_avg": {
+        "SAT": 84.0,
+        "IME": 81.0,
+        "BUS": 78.0
+      },
+      "campus_split": {
+        "Suzhou": 8,
+        "Taicang": 8
+      }
     },
     "oral_questions": [
       "合并时为什么选 left 而不是 inner？",
-      "Score 为什么填均值而不是 0？",
+      "缺考/未提交为什么不能当作0或直接按均值填补？估计值如何标记？",
       "Year 缺失那行为什么删或填？",
       "信息表有重复键而未去重会发生什么？"
-    ]
-  }
+    ],
+    "optional": "可选综合练习；允许查速查表和修改筛选条件。45分钟仅为挑战，不是 pandas 学习目标。"
+  },
+  "content_note": "题目与教程内容版本升级；不表示新版迁移功能已实现。数据为教学模拟，不代表真实学校表现。"
 }

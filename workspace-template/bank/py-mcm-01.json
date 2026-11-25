@@ -7,13 +7,15 @@
     "数学建模",
     "pandas"
   ],
-  "statement_md": "## Day 1：第一次读入赛题数据\n\n美赛任何一道题，第一步都是把数据读进来。\n\n**任务**：用 pandas 读入 `mcm/pandas_kit/data/level1_contest_raw.csv`，赋值给 `df`，然后打印 `df.shape`。\n\n**验收**：输出包含 `(22, 5)`。\n\n> 这份数据是某年校级选拔赛的原始记录，有 22 行。你的工作是先把它看清楚，再谈清洗。",
+  "statement_md": "## Day 1：第一次读入赛题数据\n\n美赛任何一道题，第一步都是把数据读进来。\n\n**任务**：用 pandas 读入 `mcm/pandas_kit/data/level1_contest_raw.csv`，赋值给 `df`，然后打印 `df.shape`。\n\n**验收**：输出包含 `(22, 5)`。\n\n> 这份数据是教学用模拟选拔赛记录，有 22 行，不代表任何学校的真实表现。你的工作是先把它看清楚，再谈清洗。",
   "starter_code": "# 第一次读入赛题数据\nimport pandas as pd\n\n# 1. 读入 CSV（路径已给出，想想为什么是相对工作区根目录的）\ndf = pd.read_csv(\"mcm/pandas_kit/data/level1_contest_raw.csv\")\n\n# 2. 打印 df.shape，看看是多少行多少列\n",
   "hints": [
     "pandas 的读入函数叫什么？提示：pd.read_???",
     "print(df.shape) 会输出 (行数, 列数)"
   ],
   "editorial_md": "## 题解\n\n```python\nimport pandas as pd\ndf = pd.read_csv(\"mcm/pandas_kit/data/level1_contest_raw.csv\")\nprint(df.shape)\n```\n\n输出 `(22, 5)` 即通过。\n\n**美赛视角**：拿到赛题数据先看形状，能立刻发现「行数对不上」这类问题。",
+  "reference_code": "import pandas as pd\nimport pandas as pd\ndf = pd.read_csv(\"mcm/pandas_kit/data/level1_contest_raw.csv\")\nprint(df.shape)\n",
+  "content_version": "1.1",
   "test_cases": [
     {
       "stdin": "",

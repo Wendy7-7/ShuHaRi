@@ -170,12 +170,19 @@ export default function QuestionPanel({ mode }: { mode: "practice" | "exam" }) {
     setNotice(null);
     let passed = false;
     try {
-      requestSave();
-      await new Promise((r) => setTimeout(r, 350));
+      const submittedEditorNonce = useApp.getState().editorNonce;
+      if (!(await requestSave())) {
+        throw new Error("未能确认当前代码已保存，请等待文件加载完成并保存后重新判题。");
+      }
+      const current = useApp.getState();
+      if (current.workspace !== workspace || current.editorFile !== editorFile
+        || current.editorNonce !== submittedEditorNonce || current.currentQuestion?.id !== q.id) {
+        throw new Error("文件、工作区或题目已切换，请重新判题。");
+      }
       // 变体重做：命中 store 标记的题目用变体用例（换数字防背答案）
       const useVariant = useApp.getState().variantRedo === q.id && (q.variant_cases?.length ?? 0) > 0;
       const cases = useVariant ? q.variant_cases! : q.test_cases;
-      const results = await api.judge(editorFile ?? "", q.lang, cases);
+      const results = await api.judge(editorFile ?? "", q.lang, cases, workspace);
       setLastWasVariant(useVariant);
       setJudgeResults(results);
       passed = results.length > 0 && results.every((r) => r.pass);

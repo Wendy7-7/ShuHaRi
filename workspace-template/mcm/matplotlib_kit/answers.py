@@ -1,5 +1,6 @@
 # matplotlib 参考答案（已运行验证）
-# 在 matplotlib_kit 目录下运行：python answers.py
+# 在工作区根目录运行：python mcm/matplotlib_kit/answers.py
+# 图片输出到当前目录下的 figures/（与题库要求的相对路径一致）
 from pathlib import Path
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -17,7 +18,7 @@ def save(fig, name):
 
 
 def year_line():
-    df = pd.read_csv("data/year_trend.csv")
+    df = pd.read_csv("mcm/matplotlib_kit/data/year_trend.csv")
     fig, ax = plt.subplots(figsize=(7, 4))
     ax.plot(df["year"], df["avg_score"], marker="o", label="Average score")
     ax.set_title("Average score by year")
@@ -31,7 +32,7 @@ def year_line():
 
 
 def school_bar():
-    df = pd.read_csv("data/school_summary.csv").sort_values("avg_score", ascending=False)
+    df = pd.read_csv("mcm/matplotlib_kit/data/school_summary.csv").sort_values("avg_score", ascending=False)
     labels = df["school"] + " (n=" + df["teams"].astype(str) + ")"
     fig, ax = plt.subplots(figsize=(7, 4))
     bars = ax.bar(labels, df["avg_score"], label="Average score")
@@ -45,7 +46,7 @@ def school_bar():
 
 
 def hours_scatter():
-    df = pd.read_csv("data/score_hours.csv")
+    df = pd.read_csv("mcm/matplotlib_kit/data/score_hours.csv")
     colors = {"IME": "tab:blue", "SAT": "tab:orange", "BUS": "tab:green"}
     fig, ax = plt.subplots(figsize=(7, 4))
     for college, group in df.groupby("college"):
@@ -67,7 +68,7 @@ def hours_scatter():
 
 
 def year_twinx():
-    df = pd.read_csv("data/year_trend.csv")
+    df = pd.read_csv("mcm/matplotlib_kit/data/year_trend.csv")
     fig, ax1 = plt.subplots(figsize=(7, 4))
     ax1.plot(df["year"], df["avg_score"], color="tab:blue", marker="o", label="Average score")
     ax1.set_xlabel("Year")
@@ -90,7 +91,7 @@ def year_twinx():
 
 
 def annotated_scores():
-    df = pd.read_csv("data/team_scores.csv")
+    df = pd.read_csv("mcm/matplotlib_kit/data/team_scores.csv")
     top = df.loc[df["score"].idxmax()]
     fig, ax = plt.subplots(figsize=(7, 4))
     ax.scatter(df["year"], df["score"], label="Teams")

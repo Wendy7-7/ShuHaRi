@@ -3,15 +3,15 @@
   "title": "matplotlib：论文图表",
   "version": "1.0",
   "entry_requirement": "完成 pandas 模块",
-  "run_cwd": "matplotlib_kit",
+  "run_cwd": "workspace_root",
   "output_dir": "figures",
   "datasets": [
-    {"id": "year_trend", "path": "data/year_trend.csv", "sealed": false},
-    {"id": "school_summary", "path": "data/school_summary.csv", "sealed": false},
-    {"id": "team_scores", "path": "data/team_scores.csv", "sealed": false},
-    {"id": "score_hours", "path": "data/score_hours.csv", "sealed": false},
-    {"id": "exam_trend", "path": "data/exam_trend.csv", "sealed": true},
-    {"id": "exam_points", "path": "data/exam_points.csv", "sealed": true}
+    {"id": "year_trend", "path": "mcm/matplotlib_kit/data/year_trend.csv", "sealed": false},
+    {"id": "school_summary", "path": "mcm/matplotlib_kit/data/school_summary.csv", "sealed": false},
+    {"id": "team_scores", "path": "mcm/matplotlib_kit/data/team_scores.csv", "sealed": false},
+    {"id": "score_hours", "path": "mcm/matplotlib_kit/data/score_hours.csv", "sealed": false},
+    {"id": "exam_trend", "path": "mcm/matplotlib_kit/data/exam_trend.csv", "sealed": true},
+    {"id": "exam_points", "path": "mcm/matplotlib_kit/data/exam_points.csv", "sealed": true}
   ],
   "days": [
     {

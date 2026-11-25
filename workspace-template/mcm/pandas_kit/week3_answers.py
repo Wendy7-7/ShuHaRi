@@ -1,11 +1,13 @@
 # 第 3 周参考答案（已运行验证）
 import pandas as pd
 
-scores = pd.read_csv("data/level2_scores_raw.csv")
-teams = pd.read_csv("data/level2_teams_raw.csv")
+scores = pd.read_csv("mcm/pandas_kit/data/level2_scores_raw.csv")
+teams = pd.read_csv("mcm/pandas_kit/data/level2_teams_raw.csv")
 for d in (scores, teams):
     d["team_id"] = d["team_id"].str.strip().str.upper()
-teams = teams.drop_duplicates(subset="team_id")
+teams = teams.drop_duplicates()
+if teams["team_id"].duplicated().any():
+    raise ValueError("team_id 存在字段冲突，拒绝静默保留第一条")
 merged = scores.merge(teams, on="team_id", how="left", validate="many_to_one")
 print("merged:", merged.shape, "缺失总数:", merged.isna().sum().sum())
 
@@ -24,7 +26,7 @@ by_school = (
 )
 by_school["avg"] = by_school["avg"].round(2)
 print("\n学校汇总表:\n", by_school)
-by_school.to_csv("data/summary_by_school.csv", index=False, encoding="utf-8-sig")
+by_school.to_csv("mcm/pandas_kit/data/summary_by_school.csv", index=False, encoding="utf-8-sig")
 # agg 等号左边是新列名，右边是计算方法
 
 # ---------- Day 13 ----------

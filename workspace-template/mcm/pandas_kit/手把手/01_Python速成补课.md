@@ -127,7 +127,7 @@ print(add(3, 4))     # 7
 pandas 里你暂时不需要自己写函数，但要看懂**参数**：
 
 ```python
-pd.read_csv("data/a.csv", encoding="utf-8-sig")
+pd.read_csv("mcm/pandas_kit/data/a.csv", encoding="utf-8-sig")
 #           └─ 位置参数：文件路径      └─ 关键字参数：名字=值
 ```
 
@@ -156,7 +156,7 @@ import pandas as pd
 
 ```python
 # 这一行不会被执行
-df = pd.read_csv("data/a.csv")   # 注释也可以写在代码后面
+df = pd.read_csv("mcm/pandas_kit/data/a.csv")   # 注释也可以写在代码后面
 ```
 
 **要求：你的每一行清洗代码后面都要写注释说明理由。** 这些理由以后直接搬进论文。

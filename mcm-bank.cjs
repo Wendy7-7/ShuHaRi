@@ -1,5 +1,4 @@
 // pandas 美赛题库：10 道基于课程数据集的可判题任务（contains 匹配）
-const WS = process.env.LEARN_WORKSPACE || require("path").join(require("os").homedir(), "learn-workspace");
 const PROJ = __dirname;
 
 const fs = require("fs");
@@ -9,21 +8,27 @@ const L1 = "mcm/pandas_kit/data/level1_contest_raw.csv";
 const L2S = "mcm/pandas_kit/data/level2_scores_raw.csv";
 const L2T = "mcm/pandas_kit/data/level2_teams_raw.csv";
 
-function q(id, title, diff, stmt, starter, hints, editorial, expected) {
-  return {
+function q(id, title, diff, stmt, starter, hints, editorial, expected, extra = {}) {
+  const question = {
     id, lang: "python", title, difficulty: diff,
     tags: ["数学建模", "pandas"],
     statement_md: stmt,
     starter_code: starter,
     hints,
     editorial_md: editorial,
+    reference_code: "import pandas as pd\n" + editorial.match(/```python\n([\s\S]*?)```/)[1],
+    content_version: "1.1",
     test_cases: [{ stdin: "", expected_stdout: expected, timeout_ms: 20000, match_mode: "contains" }],
   };
+  // 产物题（结构化校验）与变体用例：只在需要时写入，旧题字段保持原样。
+  if (extra.expect_csv) question.test_cases[0].expect_csv = extra.expect_csv;
+  if (extra.variant_cases) question.variant_cases = extra.variant_cases;
+  return question;
 }
 
 const questions = [
   q("py-mcm-01", "Day 1：第一次读入赛题数据", 1,
-    "## Day 1：第一次读入赛题数据\n\n美赛任何一道题，第一步都是把数据读进来。\n\n**任务**：用 pandas 读入 `" + L1 + "`，赋值给 `df`，然后打印 `df.shape`。\n\n**验收**：输出包含 `(22, 5)`。\n\n> 这份数据是某年校级选拔赛的原始记录，有 22 行。你的工作是先把它看清楚，再谈清洗。",
+    "## Day 1：第一次读入赛题数据\n\n美赛任何一道题，第一步都是把数据读进来。\n\n**任务**：用 pandas 读入 `" + L1 + "`，赋值给 `df`，然后打印 `df.shape`。\n\n**验收**：输出包含 `(22, 5)`。\n\n> 这份数据是教学用模拟选拔赛记录，有 22 行，不代表任何学校的真实表现。你的工作是先把它看清楚，再谈清洗。",
     "# 第一次读入赛题数据\nimport pandas as pd\n\n# 1. 读入 CSV（路径已给出，想想为什么是相对工作区根目录的）\ndf = pd.read_csv(\"" + L1 + "\")\n\n# 2. 打印 df.shape，看看是多少行多少列\n",
     ["pandas 的读入函数叫什么？提示：pd.read_???", "print(df.shape) 会输出 (行数, 列数)"],
     "## 题解\n\n```python\nimport pandas as pd\ndf = pd.read_csv(\"" + L1 + "\")\nprint(df.shape)\n```\n\n输出 `(22, 5)` 即通过。\n\n**美赛视角**：拿到赛题数据先看形状，能立刻发现「行数对不上」这类问题。",
@@ -58,17 +63,17 @@ const questions = [
     "9"),
 
   q("py-mcm-06", "Day 6：把「缺考」变成真正的缺失", 2,
-    "## Day 6：把「缺考」变成真正的缺失\n\n`Score` 列里混着中文「缺考」和空值，导致整列被 pandas 当成文本。\n\n**任务**：清理列名后，用 `pd.to_numeric(df['Score'], errors='coerce')` 把 Score 转成数值（无法转换的变 NaN），再打印**转换后非空值的数量**。\n\n**验收**：输出 `19`（22 行 - 2 个「缺考」 - 1 个原本就空的）。\n\n> coerce = 转不了就变缺失，比直接报错更适合脏数据。",
+    "## Day 6：把「缺考」变成真正的缺失\n\n`Score` 列里混着中文「缺考」和空值，导致整列被 pandas 当成文本。\n\n**任务**：清理列名后，用 `pd.to_numeric(df['Score'], errors='coerce')` 把 Score 转成数值（无法转换的变 NaN），再打印**转换后非空值的数量**。\n\n**验收**：输出 `18`（22 行里有 2 个原始空值和 2 个「缺考」；转换后 4 个缺失、18 个有效分数）。\n\n> coerce 只负责数值转换，不解释缺失原因。转换前保留 Score_raw，分别标记 unknown（原始空值）、absent（缺考）、parse_error（其他解析失败）；本题不填补。",
     "import pandas as pd\n\ndf = pd.read_csv(\"" + L1 + "\")\ndf.columns = df.columns.str.strip()\n\n# 1. Score 转数值（errors='coerce'）\n\n# 2. 打印转换后非空值的数量\n",
-    ["to_numeric 的 errors 参数有三个选择：raise / coerce / ignore，想想为什么用 coerce", "notna().sum() 统计非空个数"],
-    "## 题解\n\n```python\ndf = pd.read_csv(\"" + L1 + "\")\ndf.columns = df.columns.str.strip()\ndf['Score'] = pd.to_numeric(df['Score'], errors='coerce')\nprint(df['Score'].notna().sum())\n```\n\n转换后 Score 变成 float 列，「缺考」和空值都是 NaN——之后才能算平均分。",
-    "19"),
+    ["pandas 3.1.1 的 errors 参数支持 raise / coerce；转换前保留 Score_raw，才能区分原始空值、缺考和解析失败", "notna().sum() 统计非空个数"],
+    "## 题解\n\n```python\ndf = pd.read_csv(\"" + L1 + "\")\ndf.columns = df.columns.str.strip()\ndf['Score_raw'] = df['Score'].copy()\ndf['Score'] = pd.to_numeric(df['Score_raw'], errors='coerce')\ndf['Score_status'] = 'observed'\ndf.loc[df['Score_raw'].isna(), 'Score_status'] = 'unknown'\ndf.loc[df['Score_raw'].eq('缺考'), 'Score_status'] = 'absent'\ndf.loc[df['Score'].isna() & df['Score_raw'].notna() & ~df['Score_raw'].eq('缺考'), 'Score_status'] = 'parse_error'\nprint(df['Score'].notna().sum())\n```\n\n转换后数值列有 4 个 NaN，但 Score_raw 与 Score_status 仍保留空值/缺考/解析失败的区别。均值仅使用有效观测，不能据 NaN 就盲填。",
+    "18"),
 
   q("py-mcm-07", "Day 7：XJTLU 的平均分是多少", 2,
     "## Day 7：XJTLU 的平均分是多少\n\n**任务**：在 Day 5、6 的基础上（列名清理 + School 统一 + Score 数值化），计算 **XJTLU 的平均分**，保留 2 位小数打印。\n\n**验收**：输出包含 `83.5`。\n\n> 注意：平均分要跳过 NaN（pandas 的 mean 默认跳过），重复行要不要先去？这题先不去重。",
-    "import pandas as pd\n\ndf = pd.read_csv(\"" + L1 + "\")\ndf.columns = df.columns.str.strip()\ndf['School'] = df['School'].str.strip().str.upper()\ndf['Score'] = pd.to_numeric(df['Score'], errors='coerce')\n\n# 计算 XJTLU 的平均分，保留 2 位小数打印\n",
+    "import pandas as pd\n\ndf = pd.read_csv(\"" + L1 + "\")\ndf.columns = df.columns.str.strip()\ndf['School'] = df['School'].str.strip().str.upper()\ndf['Score_raw'] = df['Score'].copy()\ndf['Score'] = pd.to_numeric(df['Score_raw'], errors='coerce')\ndf['Score_status'] = 'observed'\ndf.loc[df['Score_raw'].isna(), 'Score_status'] = 'unknown'\ndf.loc[df['Score_raw'].eq('缺考'), 'Score_status'] = 'absent'\ndf.loc[df['Score'].isna() & df['Score_raw'].notna() & ~df['Score_raw'].eq('缺考'), 'Score_status'] = 'parse_error'\n\n# 计算 XJTLU 的平均分，保留 2 位小数打印\n",
     ["先筛选 df[df['School'] == 'XJTLU']，再取 Score.mean()", "round(x, 2) 或 f'{x:.2f}' 都能保留两位小数"],
-    "## 题解\n\n```python\ndf = pd.read_csv(\"" + L1 + "\")\ndf.columns = df.columns.str.strip()\ndf['School'] = df['School'].str.strip().str.upper()\ndf['Score'] = pd.to_numeric(df['Score'], errors='coerce')\nxj = df[df['School'] == 'XJTLU']\nprint(round(xj['Score'].mean(), 2))\n```\n\n结果 83.5。如果先 drop_duplicates 去掉重复行，均值会变成 82.25——体会「清洗顺序影响结果」。",
+    "## 题解\n\n```python\ndf = pd.read_csv(\"" + L1 + "\")\ndf.columns = df.columns.str.strip()\ndf['School'] = df['School'].str.strip().str.upper()\ndf['Score_raw'] = df['Score'].copy()\ndf['Score'] = pd.to_numeric(df['Score_raw'], errors='coerce')\ndf['Score_status'] = 'observed'\ndf.loc[df['Score_raw'].isna(), 'Score_status'] = 'unknown'\ndf.loc[df['Score_raw'].eq('缺考'), 'Score_status'] = 'absent'\ndf.loc[df['Score'].isna() & df['Score_raw'].notna() & ~df['Score_raw'].eq('缺考'), 'Score_status'] = 'parse_error'\nxj = df[df['School'] == 'XJTLU']\nprint(round(xj['Score'].mean(), 2))\n```\n\n结果 83.5。如果先 drop_duplicates 去掉重复行，均值会变成 82.285714…（两位小数为 82.29）——体会「清洗顺序影响结果」。",
     "83.5"),
 
   q("py-mcm-08", "Day 8：合并两表时多出来的那一行", 3,
@@ -79,28 +84,134 @@ const questions = [
     "(17, 7)"),
 
   q("py-mcm-09", "Day 9：先去重再合并", 2,
-    "## Day 9：先去重再合并\n\n**任务**：在 Day 8 基础上，合并**之前**先给 teams 按 team_id 去重（保留第一条），再 merge 并打印 shape。\n\n**验收**：输出包含 `(16, 7)`——行数回到 scores 的 16 行。\n\n> 什么时候去重？在合并的「右表」（被查字典的那张表）上。这是 merge 防膨胀的标准动作。",
-    "import pandas as pd\n\nscores = pd.read_csv(\"" + L2S + "\")\nteams = pd.read_csv(\"" + L2T + "\")\nfor d in (scores, teams):\n    d['team_id'] = d['team_id'].str.strip().str.upper()\n\n# 1. teams 按 team_id 去重\n\n# 2. 合并并打印 shape\n",
-    ["teams.drop_duplicates(subset='team_id')", "drop_duplicates 默认 keep='first'，保留第一次出现的行"],
-    "## 题解\n\n```python\nscores = pd.read_csv(\"" + L2S + "\")\nteams = pd.read_csv(\"" + L2T + "\")\nfor d in (scores, teams):\n    d['team_id'] = d['team_id'].str.strip().str.upper()\nteams = teams.drop_duplicates(subset='team_id')\nmerged = pd.merge(scores, teams, on='team_id')\nprint(merged.shape)\n```\n\n去重后合并结果 (16, 7)，每行成绩恰好对应一条队伍信息。",
+    "## Day 9：先去重再合并\n\n**任务**：在 Day 8 基础上，确认 T16 两行全列完全相同后，给 teams 全列去重，再用 `validate='many_to_one'` 合并并打印 shape。若重复键的其他字段冲突，必须报告并拒绝静默保留第一条。\n\n**验收**：本模拟数据输出包含 `(16, 7)`，冲突数据不得静默 keep='first'。\n\n> 右表是被查字典，键必须唯一；先检查重复记录的含义，再去重。",
+    "import pandas as pd\n\nscores = pd.read_csv(\"" + L2S + "\")\nteams = pd.read_csv(\"" + L2T + "\")\nfor d in (scores, teams):\n    d['team_id'] = d['team_id'].str.strip().str.upper()\n\n# 1. teams 只删全列重复行；键仍重复则报错\n\n# 2. 合并并打印 shape\n",
+    ["teams.drop_duplicates() 只删除全列完全相同的行", "去重后 team_id 若仍重复则报告冲突；merge 加 validate='many_to_one'"],
+    "## 题解\n\n```python\nscores = pd.read_csv(\"" + L2S + "\")\nteams = pd.read_csv(\"" + L2T + "\")\nfor d in (scores, teams):\n    d['team_id'] = d['team_id'].str.strip().str.upper()\nteams = teams.drop_duplicates()  # 只删除全列相同的记录\nif teams['team_id'].duplicated().any():\n    raise ValueError('team_id 存在冲突记录，拒绝静默保留第一条')\nmerged = pd.merge(scores, teams, on='team_id', validate='many_to_one')\nprint(merged.shape)\n```\n\n去重后合并结果 (16, 7)，每行成绩恰好对应一条队伍信息。",
     "(16, 7)"),
 
   q("py-mcm-10", "Day 10：哪所学校平均分最高", 3,
-    "## Day 10：哪所学校平均分最高\n\n**任务**：在 Day 5、6 基础上（School 统一 + Score 数值化），按学校分组求平均分，找出**平均分最高的学校**，以 `学校名 平均分（2位小数）` 的格式打印。\n\n**验收**：输出包含 `SJTU 83.67`。\n\n> 小心：XJTLU 的平均分是 83.5，非常接近——如果你算出来最高是 XJTLU，多半是把「缺考」当成 0 分了。",
-    "import pandas as pd\n\ndf = pd.read_csv(\"" + L1 + "\")\ndf.columns = df.columns.str.strip()\ndf['School'] = df['School'].str.strip().str.upper()\ndf['Score'] = pd.to_numeric(df['Score'], errors='coerce')\n\n# 按学校分组求平均分，找出最高的一所，按格式打印\n",
+    "## Day 10：哪所学校平均分最高\n\n**任务**：在 Day 5、6 基础上（School 统一 + Score 数值化），按学校分组求平均分，找出**平均分最高的学校**，以 `学校名 平均分（2位小数）` 的格式打印。\n\n**验收**：输出包含 `SJTU 83.67`。\n\n> 本题保留重复记录，只统计有效观测分数；XJTLU 为 83.5，SJTU 为 83.666667。填零会改变统计口径，不能仅凭最高学校判断犯了哪种错误。",
+    "import pandas as pd\n\ndf = pd.read_csv(\"" + L1 + "\")\ndf.columns = df.columns.str.strip()\ndf['School'] = df['School'].str.strip().str.upper()\ndf['Score_raw'] = df['Score'].copy()\ndf['Score'] = pd.to_numeric(df['Score_raw'], errors='coerce')\ndf['Score_status'] = 'observed'\ndf.loc[df['Score_raw'].isna(), 'Score_status'] = 'unknown'\ndf.loc[df['Score_raw'].eq('缺考'), 'Score_status'] = 'absent'\ndf.loc[df['Score'].isna() & df['Score_raw'].notna() & ~df['Score_raw'].eq('缺考'), 'Score_status'] = 'parse_error'\n\n# 按学校分组求平均分，找出最高的一所，按格式打印\n",
     ["df.groupby('School')['Score'].mean() 得到每校平均分", "sort_values(ascending=False) 后取第一行", "格式化：f'{school} {mean:.2f}'"],
-    "## 题解\n\n```python\ndf = pd.read_csv(\"" + L1 + "\")\ndf.columns = df.columns.str.strip()\ndf['School'] = df['School'].str.strip().str.upper()\ndf['Score'] = pd.to_numeric(df['Score'], errors='coerce')\nmeans = df.groupby('School')['Score'].mean().sort_values(ascending=False)\nprint(f'{means.index[0]} {means.iloc[0]:.2f}')\n```\n\n结果 SJTU 83.67。把「缺考」当 0 分会把 SJTU 的均值拉到 62.75——这就是为什么 NaN 处理决定结论。",
+    "## 题解\n\n```python\ndf = pd.read_csv(\"" + L1 + "\")\ndf.columns = df.columns.str.strip()\ndf['School'] = df['School'].str.strip().str.upper()\ndf['Score_raw'] = df['Score'].copy()\ndf['Score'] = pd.to_numeric(df['Score_raw'], errors='coerce')\ndf['Score_status'] = 'observed'\ndf.loc[df['Score_raw'].isna(), 'Score_status'] = 'unknown'\ndf.loc[df['Score_raw'].eq('缺考'), 'Score_status'] = 'absent'\ndf.loc[df['Score'].isna() & df['Score_raw'].notna() & ~df['Score_raw'].eq('缺考'), 'Score_status'] = 'parse_error'\nmeans = df.groupby('School')['Score'].mean().sort_values(ascending=False)\nprint(f'{means.index[0]} {means.iloc[0]:.2f}')\n```\n\n结果 SJTU 83.67。将所有转换后空分数填 0 时，SJTU 为 62.75，但 XJTLU 为 74.22、HIT 为 79.25，最高会变成 HIT。结论取决于完整处理口径。缺考、原始空值和解析失败应保留原值与状态，不能盲目填零或均值。",
     "SJTU 83.67"),
+
+  q("py-mcm-11", "Day 12：多指标汇总并导出", 3,
+    "## Day 12：多指标汇总并导出\n\n" +
+    "前 10 题都在「看数据」，这一题开始「产出结果」——美赛论文里的每张汇总表都是这么做出来的。\n\n" +
+    "**任务**：\n" +
+    "1. 读入 `" + L1 + "`，去掉列名首尾空格\n" +
+    "2. `School` 统一为去空格 + 全大写\n" +
+    "3. `Score` 用 `pd.to_numeric(..., errors='coerce')` 转数值\n" +
+    "4. **去掉完全重复的行**（`drop_duplicates()`）\n" +
+    "5. 按 `School` 分组，算出平均分 `avg`（保留 2 位小数）和样本数 `n`\n" +
+    "6. 导出到当前目录的 `school_summary.csv`，列名严格为 `school,avg,n`（小写）\n" +
+    "7. **不要 print**——这题只检查产物文件\n\n" +
+    "**验收**：`school_summary.csv` 恰好 4 行数据，列名 `school,avg,n`，数值允许 0.01 误差。\n\n" +
+    "> 顺序很重要：这题要求「先转数值、再去重」，反过来做结果可能不同。",
+    "import pandas as pd\n\n" +
+    "df = pd.read_csv(\"" + L1 + "\")\n" +
+    "df.columns = df.columns.str.strip()\n" +
+    "df[\"School\"] = df[\"School\"].str.strip().str.upper()\n" +
+    "df[\"Score\"] = pd.to_numeric(df[\"Score\"], errors=\"coerce\")\n" +
+    "df = df.drop_duplicates()\n\n" +
+    "# 1. 按 School 分组，一次算出 avg（2 位小数）和 n\n" +
+    "\n" +
+    "# 2. 把列名改成小写 school / avg / n\n" +
+    "\n" +
+    "# 3. 导出到 school_summary.csv（index=False，encoding=\"utf-8-sig\"）\n" +
+    "\n" +
+    "# 4. 不用 print\n",
+    [
+      "df.groupby('School')['Score'].agg(avg='mean', n='count') 一次拿到两个指标",
+      "reset_index() 把 School 从索引变回普通列，然后 .columns = ['school','avg','n'] 改名",
+      "to_csv('school_summary.csv', index=False, encoding='utf-8-sig')；小数位用 round(2)",
+    ],
+    "## 题解\n\n```python\n" +
+    "import pandas as pd\n\n" +
+    "df = pd.read_csv(\"" + L1 + "\")\n" +
+    "df.columns = df.columns.str.strip()\n" +
+    "df[\"School\"] = df[\"School\"].str.strip().str.upper()\n" +
+    "df[\"Score\"] = pd.to_numeric(df[\"Score\"], errors=\"coerce\")\n" +
+    "df = df.drop_duplicates()\n\n" +
+    "summary = df.groupby(\"School\")[\"Score\"].agg(avg=\"mean\", n=\"count\").reset_index()\n" +
+    "summary.columns = [\"school\", \"avg\", \"n\"]\n" +
+    "summary[\"avg\"] = summary[\"avg\"].round(2)\n" +
+    "summary.to_csv(\"school_summary.csv\", index=False, encoding=\"utf-8-sig\")\n" +
+    "```\n\n" +
+    "结果是 4 行：HIT 79.25 / 4、NUAA 78.33 / 3、SJTU 83.67 / 3、XJTLU 82.29 / 7。\n\n" +
+    "**`n` 是 `count()`（非空计数），不是行数**：XJTLU 去重后有 8 行，但只有 7 个有效分数。\n\n" +
+    "**美赛视角**：论文里的「各校平均分与样本量」表就是这张。样本量必须一起给出，否则「1 个样本考了 90 分」会被当成强证据。",
+    "",
+    {
+      expect_csv: {
+        path: "school_summary.csv",
+        columns: ["school", "avg", "n"],
+        rows: [
+          { school: "HIT", avg: 79.25, n: 4 },
+          { school: "NUAA", avg: 78.33, n: 3 },
+          { school: "SJTU", avg: 83.67, n: 3 },
+          { school: "XJTLU", avg: 82.29, n: 7 },
+        ],
+        key_columns: ["school"],
+        abs_tol: 0.01,
+        rel_tol: 0,
+      },
+      // 变体：换一套小数据（用同名路径覆盖），学生代码不用改，
+      // 验证的是「会不会算」而不是「背没背答案」。
+      variant_cases: [
+        {
+          stdin: "",
+          expected_stdout: "",
+          timeout_ms: 20000,
+          match_mode: "contains",
+          input_assets: [
+            {
+              path: "mcm/pandas_kit/data/level1_contest_raw.csv",
+              content:
+                "Team ID, School ,Year,Score,Members\n" +
+                "V01, Alpha ,2025,80,3\n" +
+                "V02,ALPHA,2026,90,3\n" +
+                "V03,beta ,2025,70,3\n" +
+                "V04,BETA,2026,缺考,3\n" +
+                "V05,Alpha,2026,,2\n",
+            },
+          ],
+          expect_csv: {
+            path: "school_summary.csv",
+            columns: ["school", "avg", "n"],
+            rows: [
+              { school: "ALPHA", avg: 85.0, n: 2 },
+              { school: "BETA", avg: 70.0, n: 1 },
+            ],
+            key_columns: ["school"],
+            abs_tol: 0.01,
+            rel_tol: 0,
+          },
+        },
+      ],
+    }),
 ];
 
-const targets = [
-  WS + "/bank",
-  PROJ + "/portable/workspace/bank",
-];
-for (const dir of targets) {
-  fs.mkdirSync(dir, { recursive: true });
-  for (const q of questions) {
-    fs.writeFileSync(path.join(dir, q.id + ".json"), JSON.stringify(q, null, 2) + "\n");
+function exportQuestions(targetDir) {
+  fs.mkdirSync(targetDir, { recursive: true });
+  for (const question of questions) {
+    fs.writeFileSync(path.join(targetDir, question.id + ".json"), JSON.stringify(question, null, 2) + "\n");
   }
+  console.log("pandas 题库生成:", questions.length, "道，目录:", targetDir);
 }
-console.log("pandas 题库生成:", questions.length, "道");
+
+if (require.main === module) {
+  const targetDir = process.argv[2]
+    ? path.resolve(process.argv[2])
+    : path.join(PROJ, "workspace-template", "bank");
+  const allowedRoot = path.join(PROJ, "workspace-template");
+  const relative = path.relative(allowedRoot, targetDir);
+  if (relative.startsWith("..") || path.isAbsolute(relative)) {
+    throw new Error("CLI 输出目录必须位于项目 workspace-template 下");
+  }
+  exportQuestions(targetDir);
+}
+
+module.exports = { questions };

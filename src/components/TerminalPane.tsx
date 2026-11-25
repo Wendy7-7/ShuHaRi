@@ -11,14 +11,14 @@ export default function TerminalPane() {
     const host = hostRef.current;
     if (!host) return;
     attachTerminal(host);
-    ensureCwd(workspace);
+    if (workspace) void ensureCwd(workspace).catch(() => {});
     return () => detachTerminal();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // 工作区变化：重启 PTY 换 cwd
   useEffect(() => {
-    ensureCwd(workspace);
+    if (workspace) void ensureCwd(workspace).catch(() => {});
   }, [workspace]);
 
   return (

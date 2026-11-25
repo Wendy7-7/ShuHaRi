@@ -6,6 +6,7 @@ mod langpack;
 mod sandbox;
 mod portable;
 mod pty;
+mod data_check;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {

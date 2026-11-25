@@ -3,7 +3,7 @@ import pandas as pd
 
 # ---------- Day 1 ----------
 print("pandas 版本:", pd.__version__)
-df = pd.read_csv("data/level1_contest_raw.csv")
+df = pd.read_csv("mcm/pandas_kit/data/level1_contest_raw.csv")
 print("Day1 行列数:", df.shape)
 print(df.head())
 
@@ -20,7 +20,7 @@ print("\n完全重复行数:", df.duplicated().sum())   # 1
 print("重复的行:\n", df[df.duplicated(keep=False)])
 print("\nSchool 的所有写法:", df[" School "].unique())
 print("\nSchool 计数:\n", df[" School "].value_counts())
-# 结论：直接分组会把 XJTLU 拆成三个"学校"，均值和计数全错
+# 结论：直接分组会把 XJTLU 拆成四个"学校"，均值和计数全错
 
 # ---------- Day 4 ----------
 print("\nScore 原始取值:", df["Score"].tolist())   # 含 "缺考" 和空
@@ -39,7 +39,7 @@ print("Team ID 重复:\n", df[df.duplicated(subset="Team ID", keep=False)])
 # 7. 存在 1 行完全重复（T09），属于重复录入
 
 # ---------- Day 5 ----------
-for path in ["data/level2_scores_raw.csv", "data/level2_teams_raw.csv"]:
+for path in ["mcm/pandas_kit/data/level2_scores_raw.csv", "mcm/pandas_kit/data/level2_teams_raw.csv"]:
     d = pd.read_csv(path)
     print("\n=====", path, "=====")
     print("行列数:", d.shape)

@@ -27,7 +27,7 @@ pub async fn ai_chat(
 ) -> Result<String, String> {
     let base = get_setting(&db, "ai_base", "https://api.deepseek.com/v1");
     let key = get_setting(&db, "ai_key", "");
-    let model = get_setting(&db, "ai_model", "deepseek-chat");
+    let model = get_setting(&db, "ai_model", "deepseek-flash");
 
     if key.trim().is_empty() {
         return Err("尚未配置 AI API Key，请点击顶栏「设置」填写".into());
@@ -39,7 +39,7 @@ pub async fn ai_chat(
         "messages": messages.iter().map(|m| serde_json::json!({
             "role": m.role, "content": m.content
         })).collect::<Vec<_>>(),
-        "temperature": 0.7
+        "temperature": 0.3
     });
 
     let client = reqwest::Client::new();
@@ -75,7 +75,7 @@ pub async fn ai_chat_stream(
 ) -> Result<(), String> {
     let base = get_setting(&db, "ai_base", "https://api.deepseek.com/v1");
     let key = get_setting(&db, "ai_key", "");
-    let model = get_setting(&db, "ai_model", "deepseek-chat");
+    let model = get_setting(&db, "ai_model", "deepseek-flash");
 
     if key.trim().is_empty() {
         return Err("尚未配置 AI API Key，请点击顶栏「设置」填写".into());
@@ -87,7 +87,7 @@ pub async fn ai_chat_stream(
         "messages": messages.iter().map(|m| serde_json::json!({
             "role": m.role, "content": m.content
         })).collect::<Vec<_>>(),
-        "temperature": 0.7,
+        "temperature": 0.3,
         "stream": true
     });
 

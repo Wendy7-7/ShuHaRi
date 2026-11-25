@@ -8,7 +8,7 @@
 # ============================================================
 # 任务 1.1  在终端运行 python -m pip install pandas
 # 任务 1.2  写三行代码：import pandas as pd，打印 pd.__version__
-# 任务 1.3  读入 data/level1_contest_raw.csv，赋值给 df
+# 任务 1.3  读入 mcm/pandas_kit/data/level1_contest_raw.csv，赋值给 df
 # 任务 1.4  打印 df.shape，确认是 (22, 5)
 # 任务 1.5  打印 df.head()，肉眼看看这份数据
 #

@@ -14,6 +14,8 @@
     "df.columns = df.columns.str.strip() 一行搞定"
   ],
   "editorial_md": "## 题解\n\n```python\ndf = pd.read_csv(\"mcm/pandas_kit/data/level1_contest_raw.csv\")\ndf.columns = df.columns.str.strip()\nprint(list(df.columns))\n```\n\n之后 `df['School']` 就能正常访问了。",
+  "reference_code": "import pandas as pd\ndf = pd.read_csv(\"mcm/pandas_kit/data/level1_contest_raw.csv\")\ndf.columns = df.columns.str.strip()\nprint(list(df.columns))\n",
+  "content_version": "1.1",
   "test_cases": [
     {
       "stdin": "",

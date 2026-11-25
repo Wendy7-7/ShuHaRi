@@ -5,8 +5,8 @@ import matplotlib.pyplot as plt
 
 OUT = Path("figures/exam")
 OUT.mkdir(parents=True, exist_ok=True)
-trend = pd.read_csv("data/exam_trend.csv")
-points = pd.read_csv("data/exam_points.csv")
+trend = pd.read_csv("mcm/matplotlib_kit/data/exam_trend.csv")
+points = pd.read_csv("mcm/matplotlib_kit/data/exam_points.csv")
 
 
 def save(fig, name, pdf=False):

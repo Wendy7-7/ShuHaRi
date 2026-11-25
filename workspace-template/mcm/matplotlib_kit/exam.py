@@ -2,8 +2,8 @@
 # 不看教程、速查表、answers.py；允许看报错和自己打印的数据。
 # 在 matplotlib_kit 目录下完成，所有图片保存到 figures/exam/。
 
-# 数据 A：data/exam_trend.csv（year, pass_rate, teams）
-# 数据 B：data/exam_points.csv（team, hours, score）
+# 数据 A：mcm/matplotlib_kit/data/exam_trend.csv（year, pass_rate, teams）
+# 数据 B：mcm/matplotlib_kit/data/exam_points.csv（team, hours, score）
 
 # 任务 1：折线图 exam_line.png
 # 画历年 pass_rate，标题、Year、Pass rate (%)、圆点、正确年份刻度。

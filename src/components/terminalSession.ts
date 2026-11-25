@@ -14,6 +14,8 @@ let container: HTMLDivElement | null = null;
 let ro: ResizeObserver | null = null;
 let started = false;
 let currentCwd: string | null = null;
+let startPending: Promise<void> | null = null;
+let startQueue: Promise<void> = Promise.resolve();
 let lastRows = 30;
 let lastCols = 120;
 
@@ -87,26 +89,70 @@ export function detachTerminal(): void {
   container?.remove();
 }
 
-/** 工作区变化时重启 PTY（终端内容保留，仅换 shell 的 cwd） */
-export function ensureCwd(workspace: string): void {
-  if (!started || currentCwd !== workspace) {
-    currentCwd = workspace;
-    started = true;
-    invoke("pty_start", { shell: "powershell", cwd: workspace })
-      .then(() => {
-        // 新会话默认 30x120，立即同步回 xterm 的真实尺寸
-        invoke("pty_resize", { rows: lastRows, cols: lastCols }).catch(() => {});
-      })
-      .catch(() => {});
-  }
+function startTerminal(workspace: string): Promise<void> {
+  currentCwd = workspace;
+  started = false;
+  const pending = startQueue.then(async () => {
+    await invoke("pty_start", { shell: "powershell", cwd: workspace });
+    // 尺寸同步失败不影响 PTY 已成功启动。
+    await invoke("pty_resize", { rows: lastRows, cols: lastCols }).catch(() => {});
+  });
+  startPending = pending;
+  // 失败后允许下一次启动重试；工作区切换的启动请求按顺序执行。
+  startQueue = pending.catch(() => {});
+  void pending.then(
+    () => {
+      if (startPending === pending) {
+        startPending = null;
+        started = true;
+      }
+    },
+    () => {
+      if (startPending === pending) {
+        startPending = null;
+        started = false;
+      }
+    },
+  );
+  return pending;
+}
+
+/** 工作区变化时重启 PTY；调用方可等待启动后再写入命令。 */
+export function ensureCwd(workspace: string): Promise<void> {
+  if (!workspace) return Promise.reject(new Error("工作区尚未就绪"));
+  if (startPending && currentCwd === workspace) return startPending;
+  if (started && currentCwd === workspace) return Promise.resolve();
+  return startTerminal(workspace);
 }
 
 /** 手动重启终端（PTY 卡死/输出异常时自救用） */
 export function restartTerminal(): void {
+  if (!currentCwd) return;
   term?.clear();
-  invoke("pty_start", { shell: "powershell", cwd: currentCwd ?? undefined })
-    .then(() => {
-      invoke("pty_resize", { rows: lastRows, cols: lastCols }).catch(() => {});
-    })
-    .catch(() => {});
+  void startTerminal(currentCwd).catch(() => {});
+}
+
+/**
+ * 读取终端最近若干行的纯文本（给"附上报错"按钮用）。
+ * 只读缓冲区：不改用户选区、不动滚动位置、不触发重绘。
+ */
+export function getRecentTerminalOutput(maxLines = 80): string {
+  const t = term;
+  if (!t) return "";
+  try {
+    const buf = t.buffer.active;
+    const total = buf.length;
+    if (total === 0) return "";
+    const start = Math.max(0, total - Math.max(1, maxLines));
+    const lines: string[] = [];
+    for (let i = start; i < total; i += 1) {
+      const line = buf.getLine(i);
+      if (line) lines.push(line.translateToString(true));
+    }
+    // 终端底部通常留着一堆空行，去掉尾部的
+    while (lines.length > 0 && lines[lines.length - 1].trim() === "") lines.pop();
+    return lines.join("\n");
+  } catch {
+    return "";
+  }
 }

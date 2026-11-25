@@ -8,11 +8,13 @@
 ```python
 import pandas as pd
 
-scores = pd.read_csv("data/level2_scores_raw.csv")
-teams = pd.read_csv("data/level2_teams_raw.csv")
+scores = pd.read_csv("mcm/pandas_kit/data/level2_scores_raw.csv")
+teams = pd.read_csv("mcm/pandas_kit/data/level2_teams_raw.csv")
 for d in (scores, teams):
     d["team_id"] = d["team_id"].str.strip().str.upper()
-teams = teams.drop_duplicates(subset="team_id")
+teams = teams.drop_duplicates()
+if teams["team_id"].duplicated().any():
+    raise ValueError("team_id 存在字段冲突，拒绝静默保留第一条")
 merged = scores.merge(teams, on="team_id", how="left", validate="many_to_one")
 ```
 
@@ -225,7 +227,7 @@ print(best)
 2. 按 `problem` 求平均得分，按从高到低排序
 3. 找出每个 `school` 得分最高的队伍（用 idxmax）
 4. 算各 `major` 的队伍数，找出人最多的专业
-5. 把第 1 问的结果导出为 `data/by_region.csv`
+5. 把第 1 问的结果导出为 `mcm/pandas_kit/data/by_region.csv`
 
 ---
 
